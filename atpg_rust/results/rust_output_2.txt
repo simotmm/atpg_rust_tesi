@@ -1,0 +1,20 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target\debug\atpg_rust.exe 2`
+pattern generation (1 patterns):
+parallel pattern single fault propagation (PPSFP):
+PPSFP: starting pattern 1/1
+PPSFP pattern 1/1 - fault 1/4 (X, s-a-0) - processed 25.0% - detected 1/4 (25.0%)
+PPSFP pattern 1/1 - fault 2/4 (X, s-a-1) - processed 50.0% - detected 2/4 (50.0%)
+PPSFP pattern 1/1 - fault 3/4 (E, s-a-0) - processed 75.0% - detected 3/4 (75.0%)
+PPSFP pattern 1/1 - fault 4/4 (D, s-a-0) - processed 100.0% - detected 4/4 (100.0%)
+PPSFP: pattern 1/1 done - detected in this pattern: 4 - cumulative detected: 4/4 (100.0%)
+undetected faults after PPSFP: 0 
+set 1:
+  A: 11100111110011010011100011110110
+  B: 11100101001100100111101110110101
+  C: 00101110001101011001001011001111
+
+-> all faults covered
+ -> faults covered (with pseudo-random pattern generation): 4/4 (100.00%)
+ -> faults covered (with SAT solving):                        0/4 (0.00%)
+ -> total faults covered:                                   4/4 (100.00%)

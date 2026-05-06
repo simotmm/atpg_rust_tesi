@@ -1,0 +1,9 @@
+INPUT(A)
+INPUT(B)
+INPUT(C)
+
+OUTPUT(X)
+
+D = AND(A,B)
+E = NOT(C)
+X = OR(D,E)

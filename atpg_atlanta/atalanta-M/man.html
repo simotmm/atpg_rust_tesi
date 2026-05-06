@@ -1,0 +1,437 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1250">
+<TITLE>Atalanta-M 2.0</TITLE>
+</HEAD>
+<BODY>
+<H1>Atalanta-M 2.0 Manual</H2>
+Copyright (C) 1991, Virginia Polytechnic & State University (originally ATALANTA, version 2.0)<BR><BR>
+Modified by Petr Fišer, September 2005<BR>
+<BR>
+***********************************************************************<BR>
+<BR>
+<B>Atalanta</B> - Automatic Test Pattern Generator and fault simulator for stuck-at faults in combinational circuits<BR>
+<pre>
+SYNOPSIS: atalanta-M [options] circuit_file
+</pre>
+<b>OPTIONS:</B>
+<br>
+<br>
+<H2>File specification</H2>
+Note that all the desired outupt files have to be specified. If not, the file is not created.<BR><BR>
+<table border="1" valign="top" bgcolor="#A0FFA0">
+	<tr><td width="15%">-n <i>fn</i></td>
+	<td>Name of the .bench file. The -n statement is optional, the benchmark name can be specified without any prequisite parameter.<br>
+	</td></tr>
+	<tr><td>-f <i>fn</i></td>
+	<td>The fault file is read from <i>fn</i>. If not specified, all the s-a-faults are set as default.
+	</td></tr>
+	<tr><td>-F <i>fn</i></td>
+	<td>The processed fault list is written to a file <i>fn</i>.
+	</td></tr>
+	<tr><td>-t <i>fn</i></td>
+	<td>Test patterns are are written or read from the file <i>fn</i> (written in TPG mode, read in simulation mode).<br>
+	</td></tr>
+	<tr><td>-U <i>fn</i></td>
+	<td>Atalanta writes the list of aborted (or undetected) faults to the given file name.
+	</td></tr>
+	<tr><td>-v</td>
+	<td>Atalanta prints out all identified redundant faults as well as aborted fauts in a file. The -U option has to be specified.
+	</td></tr>
+	<tr><td>-m <i>fn</i></td>
+	<td>The fault mask is written to the file <i>fn</i>. The order of faults corresponds to the fault list.
+	</td></tr>
+	<tr><td>-P <i>fn</i></td>
+	<td>The ATPG/FS report is written to a file <i>fn</i>.
+	</td></tr>
+	<tr><td>-W <i>n</i></td>
+	<td>The output test file format (for TPG only).<BR>
+		<i>n</i> = 0 - no test pattern output (default).<BR>
+		<i>n</i> = 1 - PAT file (test vectors only). Do not use together with -D <i>n</i> option, since all the test vectors are put together.<BR>
+		<i>n</i> = 2 - input + output. Do not use together with -D <i>n</i> option, since all the test vectors are put together.<BR>
+		<i>n</i> = 3 - more test vectors for each fault, output.<BR>
+		<i>n</i> = 4 - more test vectors for each fault, output, with fault mask. HOPE simulator is employed.<BR>
+	</td></tr>
+</table>
+
+<H2>ATPG Options</H2>
+These options have no sense in the simulation mode (-S)<BR><BR>
+<table border="1" valign="top" bgcolor="#A0FFA0">
+	<tr><td width="15%">-A</td>
+	<td>Atalanta derives all test patterns for each fault.
+		In this option, all unspecified inputs are left unknown,
+		and fault simulation is not performed.<br>
+        HOPE fault simulator is employed.<br>
+        <I>Note: it does not work properly. Not all existing test patterns are produced.</I>
+	</td></tr>
+	<tr><td>-D <i>n</i></td>
+	<td>Atalanta derives <i>n</i> test patterns for each fault.<BR>
+		In this option, all unspecified inputs are left unknown, and fault simulation is not performed. If both -A and -D option are specified, -D option is applied.<br>
+        HOPE fault simulator is employed.
+        <BR>
+        <I>Note: it does not work properly. Not all existing test patterns are produced.</I>
+	</td></tr>
+	<tr><td>-b <i>n</i></td>
+	<td>The number of maximum backtracks for the FAN algorithm phase 1. (default: -b 10)
+	</td></tr>
+	<tr><td>-B <i>n</I></td>
+	<td>If -B <i>n</i> (<i>n</I> > 0) option is specified, atalanta generates test patterns in two phases. In phase 1, static unique path sensitization is employed. If the test generation for a target fault is aborted in phase 1, the test generation is tried in phase 2. In phase 2, dynamic unique path sensitization is employed. If <i>n</i>=0, phase 2 is not performed.<br>
+		If <i>n</I> > 0, phase 2 test generation is performed with the backtrack limit of <i>n</i>.<br>
+		(default: -B 0, i.e., phase 2 is not performed.)
+	</td></tr>
+	<tr><td>-H</td>
+	<td>HOPE is employed for fault simulation. In this option, three logic values (0, 1 and X), instead of two logic values (0 and 1), are employed. Due to the embedding of the unknown logic value and the parallel fault fault simulation algorithm, the test generation time is slower than the default mode.)<br>
+		(default: FSIM, which is a parallel pattern fault simulator, is employed, and two logic values are used.)<br>
+	</td></tr>
+	<tr><td>-L</td>
+	<td>Static learning is performed. (default: no learning)
+	</td></tr>
+	<tr><td>-c <i>n</i></td>
+	<td>Atalanta compacts test patterns using two different methods: reverse order compaction and shuffling compaction. First, test patterns are applied in the reverse order and fault simulated (reverse order compaction). Second, test patterns are shuffled randomly and fault simulated (shuffling compaction). During the fault simulations, all the test patterns which do not detect a new fault are eliminated. The option -c <i>n</i> specifies the limit of shuffling compaction. If <i>n</i>>0, shuffling compaction is terminated if <i>n</i> consecutive shuffles do not drop a test pattern. If <i>n</i>=0, shuffling compaction is not included and compaction is done only by the reverse order fault simulation. (default: -c 2)
+	</td></tr>
+	<tr><td>-N</td>
+	<td>Test compaction is not performed.
+	</td></tr>
+	</tr><td>-r <i>n</i></td>
+	<td>Random Pattern Testing (RPT) Session is included before deterministic test pattern generation session. The RPT session stops if any n consecutive packets of 32 random patterns do not detect any new fault. If <i>n</i>=0, the RPT session is not included. (default: -r 16)
+	</td></tr>
+	<tr><td>-s <i>n</i>
+	<td>Initial seed for the random number generator (random()). If <i>n</i>=0, the initial seed is the current time. (default: -s 0)
+	</td></tr>
+	<tr><td>-Z</td>
+	<td>Atalanta derives one test pattern for each fault. In this option, no fault simulation is performed during the entire test generation (including random pattern test generation session, deterministic test generation session and test compaction session). All unspecified inputs are left unknown.
+	</td></tr>
+	<tr><td>-0, -1, -X, -R</td>
+	<td>During test generation, some inputs can be unspecified. Atalanta provides various options to set these unspecified inputs into a certain value. (default: -R)
+	</td></tr>
+</table>
+
+<H2>Fault Simulation Options</H2>
+<table border="1" valign="top" bgcolor="#A0FFA0">
+	<tr><td width="15%">-S</td>
+	<td>Simulation mode is performed, instead of TPG. The pattern file has to be specified (-t option), if the -l option is not present.
+	</td></tr>
+	<tr><td width="15%">-l <i>poly seed num</i></td>
+	<td>Simulates <i>num</i> LFSR patterns. The LFSR polynomial and seed are specified in octal form (<i>poly, seed</i>).
+	</td></tr>
+	<tr><td width="15%">-g <i>num fn</i></td>
+	<td>Simulates <i>num</i> LFSR patterns. The polynomial and seed are generated randomly and reported to <i>fn</i> file.
+	</td></tr>
+</table>
+
+<BR>
+<i>Note: the limits can be extended upon request.</I><BR>
+<H1>Examples</H1>
+<pre>atalanta-M -t c432.pat -W 1 c432.bench</pre>
+<dir>
+	Generates test patterns for c432.bench, writes them to c432.pat.
+</DIR>  
+<pre>atalanta-M -t c432.pat -W 1 -F c432.flt c432.bench</pre>
+<dir>
+	Generates test patterns for c432.bench, writes them to c432.pat. The complete fault list is written to c432.flt.
+</DIR>  
+<pre>atalanta-M -t c432.pat -W 2 c432.bench</pre>
+<dir>
+	Generates test patterns for c432.bench, writes them to c432.pat. The correct CUT responses are computed as well.
+</DIR>  
+<pre>atalanta-M -D 1 -t c432.pat -W 2 c432.bench</pre>
+<dir>
+	Generates test patterns for c432.bench, writes them to c432.pat. One test pattern is produced for each fault. Don't cares are present in the test. The correct CUT responses are computed as well.
+</DIR>  
+<pre>atalanta-M -t c432.pat -f c432.flt -W 1 c432.bench</pre>
+<dir>
+	Generates test patterns for c432.bench, writes them to c432.pat. Only faults specified in c432.bench are considered.
+</DIR>  
+<pre>atalanta-M -t c432.pat -P c432.rep -m c432.mask -W 1 c432.bench</pre>
+<dir>
+	Generates test patterns for c432.bench, writes them to c432.pat. The report file is written to c432.rep, the fault mask (after applying the whole test to CUT) is written to c432.mask.
+</DIR>  
+<pre>atalanta-M -S -t c432.pat -P c432.rep c432.bench</pre>
+<dir>
+	Simulates vectors for c432.pat and writes the results to c432.rep. 
+</DIR>  
+<pre>atalanta-M -S -t c432.pat -P c432.rep -U c432.ud -v c432.bench</pre>
+<dir>
+	Simulates vectors for c432.pat and writes the results to c432.rep. All the undetected faults are written to c432.ud.
+</DIR>  
+<pre>atalanta-M -S -t c432.pat -P c432.rep -m c432.msk c432.bench</pre>
+<dir>
+	Simulates vectors for c432.pat and writes the results to c432.rep. The fault mask is written to c432.msk.
+</DIR>  
+<pre>atalanta-M -l 100040000001 765177704700 1000 -U c432.flt -v -P c432.rep c432.bench</pre>
+<dir>
+	Simulates 1000 LFSR vectors for c432.pat and writes the results to c432.rep. The LFSR generating polynomial is 100040000001 (in octal), the seed 765177704700 (in octal). 
+	The undetected faults list is written to c432.flt.</DIR>  
+<BR>
+<H1>File Formats</H1>
+<H2>BENCH Format</H2>
+<DIR>
+    The input netlist format for atalanta is ISCAS89 
+	netlist format except for the following two cases.
+	The first line should be # followed by the name of 
+	the circuit. The lines beginning with # excluding
+	the first line are comment lines and ignored. These
+	comment lines may be put into any part of the netlist.
+	It should be noted that the order of gates appearing
+	in the netlist is not significant.
+	The name of gates can be a string of alpha-numeric
+	characters (0-9, A-Z, a-z, _, [, or ]).
+<BR>
+<BR>
+<B>Supported Gates</b><BR>
+<pre>
+-------------------------------------------------------
+   syntax                   gate type
+-------------------------------------------------------
+   INPUT                    primary input
+   OUTPUT                   primary output
+   AND                      and gate
+   NAND                     nand gate
+   OR                       or gate
+   NOR                      nor gate
+   XOR                      2 input exclusive-or gate
+   BUFF or BUF              buffer
+   NOT                      inverter
+-------------------------------------------------------
+* Gate types can be also written in lower case.
+</pre>
+<b>EXAMPLE: ISCAS89 NETLIST FORMAT (c17.bench)</b>
+<BR>
+<pre>
+# c17
+# 5 inputs
+# 2 outputs
+# 0 inverters
+# 6 gates ( 6 NANDs )
+
+INPUT(1)
+INPUT(2)
+INPUT(3)
+INPUT(6)
+INPUT(7)
+
+OUTPUT(22)
+OUTPUT(23)
+
+10 = NAND(1, 3)
+11 = NAND(3, 6)
+16 = NAND(2, 11)
+19 = NAND(11, 7)
+22 = NAND(10, 16)
+23 = NAND(16, 19)
+</pre>
+<BR>
+
+</dir>
+<H2>Test Pattern Files</H2>
+<dir>
+<H3>Simple PAT Format (-W 1) and the input test pattern file (for simulation)</H3>
+<dir>
+Consists of test patterns only. The j'th bit of a test pattern is the value 
+of the j'th input of the circuit (in terms of their
+appearance in the circuit). For example, c17 has five
+inputs named input1, input2, input3, input6 and input7
+which appear in the order in the netlist. The first bit
+of a test pattern is the value for input1, the second 
+for input2, ..., and the last for input7.
+<BR><br>
+<b>Example: Test Pattern File for C17</B><BR><br>
+<pre>
+01010
+11110
+10101
+00111
+10010
+00101
+</pre>
+</dir>
+<H3>PAT Format with output values (-W 2)</H3>
+<dir>
+Contains test patterns and correct CUT responses.<br>
+<br>
+<b>Example: Test Pattern File for C17</B><BR><br>
+<pre>
+01010 11
+00101 01
+11111 10
+10000 00
+</pre>
+</dir>
+<H3>PAT Format with output values, more vectors for each fault (-W 3)</H3>
+<dir>
+Contains test patterns and correct CUT responses.<br>
+The ordinal number of the test pattern for a particular fault preceeds the colon (:).<br>
+The test vectors are numbered in a reverse order, for simpler parsing.<br>
+<br>
+<b>Example: Test Pattern File for C17 (obtained by -D 5 option )</B><BR><br>
+<pre>
+3: 100xx 0x
+2: 0111x 00
+1: 00xxx 0x
+2: 1111x 10
+1: 101xx 1x
+4: 0110x 11
+3: 010xx 11
+2: 110xx 11
+1: 1x1xx 1x
+3: 110xx 11
+2: 0110x 11
+1: 010xx 11
+1: 100xx 0x
+1: 001xx 0x
+1: 101xx 1x
+1: 100xx 0x
+4: 11100 11
+3: 110xx 1x
+2: 0110x 1x
+1: 010xx 1x
+5: 10111 10
+4: 101x0 10
+3: 100xx 0x
+2: 0111x 00
+1: 00xxx 0x
+1: x111x x0
+1: 000xx 0x
+5: x00x1 01
+4: 11101 11
+3: 11100 11
+2: 0110x 1x
+1: x10xx 1x
+2: x0011 01
+1: x101x 1x
+4: x0111 x0
+3: 11111 10
+2: 11110 10
+1: 0111x 0x
+1: 0110x 1x
+3: x111x x0
+2: x0111 x0
+1: x0xx0 x0
+2: x0101 x1
+1: x00x1 01
+4: x0101 x1
+3: x00x1 01
+2: x110x 11
+1: x10xx 11
+2: x1100 11
+1: x10x0 11
+1: xx111 x0
+1: x00x0 00
+</pre>
+</dir>
+<H3>The full PAT format (-W 4)</H3>
+<dir>
+Contains test patterns, correct CUT responses and fault masks for each test pattern (for more information see the Fault Mask Format).<br>
+The ordinal number of the test pattern for a particular fault preceeds the colon (:).<br>
+The test vectors are numbered in a reverse order, for simpler parsing.<br>
+<br>
+<b>Example: Test Pattern File for C17 (obtained by -D 5 option )</B><BR><br>
+<pre>
+3: 100xx 0x 1000100101010000000000
+2: 0111x 00 1000011001100010100000
+1: 00xxx 0x 1000000001000000000000
+2: 1111x 10 0110001001100010100000
+1: 101xx 1x 0110001000000000000000
+4: 0110x 11 0011000010001001001000
+3: 010xx 11 0011000010001000001000
+2: 110xx 11 0011000010001000001000
+1: 1x1xx 1x 0010000000000000000000
+3: 110xx 11 0011000010001000001000
+2: 0110x 11 0011000010001001001000
+1: 010xx 11 0011000010001000001000
+1: 100xx 0x 1000100101010000000000
+1: 001xx 0x 1000010001000000000000
+1: 101xx 1x 0110001000000000000000
+1: 100xx 0x 1000100101010000000000
+4: 11100 11 0010000010001001001100
+3: 110xx 1x 0011000010001000001000
+2: 0110x 1x 0011000010001001001000
+1: 010xx 1x 0011000010001000001000
+5: 10111 10 0110001001000010100010
+4: 101x0 10 0110001001000000100000
+3: 100xx 0x 1000100101010000000000
+2: 0111x 00 1000011001100010100000
+1: 00xxx 0x 1000000001000000000000
+1: x111x x0 0000001001100010100000
+1: 000xx 0x 1000000001010000000000
+5: x00x1 01 1000000001011000011000
+4: 11101 11 0010000000001001001000
+3: 11100 11 0010000010001001001100
+2: 0110x 1x 0011000010001001001000
+1: x10xx 1x 0011000010001000001000
+2: x0011 01 1000000101011100011000
+1: x101x 1x 0011000110001100001000
+4: x0111 x0 0000001001000010100010
+3: 11111 10 0110001001100010100010
+2: 11110 10 0110001001100010100000
+1: 0111x 0x 1000011001100010100000
+1: 0110x 1x 0011000010001001001000
+3: x111x x0 0000001001100010100000
+2: x0111 x0 0000001001000010100010
+1: x0xx0 x0 0000000001000000100000
+2: x0101 x1 0000000000001001011000
+1: x00x1 01 1000000001011000011000
+4: x0101 x1 0000000000001001011000
+3: x00x1 01 1000000001011000011000
+2: x110x 11 0010000000001001001000
+1: x10xx 11 0011000010001000001000
+2: x1100 11 0010000010001001001100
+1: x10x0 11 0011000010001000001100
+1: xx111 x0 0000001001000010100010
+1: x00x0 00 1000000001010000100001
+</pre>
+</dir>
+<H2>Fault List Format</H2>
+<dir>
+	<pre>
+        ------ EXAMPLE: A FAULT LIST FILE ----------------------
+        gate_A->gate_B /1
+        gate_A->gate_B /0
+        gate_A /1
+        gate_B /1
+        --------------------------------------------------------
+ 	</pre>
+               In the above example, gate_A and gate_B are the name
+        of gates. The first line, "gate_A->gate_B /1" describes
+        the stuck-at 1 fault on the gate_B input line, which
+        is connected to gate_A. Similarly, the second line,
+        "gate_A->gate_B /0" describes the stuck-at 0 fault on the
+        gate B input which is connected to gate_A. The third and
+        fourth lines describe the stuck-at 1 faults on the gate_A
+        output and the gate_B output, respectively.
+</dir>
+
+<H2>Fault Mask Format</H2>
+<dir>
+	The fault mask is a string determining the state (coverage) of particular faults.
+	One character is reserved for each processed fault. The order corresponds to the fault list order.<BR>
+	Meaning of the values:<BR><br>
+	<dir>
+    0 - not detected<BR>
+    1 - detected<br>
+    3 - redundant<br>
+    4 - aborted<br>
+    </dir>
+</dir>
+
+<H2>The Report File Format</H2>
+<dir>
+<b>Example.</b> <i>The comments are not a part of the report file.</I><br>
+	<pre>
+		gates: 6				// number of CUT gates
+		iv: 5					// number of CUT primary inputs
+		ov: 2					// number of CUT primary outputs
+		i_patterns: 52			// number of test patterns before compaction (or final, if no compaction)
+		patterns: 52			// number of final test patterns (after compaction)
+		faults: 22				// number of processed faults
+		d_faults: 22			// number of detected faults
+		r_faults: 0				// number of identified redundant faults
+		time: 0.001				// CPU time [s]
+    </pre>
+</dir>
+
+
+</BODY>
+</HTML>
+

@@ -1,0 +1,15 @@
+INPUT(A)
+INPUT(B)
+INPUT(C)
+INPUT(N)
+
+OUTPUT(X)
+OUTPUT(Y)
+
+M = BUFF(P)
+D = AND(A,B)
+E = NOT(C)
+X = OR(D,E)
+P = OR(E,N)
+Y = AND(X,M)
+

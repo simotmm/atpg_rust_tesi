@@ -1,0 +1,516 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target\debug\atpg_rust.exe 1355`
+pattern generation (15 patterns):
+parallel pattern single fault propagation (PPSFP):
+PPSFP: starting pattern 1/15
+PPSFP pattern 1/15 - fault 78/1564 (G1276, s-a-1) - processed 5.0% - detected 56/1564 (3.6%)
+PPSFP pattern 1/15 - fault 156/1564 (G1084, s-a-1) - processed 10.0% - detected 112/1564 (7.2%)
+PPSFP pattern 1/15 - fault 234/1564 (G1300, s-a-1) - processed 15.0% - detected 171/1564 (10.9%)
+PPSFP pattern 1/15 - fault 312/1564 (G1324, s-a-1) - processed 19.9% - detected 225/1564 (14.4%)
+PPSFP pattern 1/15 - fault 390/1564 (G1174, s-a-1) - processed 24.9% - detected 283/1564 (18.1%)
+PPSFP pattern 1/15 - fault 468/1564 (G1026, s-a-1) - processed 29.9% - detected 344/1564 (22.0%)
+PPSFP pattern 1/15 - fault 546/1564 (G1057, s-a-1) - processed 34.9% - detected 405/1564 (25.9%)
+PPSFP pattern 1/15 - fault 624/1564 (G953, s-a-1) - processed 39.9% - detected 465/1564 (29.7%)
+PPSFP pattern 1/15 - fault 702/1564 (G886, s-a-1) - processed 44.9% - detected 522/1564 (33.4%)
+PPSFP pattern 1/15 - fault 780/1564 (G751, s-a-1) - processed 49.9% - detected 594/1564 (38.0%)
+PPSFP pattern 1/15 - fault 858/1564 (G736, s-a-1) - processed 54.9% - detected 664/1564 (42.5%)
+PPSFP pattern 1/15 - fault 936/1564 (G637, s-a-1) - processed 59.8% - detected 734/1564 (46.9%)
+PPSFP pattern 1/15 - fault 1014/1564 (G645, s-a-1) - processed 64.8% - detected 808/1564 (51.7%)
+PPSFP pattern 1/15 - fault 1092/1564 (G522, s-a-1) - processed 69.8% - detected 880/1564 (56.3%)
+PPSFP pattern 1/15 - fault 1170/1564 (G422, s-a-1) - processed 74.8% - detected 957/1564 (61.2%)
+PPSFP pattern 1/15 - fault 1248/1564 (G7, s-a-1) - processed 79.8% - detected 1028/1564 (65.7%)
+PPSFP pattern 1/15 - fault 1326/1564 (G456, s-a-1) - processed 84.8% - detected 1100/1564 (70.3%)
+PPSFP pattern 1/15 - fault 1404/1564 (G269, s-a-1) - processed 89.8% - detected 1174/1564 (75.1%)
+PPSFP pattern 1/15 - fault 1482/1564 (G308, s-a-1) - processed 94.8% - detected 1250/1564 (79.9%)
+PPSFP pattern 1/15 - fault 1560/1564 (G245, s-a-1) - processed 99.7% - detected 1327/1564 (84.8%)
+PPSFP pattern 1/15 - fault 1564/1564 (G41, s-a-1) - processed 100.0% - detected 1331/1564 (85.1%)
+PPSFP: pattern 1/15 done - detected in this pattern: 1331 - cumulative detected: 1331/1564 (85.1%)
+PPSFP: starting pattern 2/15
+PPSFP pattern 2/15 - fault 11/233 (G1216, s-a-1) - processed 4.7% - detected 2/233 (0.9%)
+PPSFP pattern 2/15 - fault 22/233 (G1204, s-a-1) - processed 9.4% - detected 2/233 (0.9%)
+PPSFP pattern 2/15 - fault 33/233 (G1192, s-a-1) - processed 14.2% - detected 2/233 (0.9%)
+PPSFP pattern 2/15 - fault 44/233 (G1261, s-a-1) - processed 18.9% - detected 2/233 (0.9%)
+PPSFP pattern 2/15 - fault 55/233 (G1168, s-a-1) - processed 23.6% - detected 2/233 (0.9%)
+PPSFP pattern 2/15 - fault 66/233 (G1156, s-a-1) - processed 28.3% - detected 2/233 (0.9%)
+PPSFP pattern 2/15 - fault 77/233 (G1144, s-a-1) - processed 33.0% - detected 2/233 (0.9%)
+PPSFP pattern 2/15 - fault 88/233 (G1229, s-a-1) - processed 37.8% - detected 2/233 (0.9%)
+PPSFP pattern 2/15 - fault 99/233 (G1201, s-a-1) - processed 42.5% - detected 3/233 (1.3%)
+PPSFP pattern 2/15 - fault 110/233 (G1165, s-a-1) - processed 47.2% - detected 3/233 (1.3%)
+PPSFP pattern 2/15 - fault 121/233 (G1129, s-a-0) - processed 51.9% - detected 4/233 (1.7%)
+PPSFP pattern 2/15 - fault 132/233 (G1090, s-a-0) - processed 56.7% - detected 4/233 (1.7%)
+PPSFP pattern 2/15 - fault 143/233 (G1051, s-a-0) - processed 61.4% - detected 4/233 (1.7%)
+PPSFP pattern 2/15 - fault 154/233 (G971, s-a-1) - processed 66.1% - detected 7/233 (3.0%)
+PPSFP pattern 2/15 - fault 165/233 (G965, s-a-1) - processed 70.8% - detected 12/233 (5.2%)
+PPSFP pattern 2/15 - fault 176/233 (G979, s-a-0) - processed 75.5% - detected 19/233 (8.2%)
+PPSFP pattern 2/15 - fault 187/233 (G748, s-a-1) - processed 80.3% - detected 24/233 (10.3%)
+PPSFP pattern 2/15 - fault 198/233 (G669, s-a-1) - processed 85.0% - detected 28/233 (12.0%)
+PPSFP pattern 2/15 - fault 209/233 (G584, s-a-1) - processed 89.7% - detected 38/233 (16.3%)
+PPSFP pattern 2/15 - fault 220/233 (G403, s-a-1) - processed 94.4% - detected 46/233 (19.7%)
+PPSFP pattern 2/15 - fault 231/233 (G350, s-a-1) - processed 99.1% - detected 57/233 (24.5%)
+PPSFP pattern 2/15 - fault 233/233 (G254, s-a-0) - processed 100.0% - detected 58/233 (24.9%)
+PPSFP: pattern 2/15 done - detected in this pattern: 58 - cumulative detected: 1389/1564 (88.8%)
+PPSFP: starting pattern 3/15
+PPSFP pattern 3/15 - fault 8/175 (G1285, s-a-1) - processed 4.6% - detected 0/175 (0.0%)
+PPSFP pattern 3/15 - fault 16/175 (G1279, s-a-1) - processed 9.1% - detected 0/175 (0.0%)
+PPSFP pattern 3/15 - fault 24/175 (G1201, s-a-1) - processed 13.7% - detected 0/175 (0.0%)
+PPSFP pattern 3/15 - fault 32/175 (G1192, s-a-1) - processed 18.3% - detected 2/175 (1.1%)
+PPSFP pattern 3/15 - fault 40/175 (G1183, s-a-1) - processed 22.9% - detected 2/175 (1.1%)
+PPSFP pattern 3/15 - fault 48/175 (G1174, s-a-1) - processed 27.4% - detected 3/175 (1.7%)
+PPSFP pattern 3/15 - fault 56/175 (G1165, s-a-1) - processed 32.0% - detected 3/175 (1.7%)
+PPSFP pattern 3/15 - fault 64/175 (G1156, s-a-1) - processed 36.6% - detected 5/175 (2.9%)
+PPSFP pattern 3/15 - fault 72/175 (G1147, s-a-1) - processed 41.1% - detected 5/175 (2.9%)
+PPSFP pattern 3/15 - fault 80/175 (G1233, s-a-1) - processed 45.7% - detected 5/175 (2.9%)
+PPSFP pattern 3/15 - fault 88/175 (G1132, s-a-1) - processed 50.3% - detected 5/175 (2.9%)
+PPSFP pattern 3/15 - fault 96/175 (G1201, s-a-1) - processed 54.9% - detected 5/175 (2.9%)
+PPSFP pattern 3/15 - fault 104/175 (G1174, s-a-1) - processed 59.4% - detected 6/175 (3.4%)
+PPSFP pattern 3/15 - fault 112/175 (G1147, s-a-1) - processed 64.0% - detected 7/175 (4.0%)
+PPSFP pattern 3/15 - fault 120/175 (G1120, s-a-0) - processed 68.6% - detected 7/175 (4.0%)
+PPSFP pattern 3/15 - fault 128/175 (G1090, s-a-0) - processed 73.1% - detected 8/175 (4.6%)
+PPSFP pattern 3/15 - fault 136/175 (G1060, s-a-0) - processed 77.7% - detected 9/175 (5.1%)
+PPSFP pattern 3/15 - fault 144/175 (G1036, s-a-0) - processed 82.3% - detected 9/175 (5.1%)
+PPSFP pattern 3/15 - fault 152/175 (G952, s-a-1) - processed 86.9% - detected 13/175 (7.4%)
+PPSFP pattern 3/15 - fault 160/175 (G797, s-a-1) - processed 91.4% - detected 15/175 (8.6%)
+PPSFP pattern 3/15 - fault 168/175 (G742, s-a-1) - processed 96.0% - detected 22/175 (12.6%)
+PPSFP pattern 3/15 - fault 175/175 (G254, s-a-0) - processed 100.0% - detected 29/175 (16.6%)
+PPSFP: pattern 3/15 done - detected in this pattern: 29 - cumulative detected: 1418/1564 (90.7%)
+PPSFP: starting pattern 4/15
+PPSFP pattern 4/15 - fault 7/146 (G1219, s-a-1) - processed 4.8% - detected 0/146 (0.0%)
+PPSFP pattern 4/15 - fault 14/146 (G1210, s-a-1) - processed 9.6% - detected 0/146 (0.0%)
+PPSFP pattern 4/15 - fault 21/146 (G1204, s-a-1) - processed 14.4% - detected 0/146 (0.0%)
+PPSFP pattern 4/15 - fault 28/146 (G1195, s-a-1) - processed 19.2% - detected 0/146 (0.0%)
+PPSFP pattern 4/15 - fault 35/146 (G1186, s-a-1) - processed 24.0% - detected 0/146 (0.0%)
+PPSFP pattern 4/15 - fault 42/146 (G1177, s-a-1) - processed 28.8% - detected 0/146 (0.0%)
+PPSFP pattern 4/15 - fault 49/146 (G1253, s-a-1) - processed 33.6% - detected 1/146 (0.7%)
+PPSFP pattern 4/15 - fault 56/146 (G1162, s-a-1) - processed 38.4% - detected 3/146 (2.1%)
+PPSFP pattern 4/15 - fault 63/146 (G1241, s-a-1) - processed 43.2% - detected 3/146 (2.1%)
+PPSFP pattern 4/15 - fault 70/146 (G1144, s-a-1) - processed 47.9% - detected 3/146 (2.1%)
+PPSFP pattern 4/15 - fault 77/146 (G1138, s-a-1) - processed 52.7% - detected 3/146 (2.1%)
+PPSFP pattern 4/15 - fault 84/146 (G1222, s-a-1) - processed 57.5% - detected 3/146 (2.1%)
+PPSFP pattern 4/15 - fault 91/146 (G1201, s-a-1) - processed 62.3% - detected 3/146 (2.1%)
+PPSFP pattern 4/15 - fault 98/146 (G1174, s-a-1) - processed 67.1% - detected 3/146 (2.1%)
+PPSFP pattern 4/15 - fault 105/146 (G1147, s-a-1) - processed 71.9% - detected 4/146 (2.7%)
+PPSFP pattern 4/15 - fault 112/146 (G1123, s-a-0) - processed 76.7% - detected 4/146 (2.7%)
+PPSFP pattern 4/15 - fault 119/146 (G1093, s-a-0) - processed 81.5% - detected 4/146 (2.7%)
+PPSFP pattern 4/15 - fault 126/146 (G1069, s-a-0) - processed 86.3% - detected 6/146 (4.1%)
+PPSFP pattern 4/15 - fault 133/146 (G1042, s-a-0) - processed 91.1% - detected 6/146 (4.1%)
+PPSFP pattern 4/15 - fault 140/146 (G996, s-a-0) - processed 95.9% - detected 7/146 (4.8%)
+PPSFP pattern 4/15 - fault 146/146 (G764, s-a-1) - processed 100.0% - detected 11/146 (7.5%)
+PPSFP: pattern 4/15 done - detected in this pattern: 11 - cumulative detected: 1429/1564 (91.4%)
+PPSFP: starting pattern 5/15
+PPSFP pattern 5/15 - fault 6/135 (G1219, s-a-1) - processed 4.4% - detected 0/135 (0.0%)
+PPSFP pattern 5/15 - fault 12/135 (G1213, s-a-1) - processed 8.9% - detected 0/135 (0.0%)
+PPSFP pattern 5/15 - fault 18/135 (G1207, s-a-1) - processed 13.3% - detected 0/135 (0.0%)
+PPSFP pattern 5/15 - fault 24/135 (G1201, s-a-1) - processed 17.8% - detected 0/135 (0.0%)
+PPSFP pattern 5/15 - fault 30/135 (G1269, s-a-1) - processed 22.2% - detected 0/135 (0.0%)
+PPSFP pattern 5/15 - fault 36/135 (G1186, s-a-1) - processed 26.7% - detected 0/135 (0.0%)
+PPSFP pattern 5/15 - fault 42/135 (G1177, s-a-1) - processed 31.1% - detected 0/135 (0.0%)
+PPSFP pattern 5/15 - fault 48/135 (G1171, s-a-1) - processed 35.6% - detected 2/135 (1.5%)
+PPSFP pattern 5/15 - fault 54/135 (G1162, s-a-1) - processed 40.0% - detected 2/135 (1.5%)
+PPSFP pattern 5/15 - fault 60/135 (G1241, s-a-1) - processed 44.4% - detected 3/135 (2.2%)
+PPSFP pattern 5/15 - fault 66/135 (G1237, s-a-1) - processed 48.9% - detected 3/135 (2.2%)
+PPSFP pattern 5/15 - fault 72/135 (G1233, s-a-1) - processed 53.3% - detected 3/135 (2.2%)
+PPSFP pattern 5/15 - fault 78/135 (G1229, s-a-1) - processed 57.8% - detected 3/135 (2.2%)
+PPSFP pattern 5/15 - fault 84/135 (G1213, s-a-1) - processed 62.2% - detected 3/135 (2.2%)
+PPSFP pattern 5/15 - fault 90/135 (G1195, s-a-1) - processed 66.7% - detected 3/135 (2.2%)
+PPSFP pattern 5/15 - fault 96/135 (G1171, s-a-1) - processed 71.1% - detected 4/135 (3.0%)
+PPSFP pattern 5/15 - fault 102/135 (G1144, s-a-1) - processed 75.6% - detected 4/135 (3.0%)
+PPSFP pattern 5/15 - fault 108/135 (G1123, s-a-0) - processed 80.0% - detected 4/135 (3.0%)
+PPSFP pattern 5/15 - fault 114/135 (G1102, s-a-0) - processed 84.4% - detected 4/135 (3.0%)
+PPSFP pattern 5/15 - fault 120/135 (G1075, s-a-0) - processed 88.9% - detected 5/135 (3.7%)
+PPSFP pattern 5/15 - fault 126/135 (G1045, s-a-0) - processed 93.3% - detected 5/135 (3.7%)
+PPSFP pattern 5/15 - fault 132/135 (G1001, s-a-0) - processed 97.8% - detected 5/135 (3.7%)
+PPSFP pattern 5/15 - fault 135/135 (G979, s-a-0) - processed 100.0% - detected 6/135 (4.4%)
+PPSFP: pattern 5/15 done - detected in this pattern: 6 - cumulative detected: 1435/1564 (91.8%)
+PPSFP: starting pattern 6/15
+PPSFP pattern 6/15 - fault 6/129 (G1219, s-a-1) - processed 4.7% - detected 0/129 (0.0%)
+PPSFP pattern 6/15 - fault 12/129 (G1213, s-a-1) - processed 9.3% - detected 2/129 (1.6%)
+PPSFP pattern 6/15 - fault 18/129 (G1207, s-a-1) - processed 14.0% - detected 2/129 (1.6%)
+PPSFP pattern 6/15 - fault 24/129 (G1201, s-a-1) - processed 18.6% - detected 2/129 (1.6%)
+PPSFP pattern 6/15 - fault 30/129 (G1269, s-a-1) - processed 23.3% - detected 2/129 (1.6%)
+PPSFP pattern 6/15 - fault 36/129 (G1186, s-a-1) - processed 27.9% - detected 2/129 (1.6%)
+PPSFP pattern 6/15 - fault 42/129 (G1177, s-a-1) - processed 32.6% - detected 2/129 (1.6%)
+PPSFP pattern 6/15 - fault 48/129 (G1168, s-a-1) - processed 37.2% - detected 3/129 (2.3%)
+PPSFP pattern 6/15 - fault 54/129 (G1243, s-a-1) - processed 41.9% - detected 3/129 (2.3%)
+PPSFP pattern 6/15 - fault 60/129 (G1239, s-a-1) - processed 46.5% - detected 3/129 (2.3%)
+PPSFP pattern 6/15 - fault 66/129 (G1235, s-a-1) - processed 51.2% - detected 3/129 (2.3%)
+PPSFP pattern 6/15 - fault 72/129 (G1231, s-a-1) - processed 55.8% - detected 3/129 (2.3%)
+PPSFP pattern 6/15 - fault 78/129 (G1222, s-a-1) - processed 60.5% - detected 3/129 (2.3%)
+PPSFP pattern 6/15 - fault 84/129 (G1204, s-a-1) - processed 65.1% - detected 4/129 (3.1%)
+PPSFP pattern 6/15 - fault 90/129 (G1183, s-a-1) - processed 69.8% - detected 4/129 (3.1%)
+PPSFP pattern 6/15 - fault 96/129 (G1150, s-a-1) - processed 74.4% - detected 4/129 (3.1%)
+PPSFP pattern 6/15 - fault 102/129 (G1132, s-a-1) - processed 79.1% - detected 4/129 (3.1%)
+PPSFP pattern 6/15 - fault 108/129 (G1108, s-a-0) - processed 83.7% - detected 4/129 (3.1%)
+PPSFP pattern 6/15 - fault 114/129 (G1081, s-a-0) - processed 88.4% - detected 4/129 (3.1%)
+PPSFP pattern 6/15 - fault 120/129 (G1048, s-a-0) - processed 93.0% - detected 5/129 (3.9%)
+PPSFP pattern 6/15 - fault 126/129 (G970, s-a-1) - processed 97.7% - detected 5/129 (3.9%)
+PPSFP pattern 6/15 - fault 129/129 (G983, s-a-0) - processed 100.0% - detected 5/129 (3.9%)
+PPSFP: pattern 6/15 done - detected in this pattern: 5 - cumulative detected: 1440/1564 (92.1%)
+PPSFP: starting pattern 7/15
+PPSFP pattern 7/15 - fault 6/124 (G1219, s-a-1) - processed 4.8% - detected 0/124 (0.0%)
+PPSFP pattern 7/15 - fault 12/124 (G1210, s-a-1) - processed 9.7% - detected 0/124 (0.0%)
+PPSFP pattern 7/15 - fault 18/124 (G1204, s-a-1) - processed 14.5% - detected 2/124 (1.6%)
+PPSFP pattern 7/15 - fault 24/124 (G1198, s-a-1) - processed 19.4% - detected 3/124 (2.4%)
+PPSFP pattern 7/15 - fault 30/124 (G1189, s-a-1) - processed 24.2% - detected 5/124 (4.0%)
+PPSFP pattern 7/15 - fault 36/124 (G1183, s-a-1) - processed 29.0% - detected 6/124 (4.8%)
+PPSFP pattern 7/15 - fault 42/124 (G1171, s-a-1) - processed 33.9% - detected 6/124 (4.8%)
+PPSFP pattern 7/15 - fault 48/124 (G1162, s-a-1) - processed 38.7% - detected 6/124 (4.8%)
+PPSFP pattern 7/15 - fault 54/124 (G1241, s-a-1) - processed 43.5% - detected 6/124 (4.8%)
+PPSFP pattern 7/15 - fault 60/124 (G1237, s-a-1) - processed 48.4% - detected 6/124 (4.8%)
+PPSFP pattern 7/15 - fault 66/124 (G1233, s-a-1) - processed 53.2% - detected 6/124 (4.8%)
+PPSFP pattern 7/15 - fault 72/124 (G1229, s-a-1) - processed 58.1% - detected 6/124 (4.8%)
+PPSFP pattern 7/15 - fault 78/124 (G1210, s-a-1) - processed 62.9% - detected 6/124 (4.8%)
+PPSFP pattern 7/15 - fault 84/124 (G1189, s-a-1) - processed 67.7% - detected 9/124 (7.3%)
+PPSFP pattern 7/15 - fault 90/124 (G1162, s-a-1) - processed 72.6% - detected 9/124 (7.3%)
+PPSFP pattern 7/15 - fault 96/124 (G1138, s-a-1) - processed 77.4% - detected 9/124 (7.3%)
+PPSFP pattern 7/15 - fault 102/124 (G1114, s-a-0) - processed 82.3% - detected 9/124 (7.3%)
+PPSFP pattern 7/15 - fault 108/124 (G1090, s-a-0) - processed 87.1% - detected 12/124 (9.7%)
+PPSFP pattern 7/15 - fault 114/124 (G1051, s-a-0) - processed 91.9% - detected 12/124 (9.7%)
+PPSFP pattern 7/15 - fault 120/124 (G974, s-a-1) - processed 96.8% - detected 13/124 (10.5%)
+PPSFP pattern 7/15 - fault 124/124 (G983, s-a-0) - processed 100.0% - detected 15/124 (12.1%)
+PPSFP: pattern 7/15 done - detected in this pattern: 15 - cumulative detected: 1455/1564 (93.0%)
+PPSFP: starting pattern 8/15
+PPSFP pattern 8/15 - fault 5/109 (G1287, s-a-1) - processed 4.6% - detected 3/109 (2.8%)
+PPSFP pattern 8/15 - fault 10/109 (G1216, s-a-1) - processed 9.2% - detected 3/109 (2.8%)
+PPSFP pattern 8/15 - fault 15/109 (G1277, s-a-1) - processed 13.8% - detected 3/109 (2.8%)
+PPSFP pattern 8/15 - fault 20/109 (G1201, s-a-1) - processed 18.3% - detected 3/109 (2.8%)
+PPSFP pattern 8/15 - fault 25/109 (G1267, s-a-1) - processed 22.9% - detected 3/109 (2.8%)
+PPSFP pattern 8/15 - fault 30/109 (G1183, s-a-1) - processed 27.5% - detected 3/109 (2.8%)
+PPSFP pattern 8/15 - fault 35/109 (G1257, s-a-1) - processed 32.1% - detected 3/109 (2.8%)
+PPSFP pattern 8/15 - fault 40/109 (G1251, s-a-1) - processed 36.7% - detected 3/109 (2.8%)
+PPSFP pattern 8/15 - fault 45/109 (G1243, s-a-1) - processed 41.3% - detected 5/109 (4.6%)
+PPSFP pattern 8/15 - fault 50/109 (G1150, s-a-1) - processed 45.9% - detected 7/109 (6.4%)
+PPSFP pattern 8/15 - fault 55/109 (G1144, s-a-1) - processed 50.5% - detected 7/109 (6.4%)
+PPSFP pattern 8/15 - fault 60/109 (G1233, s-a-1) - processed 55.0% - detected 7/109 (6.4%)
+PPSFP pattern 8/15 - fault 65/109 (G1135, s-a-1) - processed 59.6% - detected 7/109 (6.4%)
+PPSFP pattern 8/15 - fault 70/109 (G1219, s-a-1) - processed 64.2% - detected 8/109 (7.3%)
+PPSFP pattern 8/15 - fault 75/109 (G1195, s-a-1) - processed 68.8% - detected 8/109 (7.3%)
+PPSFP pattern 8/15 - fault 80/109 (G1168, s-a-1) - processed 73.4% - detected 8/109 (7.3%)
+PPSFP pattern 8/15 - fault 85/109 (G1144, s-a-1) - processed 78.0% - detected 10/109 (9.2%)
+PPSFP pattern 8/15 - fault 90/109 (G1126, s-a-0) - processed 82.6% - detected 11/109 (10.1%)
+PPSFP pattern 8/15 - fault 95/109 (G1105, s-a-0) - processed 87.2% - detected 11/109 (10.1%)
+PPSFP pattern 8/15 - fault 100/109 (G1057, s-a-0) - processed 91.7% - detected 12/109 (11.0%)
+PPSFP pattern 8/15 - fault 105/109 (G1042, s-a-0) - processed 96.3% - detected 13/109 (11.9%)
+PPSFP pattern 8/15 - fault 109/109 (G996, s-a-0) - processed 100.0% - detected 14/109 (12.8%)
+PPSFP: pattern 8/15 done - detected in this pattern: 14 - cumulative detected: 1469/1564 (93.9%)
+PPSFP: starting pattern 9/15
+PPSFP pattern 9/15 - fault 4/95 (G1219, s-a-1) - processed 4.2% - detected 0/95 (0.0%)
+PPSFP pattern 9/15 - fault 8/95 (G1281, s-a-1) - processed 8.4% - detected 0/95 (0.0%)
+PPSFP pattern 9/15 - fault 12/95 (G1277, s-a-1) - processed 12.6% - detected 0/95 (0.0%)
+PPSFP pattern 9/15 - fault 16/95 (G1201, s-a-1) - processed 16.8% - detected 0/95 (0.0%)
+PPSFP pattern 9/15 - fault 20/95 (G1195, s-a-1) - processed 21.1% - detected 0/95 (0.0%)
+PPSFP pattern 9/15 - fault 24/95 (G1186, s-a-1) - processed 25.3% - detected 1/95 (1.1%)
+PPSFP pattern 9/15 - fault 28/95 (G1183, s-a-1) - processed 29.5% - detected 1/95 (1.1%)
+PPSFP pattern 9/15 - fault 32/95 (G1257, s-a-1) - processed 33.7% - detected 1/95 (1.1%)
+PPSFP pattern 9/15 - fault 36/95 (G1168, s-a-1) - processed 37.9% - detected 1/95 (1.1%)
+PPSFP pattern 9/15 - fault 40/95 (G1243, s-a-1) - processed 42.1% - detected 2/95 (2.1%)
+PPSFP pattern 9/15 - fault 44/95 (G1239, s-a-1) - processed 46.3% - detected 4/95 (4.2%)
+PPSFP pattern 9/15 - fault 48/95 (G1144, s-a-1) - processed 50.5% - detected 4/95 (4.2%)
+PPSFP pattern 9/15 - fault 52/95 (G1141, s-a-1) - processed 54.7% - detected 4/95 (4.2%)
+PPSFP pattern 9/15 - fault 56/95 (G1231, s-a-1) - processed 58.9% - detected 4/95 (4.2%)
+PPSFP pattern 9/15 - fault 60/95 (G1132, s-a-1) - processed 63.2% - detected 4/95 (4.2%)
+PPSFP pattern 9/15 - fault 64/95 (G1210, s-a-1) - processed 67.4% - detected 4/95 (4.2%)
+PPSFP pattern 9/15 - fault 68/95 (G1186, s-a-1) - processed 71.6% - detected 4/95 (4.2%)
+PPSFP pattern 9/15 - fault 72/95 (G1168, s-a-1) - processed 75.8% - detected 4/95 (4.2%)
+PPSFP pattern 9/15 - fault 76/95 (G1141, s-a-1) - processed 80.0% - detected 5/95 (5.3%)
+PPSFP pattern 9/15 - fault 80/95 (G1123, s-a-0) - processed 84.2% - detected 5/95 (5.3%)
+PPSFP pattern 9/15 - fault 84/95 (G1105, s-a-0) - processed 88.4% - detected 5/95 (5.3%)
+PPSFP pattern 9/15 - fault 88/95 (G1057, s-a-0) - processed 92.6% - detected 7/95 (7.4%)
+PPSFP pattern 9/15 - fault 92/95 (G1042, s-a-0) - processed 96.8% - detected 7/95 (7.4%)
+PPSFP pattern 9/15 - fault 95/95 (G996, s-a-0) - processed 100.0% - detected 7/95 (7.4%)
+PPSFP: pattern 9/15 done - detected in this pattern: 7 - cumulative detected: 1476/1564 (94.4%)
+PPSFP: starting pattern 10/15
+PPSFP pattern 10/15 - fault 4/88 (G1219, s-a-1) - processed 4.5% - detected 0/88 (0.0%)
+PPSFP pattern 10/15 - fault 8/88 (G1281, s-a-1) - processed 9.1% - detected 0/88 (0.0%)
+PPSFP pattern 10/15 - fault 12/88 (G1277, s-a-1) - processed 13.6% - detected 0/88 (0.0%)
+PPSFP pattern 10/15 - fault 16/88 (G1201, s-a-1) - processed 18.2% - detected 0/88 (0.0%)
+PPSFP pattern 10/15 - fault 20/88 (G1195, s-a-1) - processed 22.7% - detected 1/88 (1.1%)
+PPSFP pattern 10/15 - fault 24/88 (G1186, s-a-1) - processed 27.3% - detected 2/88 (2.3%)
+PPSFP pattern 10/15 - fault 28/88 (G1259, s-a-1) - processed 31.8% - detected 2/88 (2.3%)
+PPSFP pattern 10/15 - fault 32/88 (G1171, s-a-1) - processed 36.4% - detected 2/88 (2.3%)
+PPSFP pattern 10/15 - fault 36/88 (G1251, s-a-1) - processed 40.9% - detected 2/88 (2.3%)
+PPSFP pattern 10/15 - fault 40/88 (G1239, s-a-1) - processed 45.5% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 44/88 (G1144, s-a-1) - processed 50.0% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 48/88 (G1141, s-a-1) - processed 54.5% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 52/88 (G1231, s-a-1) - processed 59.1% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 56/88 (G1132, s-a-1) - processed 63.6% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 60/88 (G1210, s-a-1) - processed 68.2% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 64/88 (G1186, s-a-1) - processed 72.7% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 68/88 (G1168, s-a-1) - processed 77.3% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 72/88 (G1138, s-a-1) - processed 81.8% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 76/88 (G1120, s-a-0) - processed 86.4% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 80/88 (G1087, s-a-0) - processed 90.9% - detected 3/88 (3.4%)
+PPSFP pattern 10/15 - fault 84/88 (G1045, s-a-0) - processed 95.5% - detected 4/88 (4.5%)
+PPSFP pattern 10/15 - fault 88/88 (G996, s-a-0) - processed 100.0% - detected 4/88 (4.5%)
+PPSFP: pattern 10/15 done - detected in this pattern: 4 - cumulative detected: 1480/1564 (94.6%)
+PPSFP: starting pattern 11/15
+PPSFP pattern 11/15 - fault 4/84 (G1219, s-a-1) - processed 4.8% - detected 0/84 (0.0%)
+PPSFP pattern 11/15 - fault 8/84 (G1281, s-a-1) - processed 9.5% - detected 0/84 (0.0%)
+PPSFP pattern 11/15 - fault 12/84 (G1277, s-a-1) - processed 14.3% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 16/84 (G1201, s-a-1) - processed 19.0% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 20/84 (G1269, s-a-1) - processed 23.8% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 24/84 (G1183, s-a-1) - processed 28.6% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 28/84 (G1177, s-a-1) - processed 33.3% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 32/84 (G1168, s-a-1) - processed 38.1% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 36/84 (G1243, s-a-1) - processed 42.9% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 40/84 (G1237, s-a-1) - processed 47.6% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 44/84 (G1141, s-a-1) - processed 52.4% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 48/84 (G1138, s-a-1) - processed 57.1% - detected 1/84 (1.2%)
+PPSFP pattern 11/15 - fault 52/84 (G1229, s-a-1) - processed 61.9% - detected 3/84 (3.6%)
+PPSFP pattern 11/15 - fault 56/84 (G1216, s-a-1) - processed 66.7% - detected 3/84 (3.6%)
+PPSFP pattern 11/15 - fault 60/84 (G1195, s-a-1) - processed 71.4% - detected 3/84 (3.6%)
+PPSFP pattern 11/15 - fault 64/84 (G1171, s-a-1) - processed 76.2% - detected 3/84 (3.6%)
+PPSFP pattern 11/15 - fault 68/84 (G1141, s-a-1) - processed 81.0% - detected 3/84 (3.6%)
+PPSFP pattern 11/15 - fault 72/84 (G1123, s-a-0) - processed 85.7% - detected 4/84 (4.8%)
+PPSFP pattern 11/15 - fault 76/84 (G1105, s-a-0) - processed 90.5% - detected 5/84 (6.0%)
+PPSFP pattern 11/15 - fault 80/84 (G1045, s-a-0) - processed 95.2% - detected 5/84 (6.0%)
+PPSFP pattern 11/15 - fault 84/84 (G996, s-a-0) - processed 100.0% - detected 7/84 (8.3%)
+PPSFP: pattern 11/15 done - detected in this pattern: 7 - cumulative detected: 1487/1564 (95.1%)
+PPSFP: starting pattern 12/15
+PPSFP pattern 12/15 - fault 3/77 (G1219, s-a-1) - processed 3.9% - detected 0/77 (0.0%)
+PPSFP pattern 12/15 - fault 6/77 (G1216, s-a-1) - processed 7.8% - detected 0/77 (0.0%)
+PPSFP pattern 12/15 - fault 9/77 (G1210, s-a-1) - processed 11.7% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 12/77 (G1204, s-a-1) - processed 15.6% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 15/77 (G1201, s-a-1) - processed 19.5% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 18/77 (G1195, s-a-1) - processed 23.4% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 21/77 (G1186, s-a-1) - processed 27.3% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 24/77 (G1183, s-a-1) - processed 31.2% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 27/77 (G1177, s-a-1) - processed 35.1% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 30/77 (G1171, s-a-1) - processed 39.0% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 33/77 (G1251, s-a-1) - processed 42.9% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 36/77 (G1241, s-a-1) - processed 46.8% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 39/77 (G1237, s-a-1) - processed 50.6% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 42/77 (G1235, s-a-1) - processed 54.5% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 45/77 (G1233, s-a-1) - processed 58.4% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 48/77 (G1231, s-a-1) - processed 62.3% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 51/77 (G1132, s-a-1) - processed 66.2% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 54/77 (G1210, s-a-1) - processed 70.1% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 57/77 (G1195, s-a-1) - processed 74.0% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 60/77 (G1177, s-a-1) - processed 77.9% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 63/77 (G1147, s-a-1) - processed 81.8% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 66/77 (G1138, s-a-1) - processed 85.7% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 69/77 (G1120, s-a-0) - processed 89.6% - detected 1/77 (1.3%)
+PPSFP pattern 12/15 - fault 72/77 (G1087, s-a-0) - processed 93.5% - detected 2/77 (2.6%)
+PPSFP pattern 12/15 - fault 75/77 (G1045, s-a-0) - processed 97.4% - detected 2/77 (2.6%)
+PPSFP pattern 12/15 - fault 77/77 (G1036, s-a-0) - processed 100.0% - detected 2/77 (2.6%)
+PPSFP: pattern 12/15 done - detected in this pattern: 2 - cumulative detected: 1489/1564 (95.2%)
+PPSFP: starting pattern 13/15
+PPSFP pattern 13/15 - fault 3/75 (G1219, s-a-1) - processed 4.0% - detected 0/75 (0.0%)
+PPSFP pattern 13/15 - fault 6/75 (G1216, s-a-1) - processed 8.0% - detected 0/75 (0.0%)
+PPSFP pattern 13/15 - fault 9/75 (G1210, s-a-1) - processed 12.0% - detected 0/75 (0.0%)
+PPSFP pattern 13/15 - fault 12/75 (G1204, s-a-1) - processed 16.0% - detected 0/75 (0.0%)
+PPSFP pattern 13/15 - fault 15/75 (G1201, s-a-1) - processed 20.0% - detected 0/75 (0.0%)
+PPSFP pattern 13/15 - fault 18/75 (G1269, s-a-1) - processed 24.0% - detected 2/75 (2.7%)
+PPSFP pattern 13/15 - fault 21/75 (G1263, s-a-1) - processed 28.0% - detected 2/75 (2.7%)
+PPSFP pattern 13/15 - fault 24/75 (G1259, s-a-1) - processed 32.0% - detected 2/75 (2.7%)
+PPSFP pattern 13/15 - fault 27/75 (G1257, s-a-1) - processed 36.0% - detected 2/75 (2.7%)
+PPSFP pattern 13/15 - fault 30/75 (G1168, s-a-1) - processed 40.0% - detected 2/75 (2.7%)
+PPSFP pattern 13/15 - fault 33/75 (G1247, s-a-1) - processed 44.0% - detected 2/75 (2.7%)
+PPSFP pattern 13/15 - fault 36/75 (G1147, s-a-1) - processed 48.0% - detected 4/75 (5.3%)
+PPSFP pattern 13/15 - fault 39/75 (G1144, s-a-1) - processed 52.0% - detected 5/75 (6.7%)
+PPSFP pattern 13/15 - fault 42/75 (G1141, s-a-1) - processed 56.0% - detected 5/75 (6.7%)
+PPSFP pattern 13/15 - fault 45/75 (G1138, s-a-1) - processed 60.0% - detected 5/75 (6.7%)
+PPSFP pattern 13/15 - fault 48/75 (G1229, s-a-1) - processed 64.0% - detected 5/75 (6.7%)
+PPSFP pattern 13/15 - fault 51/75 (G1219, s-a-1) - processed 68.0% - detected 5/75 (6.7%)
+PPSFP pattern 13/15 - fault 54/75 (G1204, s-a-1) - processed 72.0% - detected 5/75 (6.7%)
+PPSFP pattern 13/15 - fault 57/75 (G1186, s-a-1) - processed 76.0% - detected 6/75 (8.0%)
+PPSFP pattern 13/15 - fault 60/75 (G1171, s-a-1) - processed 80.0% - detected 6/75 (8.0%)
+PPSFP pattern 13/15 - fault 63/75 (G1144, s-a-1) - processed 84.0% - detected 6/75 (8.0%)
+PPSFP pattern 13/15 - fault 66/75 (G1132, s-a-1) - processed 88.0% - detected 6/75 (8.0%)
+PPSFP pattern 13/15 - fault 69/75 (G1105, s-a-0) - processed 92.0% - detected 6/75 (8.0%)
+PPSFP pattern 13/15 - fault 72/75 (G1048, s-a-0) - processed 96.0% - detected 7/75 (9.3%)
+PPSFP pattern 13/15 - fault 75/75 (G1036, s-a-0) - processed 100.0% - detected 7/75 (9.3%)
+PPSFP: pattern 13/15 done - detected in this pattern: 7 - cumulative detected: 1496/1564 (95.7%)
+PPSFP: starting pattern 14/15
+PPSFP pattern 14/15 - fault 3/68 (G1219, s-a-1) - processed 4.4% - detected 0/68 (0.0%)
+PPSFP pattern 14/15 - fault 6/68 (G1216, s-a-1) - processed 8.8% - detected 0/68 (0.0%)
+PPSFP pattern 14/15 - fault 9/68 (G1210, s-a-1) - processed 13.2% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 12/68 (G1204, s-a-1) - processed 17.6% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 15/68 (G1201, s-a-1) - processed 22.1% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 18/68 (G1186, s-a-1) - processed 26.5% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 21/68 (G1183, s-a-1) - processed 30.9% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 24/68 (G1177, s-a-1) - processed 35.3% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 27/68 (G1171, s-a-1) - processed 39.7% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 30/68 (G1251, s-a-1) - processed 44.1% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 33/68 (G1147, s-a-1) - processed 48.5% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 36/68 (G1235, s-a-1) - processed 52.9% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 39/68 (G1233, s-a-1) - processed 57.4% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 42/68 (G1231, s-a-1) - processed 61.8% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 45/68 (G1132, s-a-1) - processed 66.2% - detected 2/68 (2.9%)
+PPSFP pattern 14/15 - fault 48/68 (G1210, s-a-1) - processed 70.6% - detected 3/68 (4.4%)
+PPSFP pattern 14/15 - fault 51/68 (G1186, s-a-1) - processed 75.0% - detected 3/68 (4.4%)
+PPSFP pattern 14/15 - fault 54/68 (G1171, s-a-1) - processed 79.4% - detected 3/68 (4.4%)
+PPSFP pattern 14/15 - fault 57/68 (G1144, s-a-1) - processed 83.8% - detected 3/68 (4.4%)
+PPSFP pattern 14/15 - fault 60/68 (G1132, s-a-1) - processed 88.2% - detected 3/68 (4.4%)
+PPSFP pattern 14/15 - fault 63/68 (G1105, s-a-0) - processed 92.6% - detected 3/68 (4.4%)
+PPSFP pattern 14/15 - fault 66/68 (G1045, s-a-0) - processed 97.1% - detected 3/68 (4.4%)
+PPSFP pattern 14/15 - fault 68/68 (G1036, s-a-0) - processed 100.0% - detected 3/68 (4.4%)
+PPSFP: pattern 14/15 done - detected in this pattern: 3 - cumulative detected: 1499/1564 (95.8%)
+PPSFP: starting pattern 15/15
+PPSFP pattern 15/15 - fault 3/65 (G1219, s-a-1) - processed 4.6% - detected 0/65 (0.0%)
+PPSFP pattern 15/15 - fault 6/65 (G1216, s-a-1) - processed 9.2% - detected 0/65 (0.0%)
+PPSFP pattern 15/15 - fault 9/65 (G1204, s-a-1) - processed 13.8% - detected 0/65 (0.0%)
+PPSFP pattern 15/15 - fault 12/65 (G1201, s-a-1) - processed 18.5% - detected 0/65 (0.0%)
+PPSFP pattern 15/15 - fault 15/65 (G1186, s-a-1) - processed 23.1% - detected 0/65 (0.0%)
+PPSFP pattern 15/15 - fault 18/65 (G1183, s-a-1) - processed 27.7% - detected 0/65 (0.0%)
+PPSFP pattern 15/15 - fault 21/65 (G1177, s-a-1) - processed 32.3% - detected 0/65 (0.0%)
+PPSFP pattern 15/15 - fault 24/65 (G1171, s-a-1) - processed 36.9% - detected 0/65 (0.0%)
+PPSFP pattern 15/15 - fault 27/65 (G1168, s-a-1) - processed 41.5% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 30/65 (G1147, s-a-1) - processed 46.2% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 33/65 (G1144, s-a-1) - processed 50.8% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 36/65 (G1141, s-a-1) - processed 55.4% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 39/65 (G1138, s-a-1) - processed 60.0% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 42/65 (G1132, s-a-1) - processed 64.6% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 45/65 (G1216, s-a-1) - processed 69.2% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 48/65 (G1186, s-a-1) - processed 73.8% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 51/65 (G1171, s-a-1) - processed 78.5% - detected 2/65 (3.1%)
+PPSFP pattern 15/15 - fault 54/65 (G1144, s-a-1) - processed 83.1% - detected 3/65 (4.6%)
+PPSFP pattern 15/15 - fault 57/65 (G1132, s-a-1) - processed 87.7% - detected 3/65 (4.6%)
+PPSFP pattern 15/15 - fault 60/65 (G1105, s-a-0) - processed 92.3% - detected 3/65 (4.6%)
+PPSFP pattern 15/15 - fault 63/65 (G1045, s-a-0) - processed 96.9% - detected 3/65 (4.6%)
+PPSFP pattern 15/15 - fault 65/65 (G1036, s-a-0) - processed 100.0% - detected 3/65 (4.6%)
+PPSFP: pattern 15/15 done - detected in this pattern: 3 - cumulative detected: 1502/1564 (96.0%)
+undetected faults after PPSFP: 62 
+
+algorithmic pattern generation:
+Using SAT backend: varisat
+SAT: processing 1/62 (1.6%) - fault G1036 s-a-0
+G1036 /0
+SAT: 1/62 (1.6%) - found pattern for G1036 (found 1/62)
+SAT: processing 2/62 (3.2%) - fault G1042 s-a-0
+G1042 /0
+SAT: 2/62 (3.2%) - found pattern for G1042 (found 2/62)
+SAT: processing 3/62 (4.8%) - fault G1045 s-a-0
+G1045 /0
+SAT: 3/62 (4.8%) - found pattern for G1045 (found 3/62)
+SAT: processing 4/62 (6.5%) - fault G1081 s-a-0
+G1081 /0
+SAT: 4/62 (6.5%) - found pattern for G1081 (found 4/62)
+SAT: processing 5/62 (8.1%) - fault G1087 s-a-0
+G1087 /0
+SAT: 5/62 (8.1%) - found pattern for G1087 (found 5/62)
+SAT: processing 6/62 (9.7%) - fault G1105 s-a-0
+G1105 /0
+SAT: 6/62 (9.7%) - found pattern for G1105 (found 6/62)
+SAT: processing 7/62 (11.3%) - fault G1120 s-a-0
+G1120 /0
+SAT: 7/62 (11.3%) - found pattern for G1120 (found 7/62)
+SAT: processing 8/62 (12.9%) - fault G1123 s-a-0
+G1123 /0
+SAT: 8/62 (12.9%) - found pattern for G1123 (found 8/62)
+SAT: processing 9/62 (14.5%) - fault G1132 s-a-1
+G1132 /1
+SAT: 9/62 (14.5%) - found pattern for G1132 (found 9/62)
+SAT: processing 10/62 (16.1%) - fault G1132 s-a-1
+G1132->G1228 /1
+SAT: 10/62 (16.1%) - found pattern for G1132 (found 10/62)
+SAT: processing 11/62 (17.7%) - fault G1132 s-a-1
+G1132->G1229 /1
+SAT: 11/62 (17.7%) - found pattern for G1132 (found 11/62)
+SAT: processing 12/62 (19.4%) - fault G1138 s-a-1
+G1138 /1
+SAT: 12/62 (19.4%) - found pattern for G1138 (found 12/62)
+SAT: processing 13/62 (21.0%) - fault G1138 s-a-1
+G1138->G1232 /1
+SAT: 13/62 (21.0%) - found pattern for G1138 (found 13/62)
+SAT: processing 14/62 (22.6%) - fault G1138 s-a-1
+G1138->G1233 /1
+SAT: 14/62 (22.6%) - found pattern for G1138 (found 14/62)
+SAT: processing 15/62 (24.2%) - fault G1141 s-a-1
+G1141 /1
+SAT: 15/62 (24.2%) - found pattern for G1141 (found 15/62)
+SAT: processing 16/62 (25.8%) - fault G1141 s-a-1
+G1141->G1234 /1
+SAT: 16/62 (25.8%) - found pattern for G1141 (found 16/62)
+SAT: processing 17/62 (27.4%) - fault G1141 s-a-1
+G1141->G1235 /1
+SAT: 17/62 (27.4%) - found pattern for G1141 (found 17/62)
+SAT: processing 18/62 (29.0%) - fault G1144 s-a-1
+G1144 /1
+SAT: 18/62 (29.0%) - found pattern for G1144 (found 18/62)
+SAT: processing 19/62 (30.6%) - fault G1144 s-a-1
+G1144->G1236 /1
+SAT: 19/62 (30.6%) - found pattern for G1144 (found 19/62)
+SAT: processing 20/62 (32.3%) - fault G1144 s-a-1
+G1144->G1237 /1
+SAT: 20/62 (32.3%) - found pattern for G1144 (found 20/62)
+SAT: processing 21/62 (33.9%) - fault G1147 s-a-1
+G1147 /1
+SAT: 21/62 (33.9%) - found pattern for G1147 (found 21/62)
+SAT: processing 22/62 (35.5%) - fault G1147 s-a-1
+G1147->G1238 /1
+SAT: 22/62 (35.5%) - found pattern for G1147 (found 22/62)
+SAT: processing 23/62 (37.1%) - fault G1147 s-a-1
+G1147->G1239 /1
+SAT: 23/62 (37.1%) - found pattern for G1147 (found 23/62)
+SAT: processing 24/62 (38.7%) - fault G1171 s-a-1
+G1171 /1
+SAT: 24/62 (38.7%) - found pattern for G1171 (found 24/62)
+SAT: processing 25/62 (40.3%) - fault G1171 s-a-1
+G1171->G1254 /1
+SAT: 25/62 (40.3%) - found pattern for G1171 (found 25/62)
+SAT: processing 26/62 (41.9%) - fault G1171 s-a-1
+G1171->G1255 /1
+SAT: 26/62 (41.9%) - found pattern for G1171 (found 26/62)
+SAT: processing 27/62 (43.5%) - fault G1177 s-a-1
+G1177 /1
+SAT: 27/62 (43.5%) - found pattern for G1177 (found 27/62)
+SAT: processing 28/62 (45.2%) - fault G1177 s-a-1
+G1177->G1258 /1
+SAT: 28/62 (45.2%) - found pattern for G1177 (found 28/62)
+SAT: processing 29/62 (46.8%) - fault G1177 s-a-1
+G1177->G1259 /1
+SAT: 29/62 (46.8%) - found pattern for G1177 (found 29/62)
+SAT: processing 30/62 (48.4%) - fault G1183 s-a-1
+G1183 /1
+SAT: 30/62 (48.4%) - found pattern for G1183 (found 30/62)
+SAT: processing 31/62 (50.0%) - fault G1183 s-a-1
+G1183->G1262 /1
+SAT: 31/62 (50.0%) - found pattern for G1183 (found 31/62)
+SAT: processing 32/62 (51.6%) - fault G1183 s-a-1
+G1183->G1263 /1
+SAT: 32/62 (51.6%) - found pattern for G1183 (found 32/62)
+SAT: processing 33/62 (53.2%) - fault G1186 s-a-1
+G1186 /1
+SAT: 33/62 (53.2%) - found pattern for G1186 (found 33/62)
+SAT: processing 34/62 (54.8%) - fault G1186 s-a-1
+G1186->G1264 /1
+SAT: 34/62 (54.8%) - found pattern for G1186 (found 34/62)
+SAT: processing 35/62 (56.5%) - fault G1186 s-a-1
+G1186->G1265 /1
+SAT: 35/62 (56.5%) - found pattern for G1186 (found 35/62)
+SAT: processing 36/62 (58.1%) - fault G1201 s-a-1
+G1201 /1
+SAT: 36/62 (58.1%) - found pattern for G1201 (found 36/62)
+SAT: processing 37/62 (59.7%) - fault G1201 s-a-1
+G1201->G1274 /1
+SAT: 37/62 (59.7%) - found pattern for G1201 (found 37/62)
+SAT: processing 38/62 (61.3%) - fault G1201 s-a-1
+G1201->G1275 /1
+SAT: 38/62 (61.3%) - found pattern for G1201 (found 38/62)
+SAT: processing 39/62 (62.9%) - fault G1204 s-a-1
+G1204 /1
+SAT: 39/62 (62.9%) - found pattern for G1204 (found 39/62)
+SAT: processing 40/62 (64.5%) - fault G1204 s-a-1
+G1204->G1276 /1
+SAT: 40/62 (64.5%) - found pattern for G1204 (found 40/62)
+SAT: processing 41/62 (66.1%) - fault G1204 s-a-1
+G1204->G1277 /1
+SAT: 41/62 (66.1%) - found pattern for G1204 (found 41/62)
+SAT: processing 42/62 (67.7%) - fault G1216 s-a-1
+G1216 /1
+SAT: 42/62 (67.7%) - found pattern for G1216 (found 42/62)
+SAT: processing 43/62 (69.4%) - fault G1216 s-a-1
+G1216->G1284 /1
+SAT: 43/62 (69.4%) - found pattern for G1216 (found 43/62)
+SAT: processing 44/62 (71.0%) - fault G1216 s-a-1
+G1216->G1285 /1
+SAT: 44/62 (71.0%) - found pattern for G1216 (found 44/62)
+SAT: processing 45/62 (72.6%) - fault G1219 s-a-1
+G1219 /1
+SAT: 45/62 (72.6%) - found pattern for G1219 (found 45/62)
+SAT: processing 46/62 (74.2%) - fault G1219 s-a-1
+G1219->G1286 /1
+SAT: 46/62 (74.2%) - found pattern for G1219 (found 46/62)
+SAT: processing 47/62 (75.8%) - fault G1219 s-a-1
+G1219->G1287 /1
+^C

@@ -1,0 +1,15 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `target\debug\atpg_rust.exe 6288`
+pattern generation (76 patterns):
+parallel pattern single fault propagation (PPSFP):
+PPSFP: starting pattern 1/76
+PPSFP pattern 1/76 - fault 384/7680 (N6014, s-a-0) - processed 5.0% - detected 383/7680 (5.0%)
+PPSFP pattern 1/76 - fault 768/7680 (N5709, s-a-0) - processed 10.0% - detected 767/7680 (10.0%)
+PPSFP pattern 1/76 - fault 1152/7680 (N5370, s-a-0) - processed 15.0% - detected 1151/7680 (15.0%)
+PPSFP pattern 1/76 - fault 1536/7680 (N5076, s-a-0) - processed 20.0% - detected 1535/7680 (20.0%)
+PPSFP pattern 1/76 - fault 1920/7680 (N963, s-a-0) - processed 25.0% - detected 1919/7680 (25.0%)
+PPSFP pattern 1/76 - fault 2304/7680 (N4494, s-a-0) - processed 30.0% - detected 2302/7680 (30.0%)
+PPSFP pattern 1/76 - fault 2688/7680 (N4220, s-a-0) - processed 35.0% - detected 2686/7680 (35.0%)
+PPSFP pattern 1/76 - fault 3072/7680 (N3951, s-a-0) - processed 40.0% - detected 3070/7680 (40.0%)
+PPSFP pattern 1/76 - fault 3456/7680 (N1194, s-a-0) - processed 45.0% - detected 3454/7680 (45.0%)
+^C

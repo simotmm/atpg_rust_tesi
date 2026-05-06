@@ -1,0 +1,112 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+  <meta name="keywords" content="sections, program, choice, form, field, zoom, maintable">
+  <title>Atalanta dynamic library</title>
+<link rel="stylesheet" type="text/css" href="css/hlavni.css"> </head>
+<body>
+<h3>Atalanta dynamic library</h3>
+This library contains classes which are used to generate test patterns or simulate them. 
+There is one class needed and used as programing interface among library and applications. Name of the class is Atalanta. 
+There is another class used to setup algorithms used at Atalanta. Name of this class is Params. Decription of these classed 
+following.  
+<a name=Atalanta><h3>Class Atalanta</h3></a>
+External application can use just 3 methods. The first method is int run(int argc, char **argv). This method give possibility to Atalanta run similar like console application. It is expectening parameters like in command line version of this application. The second method is void setParams(Params *p). This method using class Params to setup parameters of algorithms of Atalanta. The third method is int run(). This method run Atalanta with already set of parameters. 
+<a name=Parameters><h3>Class Params</h3></a>
+This class contain parameters to configure algorithms of Atalanta. Following table contains short description of methods used to setup
+these parameters. These methods set the same parameters you can set from command line.
+<table class="table">
+<thead>
+<tr><th class="tdplny">Method</th><th class="tdplny">Description</th>
+</thead>
+<tbody>
+<tr class="trsvetla"><td>char getCctMode(void)                                 </td><td>Get mode of input file format.</td> 
+<tr class="trtmava" ><td>void setCctMode(char p_cctMode)                       </td><td>Set mode of input file format.</td> 
+<tr class="trsvetla"><td>int getRandomLimit (void)                             </td><td>Get limit of Random Pattern Testing.</td> 
+<tr class="trtmava" ><td>void setRandomLimit(char p_randomLimit)               </td><td>Set Random Pattern Testing (RPT). This session is included before deterministic test pattern generation session. The RPT session stops if any p_randomLimit consecutive packets of 32 random patterns do not detect any new fault. If p_randomLimit=0, the RPT session is not included. (default: p_randomLimit=16) </td> 
+<tr class="trsvetla"><td>unsigned int getIseed(void)                           </td><td>Get initial seed for the random number generator.</td> 
+<tr class="trtmava" ><td>void setIseed(unsigned int p_iseed)                   </td><td>Set initial seed for the random number generator (random()). If p_iseed=0, the initial seed is the current time. (default: p_iseed=0) </td> 
+<tr class="trsvetla"><td>int getMaxCompact(void)                               </td><td>Set compacting of test patterns.</td> 
+<tr class="trtmava" ><td>void setMaxCompact(int p_maxCompact)                  </td><td>Set compacting of test patterns. Atalanta compacts test patterns using two different methods: reverse order compaction and shuffling compaction. First, test patterns are applied in the reverse order and fault simulated (reverse order compaction). Second, test patterns are shuffled randomly and fault simulated (shuffling compaction). During the fault simulations, all the test patterns which do not detect a new fault are eliminated. p_maxCompact specifies the limit of shuffling compaction. If p_maxCompact>0, shuffling compaction is terminated if p_maxCompact consecutive shuffles do not drop a test pattern. If p_maxCompact=0, shuffling compaction is not included and compaction is done only by the reverse order fault simulation. (default: p_maxCompact=2) </td> 
+<tr class="trsvetla"><td>char getCompact(void)                                 </td><td>Get information if the compaction of test patterns will be performed.</td> 
+<tr class="trtmava" ><td>void setCompact(char p_compact)                       </td><td>Set of test patterns compaction. If p_compact='y', compaction will be performed. If p_compact='n', compaction will not be performed.</td> 
+<tr class="trsvetla"><td>int getMaxBackTrack(void)                             </td><td>Get number of maximum backtracks for the FAN algorithm phase 1.</td> 
+<tr class="trtmava" ><td>void setMaxBackTrack(int p_maxBackTrack)              </td><td>Set number of maximum backtracks for the FAN algorithm phase 1. (default: p_maxBackTrack=10)</td> 
+<tr class="trsvetla"><td>int getMaxBackTrack1(void)                            </td><td></td> 
+<tr class="trtmava" ><td>void setMaxBackTrack1(int p_maxBackTrack1)            </td><td>Set p_maxBackTrack1. If p_maxBackTrack1 > 0 option is specified, atalanta generates test patterns in two phases. In phase 1, static unique path sensitization is employed. If the test generation for a target fault is aborted in phase 1, the test generation is tried in phase 2. In phase 2, dynamic unique path sensitization is employed. If p_maxBackTrack1=0, phase 2 is not performed.
+If p_maxBackTrack1 > 0, phase 2 test generation is performed with the backtrack limit of p_maxBackTrack1.
+(default: p_maxBackTrack1=0, i.e., phase 2 is not performed.)</td> 
+<tr class="trsvetla"><td>string getSPatternFile(void)                          </td><td></td> 
+<tr class="trtmava" ><td>void setSPatternFile(string p_sPatternFile)           </td><td>Test patterns are are written or read from the file fn (written in TPG mode, read in simulation mode).</td> 
+<tr class="trsvetla"><td>streambuf *getSPatternStream(void)                    </td><td></td> 
+<tr class="trtmava" ><td>void setSPatternStream(streambuf *p_sPatternStream)   </td><td>Test patterns are are written or read from the file fn (written in TPG mode, read in simulation mode).</td> 
+<tr class="trsvetla"><td>string getBenchFile(void)                             </td><td></td> 
+<tr class="trtmava" ><td>void setBenchFile(string p_benchFile)                 </td><td>Name of the .bench file. The -n statement is optional, the benchmark name can be specified without any prequisite parameter.</td> 
+<tr class="trsvetla"><td>streambuf *getBenchStream(void)                       </td><td></td> 
+<tr class="trtmava" ><td>void setBenchStream(streambuf *p_benchStream)         </td><td>Name of the .bench file. The -n statement is optional, the benchmark name can be specified without any prequisite parameter.</td> 
+<tr class="trsvetla"><td>char getLearnMode(void)                               </td><td></td> 
+<tr class="trtmava" ><td>void setLearnMode(char p_learnMode)                   </td><td> 	Static learning is performed. (default: no learning) </td> 
+<tr class="trsvetla"><td>char getFaultMode(void)                               </td><td></td> 
+<tr class="trtmava" ><td>void setFaultMode(char p_faultMode)                   </td><td></td> 
+<tr class="trsvetla"><td>string getFaultFile(void)                             </td><td></td> 
+<tr class="trtmava" ><td>void setFaultFile(string p_faultFile)                 </td><td> 	The fault file is read from fn. If not specified, all the s-a-faults are set as default. </td> 
+<tr class="trsvetla"><td>streambuf *getFaultStream(void)                       </td><td></td> 
+<tr class="trtmava" ><td>void setfaultStream(streambuf *p_faultStream)         </td><td> 	The fault file is read from fn. If not specified, all the s-a-faults are set as default. </td> 
+<tr class="trsvetla"><td>string getWFaultFile(void)                            </td><td></td> 
+<tr class="trtmava" ><td>void setWFaultFile(string p_wFaultFile)               </td><td>The processed fault list is written to a file fn. </td> 
+<tr class="trsvetla"><td>streambuf *getWFaultFileStream(void)                  </td><td></td> 
+<tr class="trtmava" ><td>void setWFaultStream(streambuf *p_wFaultStream)       </td><td>The processed fault list is written to a file fn. </td> 
+<tr class="trsvetla"><td>char getSimMode(void)                                 </td><td></td> 
+<tr class="trtmava" ><td>void setSimMode(char p_simMode)                       </td><td>HOPE is employed for fault simulation. In this option, three logic values (0, 1 and X), instead of two logic values (0 and 1), are employed. Due to the embedding of the unknown logic value and the parallel fault fault simulation algorithm, the test generation time is slower than the default mode.)
+(default: FSIM, which is a parallel pattern fault simulator, is employed, and two logic values are used.)</td> 
+<tr class="trsvetla"><td>char getFillMode(void)                                </td><td></td> 
+<tr class="trtmava" ><td>void setFillMode(char p_fillMode)                     </td><td>During test generation, some inputs can be unspecified. Atalanta provides various options to set these unspecified inputs into a certain value. (default: -R)</td> 
+<tr class="trsvetla"><td>char getGenAllPat(void)                               </td><td></td> 
+<tr class="trtmava" ><td>void setGenAllPat(char p_genAllPat)                   </td><td>Atalanta derives all test patterns for each fault. In this option, all unspecified inputs are left unknown, and fault simulation is not performed.
+HOPE fault simulator is employed.
+Note: it does not work properly. Not all existing test patterns are produced.</td> 
+<tr class="trsvetla"><td>int getEachLimit(void)                                </td><td></td> 
+<tr class="trtmava" ><td>void setEachLimit(int p_eachLimit)                    </td><td>Atalanta derives n test patterns for each fault.
+In this option, all unspecified inputs are left unknown, and fault simulation is not performed. If both -A and -D option are specified, -D option is applied.
+HOPE fault simulator is employed.
+Note: it does not work properly. Not all existing test patterns are produced.</td> 
+<tr class="trsvetla"><td>char getNoFaultSim(void)                              </td><td></td> 
+<tr class="trtmava" ><td>void setNoFaultSim(char p_noFaultSim)                 </td><td>Atalanta derives one test pattern for each fault. In this option, no fault simulation is performed during the entire test generation (including random pattern test generation session, deterministic test generation session and test compaction session). All unspecified inputs are left unknown.</td> 
+<tr class="trsvetla"><td>int getUFaultMode(void)                               </td><td></td> 
+<tr class="trtmava" ><td>void setUFaultMode(int p_uFaultMode)                  </td><td>Atalanta prints out all identified redundant faults as well as aborted fauts in a file. The -U option has to be specified. </td> 
+<tr class="trsvetla"><td>string getUdFaultsFile(void)                          </td><td></td> 
+<tr class="trtmava" ><td>void setUdFaultsFile(string p_udFaultsFile)           </td><td>Atalanta writes the list of aborted (or undetected) faults to the given file name. </td> 
+<tr class="trsvetla"><td>streambuf *getUdFaultsStream(void)                    </td><td></td> 
+<tr class="trtmava" ><td>void setudFaultsStream(streambuf *p_udFaultsStream)   </td><td>Atalanta writes the list of aborted (or undetected) faults to the given file name. </td> 
+<tr class="trsvetla"><td>int getSimulationMode(void)                           </td><td></td> 
+<tr class="trtmava" ><td>void setSimulationMode(int p_simulationMode)          </td><td>Simulation mode is performed, instead of TPG. The pattern file has to be specified (-t option), if the -l option is not present. </td> 
+<tr class="trsvetla"><td>string getMaskFile(void)                              </td><td></td> 
+<tr class="trtmava" ><td>void setMaskFile(string p_maskFile)                   </td><td>The fault mask is written to the file fn. The order of faults corresponds to the fault list. </td> 
+<tr class="trsvetla"><td>streambuf *getMaskStream(void)                        </td><td></td>  
+<tr class="trtmava" ><td>void setMaskStream(streambuf *p_maskStream)           </td><td>The fault mask is written to the file fn. The order of faults corresponds to the fault list. </td> 
+<tr class="trsvetla"><td>string getReportFile(void)                            </td><td></td> 
+<tr class="trtmava" ><td>void setReportFile(string p_reportFile)               </td><td> 	The ATPG/FS report is written to a file fn. </td> 
+<tr class="trsvetla"><td>streambuf *getReportStream(void)                      </td><td></td> 
+<tr class="trtmava" ><td>void setReportStream(streambuf *p_reportStream)       </td><td> 	The ATPG/FS report is written to a file fn. </td> 
+<tr class="trsvetla"><td>int getWTestMode(void)                                </td><td></td> 
+<tr class="trtmava" ><td>void setWTestMode(int p_wTestMode)                    </td><td>The output test file format (for TPG only).
+n = 0 - no test pattern output (default).
+n = 1 - PAT file (test vectors only). Do not use together with -D n option, since all the test vectors are put together.
+n = 2 - input + output. Do not use together with -D n option, since all the test vectors are put together.
+n = 3 - more test vectors for each fault, output.
+n = 4 - more test vectors for each fault, output, with fault mask. HOPE simulator is employed.</td> 
+<tr class="trsvetla"><td>int getLfsrSimMode(void)                              </td><td></td> 
+<tr class="trtmava" ><td>void setLfsrSimMode(int p_lfsrSimMode)                </td><td>Simulates num LFSR patterns. The LFSR polynomial and seed are specified in octal form (poly, seed). </td> 
+<tr class="trsvetla"><td>string getLfsrPoly(void)                              </td><td>Simulates num LFSR patterns. The LFSR polynomial and seed are specified in octal form (poly, seed). </td> 
+<tr class="trtmava" ><td>string getLfsrSeed(void)                              </td><td>Simulates num LFSR patterns. The LFSR polynomial and seed are specified in octal form (poly, seed). </td> 
+<tr class="trsvetla"><td>int getLfsrNum(void)                                  </td><td>Simulates num LFSR patterns. The LFSR polynomial and seed are specified in octal form (poly, seed). </td> 
+<tr class="trtmava" ><td>void setLfsrSimulation(string p_lfsrPoly, string p_lfsrSeed, int p_lfsrNum)</td><td></td> 
+</tbody>
+</table>
+
+</body>
+</html>
+
+
+
+ 

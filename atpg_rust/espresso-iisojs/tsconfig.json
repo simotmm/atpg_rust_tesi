@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "noImplicitReturns": true,
+    "strict": true
+  },
+  "include": [
+    "src/*.ts",
+    "test/*.ts"
+  ]
+}

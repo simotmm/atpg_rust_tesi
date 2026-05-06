@@ -1,0 +1,34 @@
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running `target\debug\atpg_rust.exe 17`
+pattern generation (1 patterns):
+parallel pattern single fault propagation (PPSFP):
+PPSFP: starting pattern 1/1
+PPSFP pattern 1/1 - fault 1/16 (N23, s-a-0) - processed 6.2% - detected 1/16 (6.2%)
+PPSFP pattern 1/1 - fault 2/16 (N23, s-a-1) - processed 12.5% - detected 2/16 (12.5%)
+PPSFP pattern 1/1 - fault 3/16 (N16, s-a-1) - processed 18.8% - detected 3/16 (18.8%)
+PPSFP pattern 1/1 - fault 4/16 (N19, s-a-1) - processed 25.0% - detected 4/16 (25.0%)
+PPSFP pattern 1/1 - fault 5/16 (N11, s-a-1) - processed 31.2% - detected 5/16 (31.2%)
+PPSFP pattern 1/1 - fault 6/16 (N22, s-a-0) - processed 37.5% - detected 6/16 (37.5%)
+PPSFP pattern 1/1 - fault 7/16 (N22, s-a-1) - processed 43.8% - detected 7/16 (43.8%)
+PPSFP pattern 1/1 - fault 8/16 (N16, s-a-1) - processed 50.0% - detected 8/16 (50.0%)
+PPSFP pattern 1/1 - fault 9/16 (N10, s-a-1) - processed 56.2% - detected 9/16 (56.2%)
+PPSFP pattern 1/1 - fault 10/16 (N3, s-a-1) - processed 62.5% - detected 10/16 (62.5%)
+PPSFP pattern 1/1 - fault 11/16 (N16, s-a-0) - processed 68.8% - detected 11/16 (68.8%)
+PPSFP pattern 1/1 - fault 12/16 (N16, s-a-1) - processed 75.0% - detected 12/16 (75.0%)
+PPSFP pattern 1/1 - fault 13/16 (N11, s-a-1) - processed 81.2% - detected 13/16 (81.2%)
+PPSFP pattern 1/1 - fault 14/16 (N11, s-a-0) - processed 87.5% - detected 14/16 (87.5%)
+PPSFP pattern 1/1 - fault 15/16 (N11, s-a-1) - processed 93.8% - detected 15/16 (93.8%)
+PPSFP pattern 1/1 - fault 16/16 (N3, s-a-1) - processed 100.0% - detected 16/16 (100.0%)
+PPSFP: pattern 1/1 done - detected in this pattern: 16 - cumulative detected: 16/16 (100.0%)
+undetected faults after PPSFP: 0 
+set 1:
+  N1: 11100111110011010011100011110110
+  N2: 11100101001100100111101110110101
+  N3: 00101110001101011001001011001111
+  N6: 10101111101001001011010001110111
+  N7: 10001100101010111001100110010011
+
+-> all faults covered
+ -> faults covered (with pseudo-random pattern generation): 16/16 (100.00%)
+ -> faults covered (with SAT solving):                        0/16 (0.00%)
+ -> total faults covered:                                   16/16 (100.00%)

@@ -1,0 +1,9 @@
+gates: 3
+iv: 3
+ov: 1
+i_patterns: 0
+patterns: 0
+faults: 6
+d_faults: 6
+r_faults: 0
+time: 0.000
