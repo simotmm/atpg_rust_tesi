@@ -1,97 +1,96 @@
-# ATPG — README generale
+# ATPG — General README
 
-Questo documento fornisce una panoramica della cartella `atpg`, spiegando dove si trovano i due motori principali (implementazione Rust e Atalanta C/C++), come compilarli/usarli e a cosa servono gli script inclusi.
+This document provides an overview of the `atpg` folder, explaining where the two main engines are located (Rust implementation and Atalanta C/C++), how to build/use them, and the purpose of the included scripts.
 
-## Struttura principale
-- `atpg_rust/` — implementazione in Rust del generatore ATPG e strumenti correlati.
-- `atpg_atlanta/` — sorgenti di 3 versioni di atalanta (atalanta, atalanta-m (usato negli script), atalanta-m2). Contiene anche una `README` locale e un `makefile`/soluzione Visual Studio.
-- script nella root — vari `.bat` e `.ps1` per eseguire, validare e stampare riepiloghi.
+## Main structure
+- `atpg_rust/` — Rust implementation of the ATPG generator and related tools.
+- `atpg_atlanta/` — sources for three Atalanta versions (atalanta, atalanta-m (used by scripts), atalanta-m2). Contains a local `README` and a `makefile`/Visual Studio solution.
+- Scripts in the root — various `.bat` and `.ps1` files to run, validate and print summaries.
 
-## Requisiti
-- Rust toolchain (cargo, rustc) per `atpg_rust`.
-- Strumenti di compilazione C/C++ per Atalanta: Visual Studio (soluzione `.sln`) o toolchain GNU (`make` se disponibile).
-- Windows PowerShell / CMD per eseguire gli script forniti.
+## Requirements
+- Rust toolchain (`cargo`, `rustc`) for `atpg_rust`.
+- C/C++ build tools for Atalanta: Visual Studio (solution `.sln`) or a GNU toolchain (`make` if available).
+- Windows PowerShell / CMD to run the provided scripts.
 
-## atpg_rust (cartella `atpg_rust`)
-1. Compilare:
+## atpg_rust (folder `atpg_rust`)
+1. Build:
 
 ```powershell
 cd atpg_rust
 cargo build --release
 ```
 
-2. Eseguire (esempio per visualizzare l'aiuto):
+2. Run (example: view help):
 
 ```powershell
 cd atpg_rust
 cargo run --release -- -h
 ```
 
-3. Note:
-- `target/release/` conterrà l'eseguibile compilato.
-- Troverai file sorgente principali come `main.rs`, `parser.rs`, `netlist.rs`, ecc. Consultare i commenti nel codice per opzioni dettagliate.
+3. Notes:
+- `target/release/` will contain the compiled executable.
+- Main source files include `main.rs`, `parser.rs`, `netlist.rs`, etc. See code comments for detailed options.
 
-## Atalanta (cartella `atpg_atlanta/Atalanta`)
-1. Compilazione con Visual Studio:
+## Atalanta (folder `atpg_atlanta/Atalanta`)
+1. Build with Visual Studio:
 
- - Apri `[atpg_atlanta/Atalanta/Atalanta.sln](atpg_atlanta/Atalanta/Atalanta.sln)` e compila la soluzione (Debug o Release).
+- Open [atpg_atlanta/Atalanta/Atalanta.sln](atpg_atlanta/Atalanta/Atalanta.sln) and build the solution (Debug or Release).
 
-2. Compilazione con make (se supportato):
+2. Build with make (if supported):
 
 ```powershell
 cd atpg_atlanta/Atalanta
 make
 ```
 
-3. Eseguire:
+3. Run:
+- The produced executable (e.g. `Atalanta.exe`) is used for simulation/validation of patterns. Consult the local `README` in that folder or internal documentation for executable parameters.
 
-- L'eseguibile risultante (es. `Atalanta.exe`) viene usato per la simulazione/validazione dei pattern. Per dettagli sui parametri dell'eseguibile consultare il file `README` locale in quella cartella o la documentazione interna.
+## Root scripts — quick examples
+- `run_atpg_rust.bat` — runs the Rust ATPG with default settings.
+- `run_atalanta.bat` / `run_atalanta.ps1` — runs Atalanta on predefined input.
+- `run_and_validate_all.bat` — runs the full flow (generation with Rust / Atalanta) and then validation.
+- `run_rust_and_validate_with_atlanta.bat` — runs `atpg_rust` and validates produced patterns with Atalanta.
+- `validate_with_atlanta.bat` / `validate_with_atlanta.ps1` — validates pattern/netlist files using Atalanta.
+- `print_atlanta_summary.ps1` — produces a summary of results from Atalanta (human-readable).
+- `print_validation_summary.ps1` — prints a summary of validations performed.
+- `tests.bat` (in `atpg_rust/`) — runs the test suite for the Rust version.
 
-## Script nella root, esempi d'uso
-- `run_atpg_rust.bat` — esegue l'ATPG Rust con impostazioni predefinite.
-- `run_atalanta.bat` / `run_atalanta.ps1` — esegue Atalanta su input predefiniti.
-- `run_and_validate_all.bat` — esegue l'intero flusso (generazione con Rust / Atalanta) e poi la validazione.
-- `run_rust_and_validate_with_atlanta.bat` — esegue `atpg_rust` e valida i pattern prodotti con Atalanta.
-- `validate_with_atlanta.bat` / `validate_with_atlanta.ps1` — valida file di pattern/netlist usando Atalanta.
-- `print_atlanta_summary.ps1` — genera un riepilogo dei risultati prodotti da Atalanta (formato leggibile).
-- `print_validation_summary.ps1` — stampa un riepilogo delle validazioni effettuate.
-- `tests.bat` (in `atpg_rust/`) — esegue la batteria di test per la versione Rust.
+Quick usage examples (scripts accept a numeric argument selecting a benchmark in `atpg_rust/benchmarks/`):
 
-Esempi rapidi (usando argomenti numerici per selezionare un benchmark):
-
-- Eseguire `atpg_rust` sul benchmark numero `3`:
+- Run `atpg_rust` on benchmark number `3`:
 
 ```powershell
 .\run_atpg_rust.bat 3
 ```
 
-- Eseguire Atalanta sul benchmark numero `3` (o sul file prodotto per il benchmark 3):
+- Run Atalanta on benchmark `3` (or on the file produced for benchmark 3):
 
 ```powershell
 .\run_atalanta.bat 3
 ```
 
-- Lanciare tutta la pipeline (Rust → validazione con Atalanta) sul benchmark `3`:
+- Run the whole pipeline (Rust → validation with Atalanta) on benchmark `3`:
 
 ```powershell
 .\run_rust_and_validate_with_atlanta.bat 3
 ```
 
-- Eseguire la validazione direttamente da PowerShell specificando l'indice `3`:
+- Validate directly from PowerShell specifying index `3`:
 
 ```powershell
 .\validate_with_atlanta.ps1 3
 ```
 
-Come funzionano gli argomenti numerici
-- Gli script accettano un argomento intero (es. `1`, `2`, `3`) che viene usato per selezionare il file benchmark corrispondente nella cartella `atpg_rust/benchmarks/`.
-- I file nella cartella `atpg_rust/benchmarks/converted_to_atlanta_iscas89` sono versioni ISCAS85 convertite nel formato leggibile da Atalanta; l'intero passato agli script mappa al relativo file benchmark (in genere secondo l'ordine alfabetico o l'indexing implementato dagli script).
-- Se non viene fornito alcun argomento, gli script possono eseguire un set di default o iterare su più benchmark (comportamento dipendente dallo script specifico).
+How script numeric arguments work
+- Scripts accept an integer argument (e.g. `1`, `2`, `3`) used to select the corresponding benchmark file in `atpg_rust/benchmarks/`.
+- Files in `atpg_rust/benchmarks/converted_to_atlanta_iscas89` are ISCAS85 versions converted to Atalanta format; the passed index maps to the related benchmark file (typically following alphabetical order or the indexing implemented by the scripts).
+- If no argument is provided, scripts may run a default set or iterate over multiple benchmarks (behavior depends on the specific script).
 
-## Suggerimenti e risoluzione problemi
-- Se manca `cargo`, installare Rust dal sito ufficiale (rustup).
-- Se la compilazione di Atalanta fallisce con errori Visual Studio, aprire la soluzione in Visual Studio e ricostruire per risolvere eventuali dipendenze mancanti.
-- Assicurarsi che gli script `.ps1` siano eseguiti con i permessi corretti (es. eseguire PowerShell come amministratore o modificare la `ExecutionPolicy` se necessario).
+## Troubleshooting and tips
+- If `cargo` is missing, install Rust via the official installer (`rustup`).
+- If building Atalanta fails with Visual Studio errors, open the solution in Visual Studio and rebuild to resolve missing dependencies.
+- Ensure PowerShell scripts have the correct execution policy or run PowerShell with appropriate privileges if necessary.
 
-## Dove approfondire
-- Esempi, casi di test e dettagli operativi si trovano nelle sottocartelle (`atpg_rust/README.md`, `atpg_atlanta/Atalanta/README`). Consultare quei file per opzioni avanzate e formati di input/output.
+## Where to dig deeper
+- Examples, test cases and operating details are located in subfolders (`atpg_rust/README.md`, `atpg_atlanta/Atalanta/README`). Consult those files for advanced options and formats.
