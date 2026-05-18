@@ -275,25 +275,34 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
 
     for path_str in paths {
             if !crate::options::get_options().quiet { println!("Running full benchmark for: {}", path_str); }
+        println!("parsing file to netlist");
         let t0 = Instant::now();
         let netlist = file_iscas89_atlanta_to_netlist(&path_str);
         let dt_parse = t0.elapsed();
+        println!("parsing file to netlist complete: time {:?}", dt_parse);
 
+        println!("building DAG from netlist");
         let t1 = Instant::now();
         let dag = Dag::from_netlist(&netlist);
         let dt_dag = t1.elapsed();
+        println!("building DAG complete: time {:?}", dt_dag);
 
         // faults
+        println!("generating fault list from DAG");
         let faults = dag.generate_fault_list(None, None);
         let n_faults = faults.len();
+        println!("generating fault list complete: {} faults", n_faults);
 
         // random-phase
+        println!("starting random pattern generation and simulation phase");
         let t_rand = Instant::now();
         let mut generator = PatternGenerator::new(seed_opt);
         // determine mode: "rand", "alg", "both"
         let effective_mode: Option<&str> = if mode_opt.is_some() { mode_opt } else { None };
         let run_random_phase = matches!(effective_mode, None | Some("both") | Some("rand") | Some("random") | Some("r"));
         let run_algorithmic_phase = matches!(effective_mode, None | Some("both") | Some("alg") | Some("algorithm") | Some("a"));
+        println!(" random phase enabled: {}", run_random_phase);
+        println!(" algorithmic phase enabled: {}", run_algorithmic_phase);
         if !run_random_phase {
             // skip random-phase entirely
             // set rand_detected = 0 and rand_uncovered = faults.clone()
@@ -305,6 +314,7 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         }
         let n_patterns = std::cmp::max(1, n_faults/100);
         let mut simulator = PPSFPSimulator::new(&dag);
+        println!("simulating random patterns and determining uncovered faults");
         let (rand_uncovered, rand_detected, dt_rand, patterns) = if run_random_phase {
             let patterns = generator.generate_n_patterns_from_netlist(&netlist, n_patterns);
             let (_rand_results, rand_uncovered) = simulator.simulate_patterns_blocks(patterns.clone(), faults.clone(), Some(true));
@@ -314,8 +324,10 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         } else {
             (faults.iter().cloned().collect(), 0usize, std::time::Duration::new(0,0), Vec::new())
         };
+        println!("random phase complete: detected {}, uncovered {}, time {:?}", rand_detected, rand_uncovered.len(), dt_rand);
 
         // algorithmic-phase (SAT) and determine final uncovered faults
+        println!("starting algorithmic phase (SAT-based pattern generation and simulation)");
         let mut sat_detected = 0usize;
         let mut dt_sat = std::time::Duration::new(0,0);
         // final_uncovered starts as the set left after random phase
@@ -330,13 +342,16 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             final_uncovered = sat_uncovered;
             // append SAT patterns to patterns list for saving below (all_patterns will be built later)
         }
+        println!("algorithmic phase complete: detected {}, uncovered {}, time {:?}", sat_detected, final_uncovered.len(), dt_sat);
 
+        println!("benchmark complete for {}: total detected {}/{}", path_str, rand_detected + sat_detected, n_faults);
         let total_detected = rand_detected + sat_detected;
         let coverage = if n_faults>0 { (total_detected as f64 / n_faults as f64)*100.0 } else { 0.0 };
         let total_time = dt_parse + dt_dag + dt_rand + dt_sat;
-
+        println!("total time: {:?}, coverage: {:.2}%", total_time, coverage);
         // append summary to README
         let file_name = std::path::Path::new(&path_str).file_name().and_then(|s| s.to_str()).unwrap_or(&path_str);
+        println!("Appending benchmark results to README.md for file: {}", file_name);
         if let Err(e) = writeln!(readme, "| {} | {:.3} | {:.3} | {:.3} | {:.3} | {}/{} | {:.3} | {}/{} | {}/{} | {} | {:.2} |",
             file_name,
             total_time.as_secs_f64(),
@@ -349,8 +364,9 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             total_detected, n_faults,
             n_faults,
             coverage) { eprintln!("Failed writing README row for {}: {}", file_name, e); }
+        println!("Benchmark summary appended to README.md for file: {}", file_name);
         
-
+        println!("Saving detected patterns to results folder");
         // save patterns for this netlist in results folder (optional)
         let mut all_patterns = patterns.clone();
         // collect sat patterns if present (we may have computed them above)
@@ -361,6 +377,7 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         }
         // pass final_uncovered (undetected faults after all phases) to save_patterns_to_test_inputs
         let _ = save_patterns_to_test_inputs(&all_patterns, &final_uncovered, &path_str, Some(true));
+        println!("Detected patterns saved to results folder for file: {}", file_name);
 
         if !crate::options::get_options().quiet { println!("Finished: {} — coverage: {:.2}%", path_str, coverage); }
     }

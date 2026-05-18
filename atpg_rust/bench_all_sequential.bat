@@ -3,7 +3,7 @@ pushd "%~dp0"
 echo starting sequential benchmarks...
 
 rem lista di netlist da processare
-set IDS=27 382 420 641 713 1238 1423 1488 5378 9234 13207 15850 35932 38417 38584 7552 6288
+set IDS=38417 38584 7552 6288
 
 for %%I in (%IDS%) do (
   echo.
