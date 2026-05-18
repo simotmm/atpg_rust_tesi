@@ -3,7 +3,8 @@ pushd "%~dp0"
 echo starting sequential benchmarks...
 
 rem lista di netlist da processare
-set IDS=38417 38584 7552 6288
+rem set IDS=38417 38584 7552 6288
+set IDS=17 432 499 880 1355 1908 27 382 420 641 713
 
 for %%I in (%IDS%) do (
   echo.
@@ -22,4 +23,6 @@ for %%I in (%IDS%) do (
 
 echo === all benchmarks completed ===
 popd
-pause
+echo waiting 10 seconds before shutting down...
+timeout /t 10 /nobreak >nul
+shutdown /s /t 0
