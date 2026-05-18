@@ -8,10 +8,10 @@ const PRINT_DEBUG: bool = true; // flag per abilitare stampe di debug più detta
 
 // Install package globally so `espresso` becomes available in PATH
 fn install_global_espresso_iisojs() -> Result<(), String> {
-    if PRINT_DEBUG { eprintln!("[debug] espresso: npm install -g espresso-iisojs"); }
+    if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npm install -g espresso-iisojs"); }
     match Command::new("npm").arg("install").output() {
         Ok(out) => {
-            if PRINT_DEBUG { eprintln!("[debug] espresso: npm install: {}", out.status); }
+            if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npm install: {}", out.status); }
             if out.status.success() { Ok(()) } else { Err("npm -g install failed".to_string()) }
         }
         Err(e) => Err(format!("npm install spawn failed: {}", e)),
@@ -19,7 +19,7 @@ fn install_global_espresso_iisojs() -> Result<(), String> {
 }
 
 fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
-    if PRINT_DEBUG { eprintln!("[debug] espresso: minimizing with {} primary inputs, total assignments {}", n, total); }
+    if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: minimizing with {} primary inputs, total assignments {}", n, total); }
 
     // serialize install/build steps to avoid races when called from multiple threads
     fn get_espresso_lock() -> &'static Mutex<()> {
@@ -46,7 +46,7 @@ fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
             }
         }
         Err(e) => {
-            if PRINT_DEBUG { eprintln!("[debug] espresso: system 'espresso' not available: {}", e); }
+            if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: system 'espresso' not available: {}", e); }
         }
     }
 
@@ -63,11 +63,11 @@ fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
             }
         }
     } else {
-        if PRINT_DEBUG { eprintln!("[debug] espresso: npm -g install failed or not available"); }
+        if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npm -g install failed or not available"); }
     }
 
     // 3) Try npx espresso-iisojs
-    if PRINT_DEBUG { eprintln!("[debug] espresso: attempting 'npx espresso-iisojs'"); }
+    if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: attempting 'npx espresso-iisojs'"); }
     match try_spawn(&mut Command::new("npx").arg("espresso-iisojs")) {
         Ok(mut child) => {
             if let Some(mut stdin) = child.stdin.take() { let _ = stdin.write_all(pla.as_bytes()); }
@@ -79,11 +79,11 @@ fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
                 Err(e) => return Err(format!("npx wait failed: {}", e)),
             }
         }
-        Err(e) => { if PRINT_DEBUG { eprintln!("[debug] espresso: npx spawn failed: {}", e); } }
+        Err(e) => { if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npx spawn failed: {}", e); } }
     }
 
     // 4) Try npm exec --package espresso-iisojs espresso-iisojs
-    if PRINT_DEBUG { eprintln!("[debug] espresso: attempting 'npm exec --package espresso-iisojs espresso-iisojs'"); }
+    if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: attempting 'npm exec --package espresso-iisojs espresso-iisojs'"); }
     match try_spawn(&mut Command::new("npm").arg("exec").arg("--package").arg("espresso-iisojs").arg("espresso-iisojs")) {
         Ok(mut child) => {
             if let Some(mut stdin) = child.stdin.take() { let _ = stdin.write_all(pla.as_bytes()); }
@@ -95,7 +95,7 @@ fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
                 Err(e) => return Err(format!("npm exec wait failed: {}", e)),
             }
         }
-        Err(e) => { if PRINT_DEBUG { eprintln!("[debug] espresso: npm exec spawn failed: {}", e); } }
+        Err(e) => { if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npm exec spawn failed: {}", e); } }
     }
 
     // 5) Last resort: check local espresso-iisojs folder for a binary or cli
@@ -105,7 +105,7 @@ fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
     for c in &candidates {
         let p = pkg_dir.join(c);
         if p.exists() {
-            if PRINT_DEBUG { eprintln!("[debug] espresso: found local executable {}", p.display()); }
+            if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: found local executable {}", p.display()); }
             match try_spawn(&mut Command::new(p.clone())) {
                 Ok(mut child) => {
                     if let Some(mut stdin) = child.stdin.take() { let _ = stdin.write_all(pla.as_bytes()); }
@@ -117,34 +117,34 @@ fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
                         Err(e) => return Err(format!("local espresso wait failed: {}", e)),
                     }
                 }
-                Err(e) => { if PRINT_DEBUG { eprintln!("[debug] espresso: failed to spawn local executable {}: {}", p.display(), e); } }
+                Err(e) => { if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: failed to spawn local executable {}: {}", p.display(), e); } }
             }
         }
     }
 
     let cli_path = pkg_dir.join("cli.js");
     let bundle_path = pkg_dir.join("index.cjs");
-    if PRINT_DEBUG { eprintln!("[debug] espresso: checking espresso-iisojs at {}", cli_path.display()); }
+    if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: checking espresso-iisojs at {}", cli_path.display()); }
     if !cli_path.exists() {
         // attempt local npm install to produce cli/build artifacts
-        if PRINT_DEBUG { eprintln!("[debug] espresso: running local 'npm install' in {}", pkg_dir.display()); }
+        if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: running local 'npm install' in {}", pkg_dir.display()); }
         match Command::new("npm").arg("install").current_dir(pkg_dir).output() {
             Ok(out) => {
-                if PRINT_DEBUG { eprintln!("[debug] espresso: local npm install exit: {}", out.status); }
-                if PRINT_DEBUG { eprintln!("[debug] espresso: local npm install stdout:\n{}", String::from_utf8_lossy(&out.stdout)); }
-                if PRINT_DEBUG { eprintln!("[debug] espresso: local npm install stderr:\n{}", String::from_utf8_lossy(&out.stderr)); }
+                if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: local npm install exit: {}", out.status); }
+                if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: local npm install stdout:\n{}", String::from_utf8_lossy(&out.stdout)); }
+                if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: local npm install stderr:\n{}", String::from_utf8_lossy(&out.stderr)); }
                 if !out.status.success() { return Err("local npm install failed".to_string()); }
             }
             Err(e) => return Err(format!("local npm install spawn failed: {}", e)),
         }
     }
     if !bundle_path.exists() {
-        if PRINT_DEBUG { eprintln!("[debug] espresso: bundle not found, attempting npm run build in espresso-iisojs"); }
+        if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: bundle not found, attempting npm run build in espresso-iisojs"); }
         match Command::new("npm").arg("run").arg("build").current_dir(pkg_dir).output() {
             Ok(out) => {
-                if PRINT_DEBUG { eprintln!("[debug] espresso: npm build exit: {}", out.status); }
-                if PRINT_DEBUG { eprintln!("[debug] espresso: npm build stdout:\n{}", String::from_utf8_lossy(&out.stdout)); }
-                if PRINT_DEBUG { eprintln!("[debug] espresso: npm build stderr:\n{}", String::from_utf8_lossy(&out.stderr)); }
+                if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npm build exit: {}", out.status); }
+                if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npm build stdout:\n{}", String::from_utf8_lossy(&out.stdout)); }
+                if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npm build stderr:\n{}", String::from_utf8_lossy(&out.stderr)); }
                 if !out.status.success() { return Err("npm build failed".to_string()); }
             }
             Err(e) => return Err(format!("npm build spawn failed: {}", e)),
@@ -170,17 +170,17 @@ fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
 /// constructed from zeros of minimized on-set (canonical product-of-sums).
 pub fn minimize_using_espresso(cnf: &CNF, primary_inputs: &[String]) -> Result<CNF, ()> {
     let n = primary_inputs.len();
-    if PRINT_DEBUG { eprintln!("[debug][espresso] minimize_using_espresso called: n={}, limit={}", n, 16); }
+    if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug][espresso] minimize_using_espresso called: n={}, limit={}", n, 16); }
     // conservative guard: only allow espresso for small numbers of variables to avoid
     // exponential enumeration and long external runs. If exceeded, caller should
     // fallback to internal minimizer.
     let n_limit = 100000000; //da cambiare in 16 // safe default: 2^16 assignments max
     if n == 0 {
-        if PRINT_DEBUG { eprintln!("[debug][espresso] no primary inputs provided"); }
+        if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug][espresso] no primary inputs provided"); }
         return Err(());
     }
     if n > n_limit {
-        if PRINT_DEBUG { eprintln!("[debug][espresso] skipping external espresso: {} primary inputs > limit {}", n, n_limit); }
+        if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug][espresso] skipping external espresso: {} primary inputs > limit {}", n, n_limit); }
         return Err(());
     }
 

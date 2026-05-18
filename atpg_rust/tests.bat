@@ -24,5 +24,3 @@ timeout /t 1 /nobreak >nul
 start "atpg on netlist 6288" cmd /k cargo run 6288
 timeout /t 1 /nobreak >nul
 start "atpg on netlist 7552" cmd /k cargo run 7552
-timeout /t 1 /nobreak >nul
-start "atpg on netlist 2670" cmd /k cargo run 2670

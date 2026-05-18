@@ -46,7 +46,7 @@ impl Fault {
 
     /// print fault 
     pub fn print(&self) {
-        println!("{}", self.to_string());
+        if !crate::options::get_options().quiet { println!("{}", self.to_string()); }
     }
 
 }
@@ -94,8 +94,8 @@ impl<'a> PPSFPSimulator<'a> {
 
     /// simulate good circuit
     pub fn simulate_good(&mut self, patterns: &InputPattern) {
-        let print = PRINT;
-        let verbose = VERBOSE;
+        let print = PRINT && !crate::options::get_options().quiet;
+        let verbose = VERBOSE && !crate::options::get_options().quiet;
         let mut debug_string = "".to_string();
         self.good.clear();
 
@@ -162,8 +162,8 @@ impl<'a> PPSFPSimulator<'a> {
 
     /// simulate faulted circuit
     pub fn simulate_fault(&mut self, fault: &Fault) -> u32 {
-        let print = PRINT;
-        let verbose = VERBOSE;
+        let print = PRINT && !crate::options::get_options().quiet;
+        let verbose = VERBOSE && !crate::options::get_options().quiet;
         let mut debug_string = "".to_string();
 
         self.faulty.clear();
@@ -255,12 +255,12 @@ impl<'a> PPSFPSimulator<'a> {
         let total_patterns = patterns.len();
         for (pidx, pattern) in patterns.into_iter().enumerate() {
             let pnum = pidx + 1;
-            if crate::PRINT_PROGRESS { println!("PPSFP: starting pattern {}/{}", pnum, total_patterns); }
+            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("PPSFP: starting pattern {}/{}", pnum, total_patterns); }
 
             // se non ci sono più fault da testare, aggiungiamo mappe vuote e saltiamo
             if faults_remaining.is_empty() {
                 result.push(HashMap::new());
-                if crate::PRINT_PROGRESS { println!("PPSFP: no remaining faults; skipping pattern {}/{}", pnum, total_patterns); }
+                if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("PPSFP: no remaining faults; skipping pattern {}/{}", pnum, total_patterns); }
                 continue;
             }
 
@@ -287,7 +287,7 @@ impl<'a> PPSFPSimulator<'a> {
             let covered_count = covered_faults.len();
             let total_faults = initial_total_faults;
             let covered_pct = if total_faults > 0 { (covered_count as f64) * 100.0 / (total_faults as f64) } else { 0.0 };
-            if crate::PRINT_PROGRESS { println!("PPSFP: pattern {}/{} done - detected in this pattern: {} - cumulative detected: {}/{} ({:.1}%)", pnum, total_patterns, result.last().map(|m| m.len()).unwrap_or(0), covered_count, total_faults, covered_pct); }
+            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("PPSFP: pattern {}/{} done - detected in this pattern: {} - cumulative detected: {}/{} ({:.1}%)", pnum, total_patterns, result.last().map(|m| m.len()).unwrap_or(0), covered_count, total_faults, covered_pct); }
         }
 
         // Fault non coperti (ordine deterministico usando BTreeSet)
@@ -314,7 +314,7 @@ impl<'a> PPSFPSimulator<'a> {
             }
 
             // print only on interval or on final item
-            if crate::PRINT_PROGRESS && (idx % print_interval == 0 || idx == total_faults) {
+            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS && (idx % print_interval == 0 || idx == total_faults) {
                 let percent = (idx as f64) * 100.0 / (total_faults as f64);
                 let detected_count = result.len();
                 let detected_pct = (detected_count as f64) * 100.0 / (total_faults as f64);
@@ -362,7 +362,7 @@ impl<'a> PPSFPSimulator<'a> {
                 let pct = if total_faults > 0 { (proc as f64) * 100.0 / (total_faults as f64) } else { 0.0 };
                 let det_cnt = detected.load(Ordering::SeqCst);
                 let det_pct = if total_faults > 0 { (det_cnt as f64) * 100.0 / (total_faults as f64) } else { 0.0 };
-                if crate::PRINT_PROGRESS && (proc % print_interval == 0 || proc == total_faults) {
+                if !crate::options::get_options().quiet && crate::PRINT_PROGRESS && (proc % print_interval == 0 || proc == total_faults) {
                     println!("PPSFP parallel pattern {}/{} - processed {}/{} ({:.1}%) - detected {}/{} ({:.1}%) - last fault {} s-a-{}",
                         pattern_idx, total_patterns, proc, total_faults, pct, det_cnt, total_faults, det_pct, fault.wire, if fault.sa1 {1} else {0});
                 }

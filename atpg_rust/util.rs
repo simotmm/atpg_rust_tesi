@@ -1,5 +1,6 @@
 use std::{env, fs::{self, create_dir}, io::{self, Read, Write}};
 use std::path::Path;
+use std::fs::File;
 use crate::ppsfp::Fault;
 use crate::netlist::Netlist;
 use crate::pattern_generator::InputPattern;
@@ -35,6 +36,9 @@ pub fn get_filename_from_int(dir: &str, numero: i32) -> Option<String> {
         format!("s{numero}f_C.bench"),
         format!("s{numero}tc_2.bench"),
         format!("c{numero}_to_iscas89_atlanta.bench"),
+        format!("s{numero}_to_iscas89_atlanta.bench"),
+        format!("s{numero}.bench"),
+        format!("c{numero}.bench"),
     ];
 
     // Leggo tutti i file nella cartella
@@ -47,6 +51,18 @@ pub fn get_filename_from_int(dir: &str, numero: i32) -> Option<String> {
                         if name.to_string() == file_name {
                             return Some(format!("{}\\{}", dir, file_name).to_string());
                         }
+                    }
+                }
+            }
+        }
+    }
+    // If exact matches failed, try a flexible match: files that contain the number and end with .bench
+    if let Ok(entries) = fs::read_dir(dir) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                if let Some(file_name) = entry.file_name().to_str() {
+                    if file_name.to_lowercase().ends_with(".bench") && file_name.contains(&numero.to_string()) {
+                        return Some(format!("{}\\{}", dir, file_name).to_string());
                     }
                 }
             }
@@ -258,6 +274,7 @@ pub fn save_patterns_to_file(patterns: &Vec<InputPattern>, uncovered_faults: &st
 pub fn save_patterns_to_test_inputs(patterns: &Vec<InputPattern>, uncovered_faults: &std::collections::BTreeSet<crate::ppsfp::Fault>, input_filename: &str, save_uncovered: Option<bool>) -> io::Result<()> {
     use std::path::Path;
     use std::env;
+    let print_always = true; // se false, salva gli uncovered faults solo se presenti e se save_uncovered è Some(true)
 
     // output file in current working directory (same folder where the binary is run, typically the project's root with `cargo run`).
     let cwd = env::current_dir().unwrap_or_else(|_| Path::new(".").to_path_buf());
@@ -314,7 +331,7 @@ pub fn save_patterns_to_test_inputs(patterns: &Vec<InputPattern>, uncovered_faul
     }
 
     // append uncovered faults if present in the requested format: "<fault> <fault type>"
-    if !uncovered_faults.is_empty() && save_uncovered.unwrap_or(false) {
+    if print_always || ( !uncovered_faults.is_empty() && save_uncovered.unwrap_or(false) ) {
         writeln!(file, "")?;
         writeln!(file, "undetectable faults ({}):", uncovered_faults.len())?;
         for fault in uncovered_faults {
@@ -382,6 +399,207 @@ pub fn min(a: usize, b: usize) -> usize {
 pub fn max(a: usize, b: usize) -> usize {
     if a > b { return a; }
     b
+}
+
+/// Convert all Verilog ISCAS89 files in `input_dir` to a combinational
+/// ATLANTA/bench representation (snapshot): every DFF Q output is turned
+/// into a primary input. Results are written to `output_dir` with names
+/// `<stem>_to_iscas89_atlanta.bench`.
+pub fn snapshot_iscas89_folder(input_dir: &str, output_dir: &str) -> io::Result<()> {
+    // Ensure output dir exists
+    if !Path::new(output_dir).exists() {
+        fs::create_dir_all(output_dir)?;
+    }
+
+    for entry in fs::read_dir(input_dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if !path.is_file() { continue; }
+        let ext = path.extension().and_then(|s| s.to_str()).unwrap_or("").to_lowercase();
+        if ext != "v" { continue; }
+
+        let filename = path.to_str().unwrap_or("");
+        // Collect DFF Q outputs by scanning instantiations like: dff DFF_0(CK,Q,D);
+        let content = fs::read_to_string(&path)?;
+        let mut dff_qs: Vec<String> = Vec::new();
+        for line in content.lines() {
+            let trimmed = line.trim();
+            if trimmed.starts_with("dff") {
+                if let Some(start) = trimmed.find('(') {
+                    if let Some(end) = trimmed.find(')') {
+                        let inside = &trimmed[start + 1..end];
+                        let parts: Vec<&str> = inside.split(',').map(|s| s.trim()).collect();
+                        if parts.len() >= 3 {
+                            let q = parts[1].trim().trim_end_matches(';').to_string();
+                            if !q.is_empty() {
+                                dff_qs.push(q);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Parse the verilog into internal Netlist (this ignores dff instantiations)
+        let netlist_result = std::panic::catch_unwind(|| crate::parser::file_iscas89_verilog_to_netlist(filename));
+        let mut netlist = match netlist_result {
+            Ok(n) => n,
+            Err(_) => {
+                eprintln!("Warning: parser panicked on file {}, skipping", filename);
+                continue;
+            }
+        };
+
+        // Add each DFF Q as a primary input (snapshot)
+        for q in dff_qs.iter() {
+            if !netlist.inputs.iter().any(|x| x == q) {
+                netlist.inputs.push(q.clone());
+            }
+        }
+
+        // Remove clock (CK) from inputs if present
+        netlist.inputs.retain(|x| x.to_uppercase() != "CK");
+
+        // Write output bench file
+        let stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or("out");
+        let out_path = Path::new(output_dir).join(format!("{}_to_iscas89_atlanta.bench", stem));
+        let mut out_file = File::create(&out_path)?;
+
+        // Write inputs
+        for inp in &netlist.inputs {
+            writeln!(out_file, "INPUT({})", inp)?;
+        }
+        // Write outputs
+        for out in &netlist.outputs {
+            writeln!(out_file, "OUTPUT({})", out)?;
+        }
+        // Write gates
+        for gate in &netlist.gates {
+            let out_name = gate.outputs.get(0).map(|s| s.as_str()).unwrap_or(gate.name.as_str());
+            if gate.inputs.is_empty() {
+                writeln!(out_file, "{} = {}", out_name, gate.gate_type.to_string())?;
+            } else {
+                writeln!(out_file, "{} = {}({})", out_name, gate.gate_type.to_string(), gate.inputs.join(", "))?;
+            }
+        }
+
+        println!("Converted {} -> {}", filename, out_path.display());
+    }
+
+    Ok(())
+}
+
+/// Time-frame expansion (unrolling) for ISCAS89 Verilog files.
+/// For each file in `input_dir` produces an unrolled combinational bench
+/// in `output_dir` with `k_frames` temporal frames. Original primary inputs
+/// are duplicated per frame (`name_t{frame}`) and flip‑flop initial states
+/// are modeled as primary inputs at frame 0 (`Q_t0`). Final outputs are
+/// taken from frame `k_frames` (suffix `_t{k_frames}`).
+pub fn unroll_iscas89_folder(input_dir: &str, output_dir: &str, k_frames: usize) -> io::Result<()> {
+    if k_frames == 0 { return Err(io::Error::new(io::ErrorKind::InvalidInput, "k_frames must be >= 1")); }
+    if !Path::new(output_dir).exists() {
+        fs::create_dir_all(output_dir)?;
+    }
+
+    for entry in fs::read_dir(input_dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if !path.is_file() { continue; }
+        let ext = path.extension().and_then(|s| s.to_str()).unwrap_or("").to_lowercase();
+        if ext != "v" { continue; }
+
+        let filename = path.to_str().unwrap_or("");
+        let content = fs::read_to_string(&path)?;
+
+        // Collect DFF mappings (Q <- D)
+        let mut dff_qs: Vec<String> = Vec::new();
+        let mut dff_ds: Vec<String> = Vec::new();
+        for line in content.lines() {
+            let trimmed = line.trim();
+            if trimmed.starts_with("dff") {
+                if let Some(start) = trimmed.find('(') {
+                    if let Some(end) = trimmed.find(')') {
+                        let inside = &trimmed[start + 1..end];
+                        let parts: Vec<&str> = inside.split(',').map(|s| s.trim()).collect();
+                        if parts.len() >= 3 {
+                            let q = parts[1].trim().trim_end_matches(';').to_string();
+                            let d = parts[2].trim().trim_end_matches(';').to_string();
+                            if !q.is_empty() && !d.is_empty() {
+                                dff_qs.push(q);
+                                dff_ds.push(d);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Parse combinational netlist (may panic for odd files; catch to continue)
+        let netlist = match std::panic::catch_unwind(|| crate::parser::file_iscas89_verilog_to_netlist(filename)) {
+            Ok(n) => n,
+            Err(_) => { eprintln!("Warning: parser panicked on file {}, skipping unroll", filename); continue; }
+        };
+
+        use std::collections::HashSet;
+        let q_set: HashSet<String> = dff_qs.iter().cloned().collect();
+
+        // Prepare output file
+        let stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or("out");
+        let out_path = Path::new(output_dir).join(format!("{}_to_iscas89_atlanta_unrolled_{}f.bench", stem, k_frames));
+        let mut out_file = File::create(&out_path)?;
+
+        // Write primary inputs: for each frame 0..=k_frames duplicate netlist.inputs
+        for t in 0..=k_frames {
+            for inp in &netlist.inputs {
+                writeln!(out_file, "INPUT({}_t{})", inp, t)?;
+            }
+        }
+        // Write flipflop initial states as inputs at frame 0 (Q_t0)
+        for q in &dff_qs {
+            writeln!(out_file, "INPUT({}_t0)", q)?;
+        }
+
+        // Write outputs: take them from frame k_frames
+        for out in &netlist.outputs {
+            writeln!(out_file, "OUTPUT({}_t{})", out, k_frames)?;
+        }
+
+        // For each time frame, create combinational gates with suffixed names
+        for t in 0..=k_frames {
+            // create gates at frame t
+            for gate in &netlist.gates {
+                let out_name = gate.outputs.get(0).map(|s| s.as_str()).unwrap_or(gate.name.as_str());
+                let out_t = format!("{}_t{}", out_name, t);
+                if gate.inputs.is_empty() {
+                    writeln!(out_file, "{} = {}", out_t, gate.gate_type.to_string())?;
+                } else {
+                    let mut inputs_t: Vec<String> = Vec::new();
+                    for inp in &gate.inputs {
+                        // if input is a flipflop output, use its Q at same frame
+                        if q_set.contains(inp) {
+                            inputs_t.push(format!("{}_t{}", inp, t));
+                        } else {
+                            inputs_t.push(format!("{}_t{}", inp, t));
+                        }
+                    }
+                    writeln!(out_file, "{} = {}({})", out_t, gate.gate_type.to_string(), inputs_t.join(", "))?;
+                }
+            }
+
+            // For frames 0..k_frames-1 create buffers mapping D_t -> Q_{t+1}
+            if t < k_frames {
+                for (q, d) in dff_qs.iter().zip(dff_ds.iter()) {
+                    let d_t = format!("{}_t{}", d, t);
+                    let q_next = format!("{}_t{}", q, t + 1);
+                    writeln!(out_file, "{} = BUF({})", q_next, d_t)?;
+                }
+            }
+        }
+
+        println!("Unrolled {} -> {} ({} frames)", filename, out_path.display(), k_frames);
+    }
+
+    Ok(())
 }
 
 #[cfg(test)]

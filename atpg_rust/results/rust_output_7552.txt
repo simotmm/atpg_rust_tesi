@@ -1,11 +1,9 @@
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
      Running `target\debug\atpg_rust.exe 7552`
 pattern generation (73 patterns):
 parallel pattern single fault propagation (PPSFP):
 PPSFP: starting pattern 1/73
-PPSFP pattern 1/73 - fault 365/7316 (N9456, s-a-1) - processed 5.0% - detected 361/7316 (4.9%)
-PPSFP pattern 1/73 - fault 730/7316 (N10681, s-a-1) - processed 10.0% - detected 724/7316 (9.9%)
-PPSFP pattern 1/73 - fault 1095/7316 (N10451, s-a-0) - processed 15.0% - detected 1077/7316 (14.7%)
-PPSFP pattern 1/73 - fault 1460/7316 (N9298, s-a-1) - processed 20.0% - detected 1406/7316 (19.2%)
-PPSFP pattern 1/73 - fault 1825/7316 (N10014, s-a-0) - processed 24.9% - detected 1695/7316 (23.2%)
-PPSFP pattern 1/73 - fault 2190/7316 (N7334, s-a-1) - processed 29.9% - detected 1959/7316 (26.8%)

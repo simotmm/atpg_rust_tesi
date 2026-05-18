@@ -6,4 +6,4 @@ patterns: 0
 faults: 942
 d_faults: 928
 r_faults: 0
-time: 0.000
+time: 0.016

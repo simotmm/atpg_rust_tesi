@@ -1,0 +1,19 @@
+The formula for the Boolean difference resulting from the
+XOR of the output of the unfaulted circuit of Figure 1 and
+the faulted circuit of Figure 2 is 
+(X+!D)·(X+!E)·(!X+D+E)·(!D+A)·(!D+B)·(D+!A+!B)·(C+E)·(!C+!E)
+(the clauses contributed by the unfaulted circuit) 
+·(X'+!D')·(X'+!E)·(!X'+D'+E)·(D') 
+(the clauses contributed by the faulted circuit)
+·(!X+!V1)·(X'+!V1)·(V1+X+!X')·(X+!V2)·(!X'+V2)·(V2+!X+X')·(!BD+V1+V2)
+·(!V1+BD)·(!V2+BD) (the clauses contributed by BD=XOR(X,X'))
+
+my output:
+ /* GOOD CIRCUIT      */ (!D+A)·(!D+B)·(D+!A+!B)·(E+C)·(!E+!C)·(X+!D)·(X+!E)·(!X+D+E)·
+ /* FAULTED CIRCUIT   */ (D')·(X'+!D')·(X'+!E)·(!X'+D'+E)·
+ /* OUTPUT DIFFERENCE */ (!X+!V1)·(X'+!V1)·(V1+X+!X')·(X+!V2)·(!X'+V2)·(V2+!X+X')·(!BD+V1+V2)·(!V1+BD)·(!V2+BD)
+
+test formula (cnf):
+ (!D+A)·(!D+B)·(D+!A+!B)·(E+C)·(!E+!C)·(X+!D)·(X+!E)·(!X+D+E)·(D')·(X'+!D')·(X'+!E)·(!X'+D'+E)·(!X+!V1)·(X'+!V1)·(V1+X+!X')·(X+!V2)·(!X'+V2)·(V2+!X+X')·(!BD+V1+V2)·(!V1+BD)·(!V2+BD)
+test formula opt (cnf):
+ (X+!D)·(X+!E)·(!X+D+E)·(E+C)·(!E+!C)·(!D+A)·(!D+B)·(D+!A+!B)·(D')·(X'+!D')·(X'+!E)·(!X'+D'+E)·(!X+!V1)·(X'+!V1)·(V1+X+!X')·(X+!V2)·(!X'+V2)·(V2+!X+X')·(!BD+V1+V2)·(!V1+BD)·(!V2+BD)

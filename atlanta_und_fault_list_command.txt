@@ -1,0 +1,2 @@
+cd c:\Users\by_si\Desktop\tesi\atpg\atpg_atlanta\atalanta-M
+.\atalanta-M.exe -v -U "c:\Users\by_si\Desktop\tesi\atpg\atpg_rust\benchmarks\converted_to_atlanta_iscas89\c432.ufaults" "c:\Users\by_si\Desktop\tesi\atpg\atpg_rust\benchmarks\converted_to_atlanta_iscas89\c432_to_iscas89_atlanta.bench" > "c:\Users\by_si\Desktop\tesi\atpg\atpg_rust\benchmarks\converted_to_atlanta_iscas89\c432_atalanta_out.txt"

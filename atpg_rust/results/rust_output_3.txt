@@ -1,22 +1,22 @@
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.16s
      Running `target\debug\atpg_rust.exe 3`
 pattern generation (1 patterns):
 parallel pattern single fault propagation (PPSFP):
 PPSFP: starting pattern 1/1
-PPSFP pattern 1/1 - fault 1/14 (Y, s-a-0) - processed 7.1% - detected 1/14 (7.1%)
-PPSFP pattern 1/1 - fault 2/14 (Y, s-a-1) - processed 14.3% - detected 2/14 (14.3%)
-PPSFP pattern 1/1 - fault 3/14 (M, s-a-1) - processed 21.4% - detected 3/14 (21.4%)
-PPSFP pattern 1/1 - fault 4/14 (P, s-a-0) - processed 28.6% - detected 4/14 (28.6%)
-PPSFP pattern 1/1 - fault 5/14 (P, s-a-1) - processed 35.7% - detected 5/14 (35.7%)
-PPSFP pattern 1/1 - fault 6/14 (E, s-a-0) - processed 42.9% - detected 6/14 (42.9%)
-PPSFP pattern 1/1 - fault 7/14 (X, s-a-1) - processed 50.0% - detected 7/14 (50.0%)
-PPSFP pattern 1/1 - fault 8/14 (E, s-a-0) - processed 57.1% - detected 8/14 (57.1%)
-PPSFP pattern 1/1 - fault 9/14 (D, s-a-0) - processed 64.3% - detected 9/14 (64.3%)
-PPSFP pattern 1/1 - fault 10/14 (X, s-a-1) - processed 71.4% - detected 9/14 (64.3%)
-PPSFP pattern 1/1 - fault 11/14 (E, s-a-0) - processed 78.6% - detected 9/14 (64.3%)
-PPSFP pattern 1/1 - fault 12/14 (D, s-a-0) - processed 85.7% - detected 9/14 (64.3%)
-PPSFP pattern 1/1 - fault 13/14 (E, s-a-0) - processed 92.9% - detected 10/14 (71.4%)
-PPSFP pattern 1/1 - fault 14/14 (E, s-a-1) - processed 100.0% - detected 11/14 (78.6%)
+PPSFP parallel pattern 1/1 - processed 1/14 (7.1%) - detected 1/14 (7.1%) - last fault E s-a-0
+PPSFP parallel pattern 1/1 - processed 2/14 (14.3%) - detected 2/14 (14.3%) - last fault E s-a-0
+PPSFP parallel pattern 1/1 - processed 3/14 (21.4%) - detected 3/14 (21.4%) - last fault E s-a-0
+PPSFP parallel pattern 1/1 - processed 8/14 (57.1%) - detected 8/14 (57.1%) - last fault P s-a-0
+PPSFP parallel pattern 1/1 - processed 5/14 (35.7%) - detected 5/14 (35.7%) - last fault X s-a-1
+PPSFP parallel pattern 1/1 - processed 6/14 (42.9%) - detected 6/14 (42.9%) - last fault D s-a-0
+PPSFP parallel pattern 1/1 - processed 7/14 (50.0%) - detected 7/14 (50.0%) - last fault E s-a-1
+PPSFP parallel pattern 1/1 - processed 4/14 (28.6%) - detected 4/14 (28.6%) - last fault Y s-a-0
+PPSFP parallel pattern 1/1 - processed 9/14 (64.3%) - detected 9/14 (64.3%) - last fault D s-a-0
+PPSFP parallel pattern 1/1 - processed 10/14 (71.4%) - detected 10/14 (71.4%) - last fault P s-a-1
+PPSFP parallel pattern 1/1 - processed 11/14 (78.6%) - detected 11/14 (78.6%) - last fault E s-a-0
+PPSFP parallel pattern 1/1 - processed 12/14 (85.7%) - detected 12/14 (85.7%) - last fault X s-a-1
+PPSFP parallel pattern 1/1 - processed 13/14 (92.9%) - detected 13/14 (92.9%) - last fault Y s-a-1
+PPSFP parallel pattern 1/1 - processed 14/14 (100.0%) - detected 14/14 (100.0%) - last fault M s-a-1
 PPSFP: pattern 1/1 done - detected in this pattern: 11 - cumulative detected: 11/11 (100.0%)
 undetected faults after PPSFP: 0 
 set 1:

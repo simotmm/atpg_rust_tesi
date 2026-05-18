@@ -200,7 +200,7 @@ pub fn determine_and_remove(cnf: &mut CNF) -> Vec<String> {
         // skip if v already marked for removal
         if to_remove.contains(v) { continue; }
 
-        if crate::PRINT_PROGRESS { println!("determine_and_remove: testing v={} (vars={})", v, vars.len()); }
+        if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("determine_and_remove: testing v={} (vars={})", v, vars.len()); }
 
         // prepare CNF with v=true
         let mut tmp_true = cnf.clone();
@@ -277,7 +277,7 @@ pub fn choose_branching_variable(cnf: &CNF) -> Option<String> {
 pub fn minimize_search_tree(cnf: &mut CNF) -> Result<bool, ()> {
     let mut any_changed = false;
     let global_start = Instant::now();
-    if crate::PRINT_PROGRESS { println!("minimize_search_tree: start"); }
+    if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("minimize_search_tree: start"); }
     loop {
         let mut changed = false;
 
@@ -300,16 +300,16 @@ pub fn minimize_search_tree(cnf: &mut CNF) -> Result<bool, ()> {
         if subs > 0 { changed = true; any_changed = true; }
 
         // Try to find and remove variables determined by others (see paper Sec.4.1)
-        if crate::PRINT_PROGRESS { println!("minimize_search_tree: running determine_and_remove..."); }
+        if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("minimize_search_tree: running determine_and_remove..."); }
         let t0 = Instant::now();
         let determined_removed = determine_and_remove(cnf);
         let took = t0.elapsed();
-        if crate::PRINT_PROGRESS { println!("determine_and_remove removed {} vars in {:?}", determined_removed.len(), took); }
+        if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("determine_and_remove removed {} vars in {:?}", determined_removed.len(), took); }
         if !determined_removed.is_empty() { changed = true; any_changed = true; }
 
         if !changed { break; }
     }
-    if crate::PRINT_PROGRESS { println!("minimize_search_tree: total time {:?}", global_start.elapsed()); }
+    if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("minimize_search_tree: total time {:?}", global_start.elapsed()); }
     Ok(any_changed)
 }
 

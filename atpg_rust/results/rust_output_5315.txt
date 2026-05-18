@@ -1,22 +1,12 @@
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s
      Running `target\debug\atpg_rust.exe 5315`
 pattern generation (51 patterns):
 parallel pattern single fault propagation (PPSFP):
 PPSFP: starting pattern 1/51
-PPSFP pattern 1/51 - fault 258/5160 (N8004, s-a-1) - processed 5.0% - detected 235/5160 (4.6%)
-PPSFP pattern 1/51 - fault 516/5160 (N7734, s-a-1) - processed 10.0% - detected 415/5160 (8.0%)
-PPSFP pattern 1/51 - fault 774/5160 (N7543, s-a-1) - processed 15.0% - detected 669/5160 (13.0%)
-PPSFP pattern 1/51 - fault 1032/5160 (N1197, s-a-1) - processed 20.0% - detected 912/5160 (17.7%)
-PPSFP pattern 1/51 - fault 1290/5160 (N7304, s-a-1) - processed 25.0% - detected 1155/5160 (22.4%)
-PPSFP pattern 1/51 - fault 1548/5160 (N7208, s-a-0) - processed 30.0% - detected 1384/5160 (26.8%)
-PPSFP pattern 1/51 - fault 1806/5160 (N7219, s-a-0) - processed 35.0% - detected 1602/5160 (31.0%)
-PPSFP pattern 1/51 - fault 2064/5160 (N6804, s-a-0) - processed 40.0% - detected 1840/5160 (35.7%)
-PPSFP pattern 1/51 - fault 2322/5160 (N5671, s-a-1) - processed 45.0% - detected 2075/5160 (40.2%)
-PPSFP pattern 1/51 - fault 2580/5160 (N6490, s-a-0) - processed 50.0% - detected 2290/5160 (44.4%)
-PPSFP pattern 1/51 - fault 2838/5160 (N6206, s-a-1) - processed 55.0% - detected 2519/5160 (48.8%)
-PPSFP pattern 1/51 - fault 3096/5160 (N4614, s-a-1) - processed 60.0% - detected 2763/5160 (53.5%)
-PPSFP pattern 1/51 - fault 3354/5160 (N4909, s-a-1) - processed 65.0% - detected 3005/5160 (58.2%)
-PPSFP pattern 1/51 - fault 3612/5160 (N4572, s-a-0) - processed 70.0% - detected 3221/5160 (62.4%)
-PPSFP pattern 1/51 - fault 3870/5160 (N1594, s-a-1) - processed 75.0% - detected 3463/5160 (67.1%)
-error: process didn't exit successfully: `target\debug\atpg_rust.exe 5315` (exit code: 0xc000013a, STATUS_CONTROL_C_EXIT)
-^C
+PPSFP parallel pattern 1/51 - processed 258/5160 (5.0%) - detected 232/5160 (4.5%) - last fault N7263 s-a-0
+PPSFP parallel pattern 1/51 - processed 516/5160 (10.0%) - detected 460/5160 (8.9%) - last fault N7257 s-a-1

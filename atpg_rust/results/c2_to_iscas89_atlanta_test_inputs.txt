@@ -6,3 +6,5 @@
 100
 011
 010
+
+undetectable faults (0):

@@ -1,0 +1,12 @@
+funzione per insieme minimo: SU TUTTI I NON COPERTI DA RANDOM E NON UNTESTABLE
+
+dare in input ad atlanta i fault non coperti dal mio rust -> fatto, tutto ok
+
+fare tutto in inglese -> ok
+
+aggiornare report con tabelle e tempi -> da fare sui circuiti più grandi
+
+fare tutto su iscas85 e 89 -> file iscas89 convertiti in combinatori, uno mi da problemi (uno dei primi)
+
+
+script di validazione: implementare per i bench iscas89

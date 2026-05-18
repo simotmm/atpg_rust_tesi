@@ -1,499 +1,87 @@
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
      Running `target\debug\atpg_rust.exe 1908`
 pattern generation (18 patterns):
 parallel pattern single fault propagation (PPSFP):
 PPSFP: starting pattern 1/18
-PPSFP pattern 1/18 - fault 92/1859 (N2829, s-a-1) - processed 4.9% - detected 81/1859 (4.4%)
-PPSFP pattern 1/18 - fault 184/1859 (N926, s-a-1) - processed 9.9% - detected 136/1859 (7.3%)
-PPSFP pattern 1/18 - fault 276/1859 (N2758, s-a-1) - processed 14.8% - detected 190/1859 (10.2%)
-PPSFP pattern 1/18 - fault 368/1859 (N2558, s-a-1) - processed 19.8% - detected 240/1859 (12.9%)
-PPSFP pattern 1/18 - fault 460/1859 (N2617, s-a-0) - processed 24.7% - detected 274/1859 (14.7%)
-PPSFP pattern 1/18 - fault 552/1859 (N2561, s-a-1) - processed 29.7% - detected 312/1859 (16.8%)
-PPSFP pattern 1/18 - fault 644/1859 (N2286, s-a-0) - processed 34.6% - detected 344/1859 (18.5%)
-PPSFP pattern 1/18 - fault 736/1859 (N2237, s-a-0) - processed 39.6% - detected 363/1859 (19.5%)
-PPSFP pattern 1/18 - fault 828/1859 (N2042, s-a-0) - processed 44.5% - detected 401/1859 (21.6%)
-PPSFP pattern 1/18 - fault 920/1859 (N1933, s-a-0) - processed 49.5% - detected 456/1859 (24.5%)
-PPSFP pattern 1/18 - fault 1012/1859 (N1727, s-a-1) - processed 54.4% - detected 514/1859 (27.6%)
-PPSFP pattern 1/18 - fault 1104/1859 (N1664, s-a-0) - processed 59.4% - detected 589/1859 (31.7%)
-PPSFP pattern 1/18 - fault 1196/1859 (N1513, s-a-0) - processed 64.3% - detected 674/1859 (36.3%)
-PPSFP pattern 1/18 - fault 1288/1859 (N1433, s-a-1) - processed 69.3% - detected 758/1859 (40.8%)
-PPSFP pattern 1/18 - fault 1380/1859 (N1361, s-a-0) - processed 74.2% - detected 830/1859 (44.6%)
-PPSFP pattern 1/18 - fault 1472/1859 (N739, s-a-1) - processed 79.2% - detected 918/1859 (49.4%)
-PPSFP pattern 1/18 - fault 1564/1859 (N943, s-a-0) - processed 84.1% - detected 989/1859 (53.2%)
-PPSFP pattern 1/18 - fault 1656/1859 (N679, s-a-1) - processed 89.1% - detected 1067/1859 (57.4%)
-PPSFP pattern 1/18 - fault 1748/1859 (N562, s-a-0) - processed 94.0% - detected 1146/1859 (61.6%)
-PPSFP pattern 1/18 - fault 1840/1859 (N225, s-a-0) - processed 99.0% - detected 1229/1859 (66.1%)
-PPSFP pattern 1/18 - fault 1859/1859 (N190, s-a-1) - processed 100.0% - detected 1248/1859 (67.1%)
+PPSFP parallel pattern 1/18 - processed 92/1859 (4.9%) - detected 59/1859 (3.2%) - last fault N2427 s-a-1
+PPSFP parallel pattern 1/18 - processed 184/1859 (9.9%) - detected 113/1859 (6.1%) - last fault N2286 s-a-1
+PPSFP parallel pattern 1/18 - processed 276/1859 (14.8%) - detected 159/1859 (8.6%) - last fault N331 s-a-1
+PPSFP parallel pattern 1/18 - processed 368/1859 (19.8%) - detected 216/1859 (11.6%) - last fault N1818 s-a-0
+PPSFP parallel pattern 1/18 - processed 460/1859 (24.7%) - detected 257/1859 (13.8%) - last fault N915 s-a-1
+PPSFP parallel pattern 1/18 - processed 552/1859 (29.7%) - detected 296/1859 (15.9%) - last fault N2603 s-a-1
+PPSFP parallel pattern 1/18 - processed 644/1859 (34.6%) - detected 348/1859 (18.7%) - last fault N2829 s-a-1
+PPSFP parallel pattern 1/18 - processed 736/1859 (39.6%) - detected 410/1859 (22.1%) - last fault N2723 s-a-1
+PPSFP parallel pattern 1/18 - processed 828/1859 (44.5%) - detected 465/1859 (25.0%) - last fault N1319 s-a-0
+PPSFP parallel pattern 1/18 - processed 920/1859 (49.5%) - detected 522/1859 (28.1%) - last fault N1937 s-a-1
+PPSFP parallel pattern 1/18 - processed 1012/1859 (54.4%) - detected 584/1859 (31.4%) - last fault N1258 s-a-1
+PPSFP parallel pattern 1/18 - processed 1104/1859 (59.4%) - detected 643/1859 (34.6%) - last fault N1133 s-a-1
+PPSFP parallel pattern 1/18 - processed 1196/1859 (64.3%) - detected 715/1859 (38.5%) - last fault N1130 s-a-1
+PPSFP parallel pattern 1/18 - processed 1288/1859 (69.3%) - detected 784/1859 (42.2%) - last fault N1460 s-a-1
+PPSFP parallel pattern 1/18 - processed 1380/1859 (74.2%) - detected 858/1859 (46.2%) - last fault N1028 s-a-1
+PPSFP parallel pattern 1/18 - processed 1472/1859 (79.2%) - detected 936/1859 (50.3%) - last fault N1188 s-a-1
+PPSFP parallel pattern 1/18 - processed 1564/1859 (84.1%) - detected 1014/1859 (54.5%) - last fault N331 s-a-0
+PPSFP parallel pattern 1/18 - processed 1656/1859 (89.1%) - detected 1073/1859 (57.7%) - last fault N1316 s-a-1
+PPSFP parallel pattern 1/18 - processed 1748/1859 (94.0%) - detected 1151/1859 (61.9%) - last fault N1211 s-a-1
+PPSFP parallel pattern 1/18 - processed 1840/1859 (99.0%) - detected 1232/1859 (66.3%) - last fault N751 s-a-1
+PPSFP parallel pattern 1/18 - processed 1859/1859 (100.0%) - detected 1249/1859 (67.2%) - last fault N721 s-a-1
 PPSFP: pattern 1/18 done - detected in this pattern: 1248 - cumulative detected: 1248/1858 (67.2%)
 PPSFP: starting pattern 2/18
-PPSFP pattern 2/18 - fault 30/610 (N2747, s-a-1) - processed 4.9% - detected 9/610 (1.5%)
-PPSFP pattern 2/18 - fault 60/610 (N2297, s-a-1) - processed 9.8% - detected 17/610 (2.8%)
-PPSFP pattern 2/18 - fault 90/610 (N2724, s-a-1) - processed 14.8% - detected 18/610 (3.0%)
-PPSFP pattern 2/18 - fault 120/610 (N2674, s-a-1) - processed 19.7% - detected 20/610 (3.3%)
-PPSFP pattern 2/18 - fault 150/610 (N2661, s-a-0) - processed 24.6% - detected 23/610 (3.8%)
-PPSFP pattern 2/18 - fault 180/610 (N2129, s-a-1) - processed 29.5% - detected 40/610 (6.6%)
-PPSFP pattern 2/18 - fault 210/610 (N2597, s-a-1) - processed 34.4% - detected 55/610 (9.0%)
-PPSFP pattern 2/18 - fault 240/610 (N2286, s-a-1) - processed 39.3% - detected 69/610 (11.3%)
-PPSFP pattern 2/18 - fault 270/610 (N2540, s-a-1) - processed 44.3% - detected 82/610 (13.4%)
-PPSFP pattern 2/18 - fault 300/610 (N2286, s-a-1) - processed 49.2% - detected 89/610 (14.6%)
-PPSFP pattern 2/18 - fault 330/610 (N2047, s-a-1) - processed 54.1% - detected 90/610 (14.8%)
-PPSFP pattern 2/18 - fault 360/610 (N2269, s-a-1) - processed 59.0% - detected 90/610 (14.8%)
-PPSFP pattern 2/18 - fault 390/610 (N2071, s-a-1) - processed 63.9% - detected 99/610 (16.2%)
-PPSFP pattern 2/18 - fault 420/610 (N2040, s-a-1) - processed 68.9% - detected 113/610 (18.5%)
-PPSFP pattern 2/18 - fault 450/610 (N1953, s-a-1) - processed 73.8% - detected 129/610 (21.1%)
-PPSFP pattern 2/18 - fault 480/610 (N1869, s-a-1) - processed 78.7% - detected 146/610 (23.9%)
-PPSFP pattern 2/18 - fault 510/610 (N1717, s-a-0) - processed 83.6% - detected 165/610 (27.0%)
-PPSFP pattern 2/18 - fault 540/610 (N984, s-a-1) - processed 88.5% - detected 183/610 (30.0%)
-PPSFP pattern 2/18 - fault 570/610 (N985, s-a-1) - processed 93.4% - detected 197/610 (32.3%)
-PPSFP pattern 2/18 - fault 600/610 (N608, s-a-1) - processed 98.4% - detected 213/610 (34.9%)
-PPSFP pattern 2/18 - fault 610/610 (N260, s-a-0) - processed 100.0% - detected 220/610 (36.1%)
+PPSFP parallel pattern 2/18 - processed 30/610 (4.9%) - detected 5/610 (0.8%) - last fault N1348 s-a-1
+PPSFP parallel pattern 2/18 - processed 60/610 (9.8%) - detected 14/610 (2.3%) - last fault N926 s-a-1
+PPSFP parallel pattern 2/18 - processed 90/610 (14.8%) - detected 22/610 (3.6%) - last fault N897 s-a-1
+PPSFP parallel pattern 2/18 - processed 120/610 (19.7%) - detected 32/610 (5.2%) - last fault N2682 s-a-1
+PPSFP parallel pattern 2/18 - processed 150/610 (24.6%) - detected 38/610 (6.2%) - last fault N2537 s-a-1
+PPSFP parallel pattern 2/18 - processed 180/610 (29.5%) - detected 41/610 (6.7%) - last fault N2597 s-a-1
+PPSFP parallel pattern 2/18 - processed 210/610 (34.4%) - detected 47/610 (7.7%) - last fault N545 s-a-1
+PPSFP parallel pattern 2/18 - processed 240/610 (39.3%) - detected 52/610 (8.5%) - last fault N2263 s-a-1
+PPSFP parallel pattern 2/18 - processed 270/610 (44.3%) - detected 59/610 (9.7%) - last fault N2235 s-a-1
+PPSFP parallel pattern 2/18 - processed 300/610 (49.2%) - detected 69/610 (11.3%) - last fault N2086 s-a-1
+PPSFP parallel pattern 2/18 - processed 330/610 (54.1%) - detected 82/610 (13.4%) - last fault N631 s-a-1
+PPSFP parallel pattern 2/18 - processed 360/610 (59.0%) - detected 97/610 (15.9%) - last fault N2129 s-a-1
+PPSFP parallel pattern 2/18 - processed 390/610 (63.9%) - detected 112/610 (18.4%) - last fault N1950 s-a-1
+PPSFP parallel pattern 2/18 - processed 420/610 (68.9%) - detected 127/610 (20.8%) - last fault N1792 s-a-1
+PPSFP parallel pattern 2/18 - processed 450/610 (73.8%) - detected 142/610 (23.3%) - last fault N1937 s-a-1
+PPSFP parallel pattern 2/18 - processed 480/610 (78.7%) - detected 157/610 (25.7%) - last fault N608 s-a-1
+PPSFP parallel pattern 2/18 - processed 510/610 (83.6%) - detected 174/610 (28.5%) - last fault N1040 s-a-0
+PPSFP parallel pattern 2/18 - processed 540/610 (88.5%) - detected 189/610 (31.0%) - last fault N676 s-a-1
+PPSFP parallel pattern 2/18 - processed 570/610 (93.4%) - detected 205/610 (33.6%) - last fault N2297 s-a-1
+PPSFP parallel pattern 2/18 - processed 600/610 (98.4%) - detected 214/610 (35.1%) - last fault N2240 s-a-1
+PPSFP parallel pattern 2/18 - processed 610/610 (100.0%) - detected 220/610 (36.1%) - last fault N263 s-a-0
 PPSFP: pattern 2/18 done - detected in this pattern: 220 - cumulative detected: 1468/1858 (79.0%)
 PPSFP: starting pattern 3/18
-PPSFP pattern 3/18 - fault 19/390 (N897, s-a-1) - processed 4.9% - detected 1/390 (0.3%)
-PPSFP pattern 3/18 - fault 38/390 (N926, s-a-1) - processed 9.7% - detected 3/390 (0.8%)
-PPSFP pattern 3/18 - fault 57/390 (N2735, s-a-1) - processed 14.6% - detected 4/390 (1.0%)
-PPSFP pattern 3/18 - fault 76/390 (N2611, s-a-1) - processed 19.5% - detected 4/390 (1.0%)
-PPSFP pattern 3/18 - fault 95/390 (N2683, s-a-1) - processed 24.4% - detected 5/390 (1.3%)
-PPSFP pattern 3/18 - fault 114/390 (N2552, s-a-1) - processed 29.2% - detected 6/390 (1.5%)
-PPSFP pattern 3/18 - fault 133/390 (N2651, s-a-0) - processed 34.1% - detected 8/390 (2.1%)
-PPSFP pattern 3/18 - fault 152/390 (N2603, s-a-1) - processed 39.0% - detected 13/390 (3.3%)
-PPSFP pattern 3/18 - fault 171/390 (N2286, s-a-1) - processed 43.8% - detected 21/390 (5.4%)
-PPSFP pattern 3/18 - fault 190/390 (N2315, s-a-1) - processed 48.7% - detected 32/390 (8.2%)
-PPSFP pattern 3/18 - fault 209/390 (N2315, s-a-1) - processed 53.6% - detected 41/390 (10.5%)
-PPSFP pattern 3/18 - fault 228/390 (N2226, s-a-1) - processed 58.5% - detected 42/390 (10.8%)
-PPSFP pattern 3/18 - fault 247/390 (N1930, s-a-1) - processed 63.3% - detected 46/390 (11.8%)
-PPSFP pattern 3/18 - fault 266/390 (N1350, s-a-1) - processed 68.2% - detected 46/390 (11.8%)
-PPSFP pattern 3/18 - fault 285/390 (N2148, s-a-1) - processed 73.1% - detected 54/390 (13.8%)
-PPSFP pattern 3/18 - fault 304/390 (N1898, s-a-1) - processed 77.9% - detected 64/390 (16.4%)
-PPSFP pattern 3/18 - fault 323/390 (N1856, s-a-1) - processed 82.8% - detected 69/390 (17.7%)
-PPSFP pattern 3/18 - fault 342/390 (N1751, s-a-0) - processed 87.7% - detected 76/390 (19.5%)
-PPSFP pattern 3/18 - fault 361/390 (N1317, s-a-1) - processed 92.6% - detected 84/390 (21.5%)
-PPSFP pattern 3/18 - fault 380/390 (N679, s-a-0) - processed 97.4% - detected 86/390 (22.1%)
-PPSFP pattern 3/18 - fault 390/390 (N297, s-a-1) - processed 100.0% - detected 87/390 (22.3%)
+PPSFP parallel pattern 3/18 - processed 19/390 (4.9%) - detected 4/390 (1.0%) - last fault N2260 s-a-1
+PPSFP parallel pattern 3/18 - processed 38/390 (9.7%) - detected 7/390 (1.8%) - last fault N2260 s-a-1
+PPSFP parallel pattern 3/18 - processed 57/390 (14.6%) - detected 10/390 (2.6%) - last fault N679 s-a-1
+PPSFP parallel pattern 3/18 - processed 76/390 (19.5%) - detected 13/390 (3.3%) - last fault N2257 s-a-1
+PPSFP parallel pattern 3/18 - processed 95/390 (24.4%) - detected 19/390 (4.9%) - last fault N914 s-a-1
+PPSFP parallel pattern 3/18 - processed 114/390 (29.2%) - detected 21/390 (5.4%) - last fault N1751 s-a-0
+PPSFP parallel pattern 3/18 - processed 133/390 (34.1%) - detected 24/390 (6.2%) - last fault N2026 s-a-1
+PPSFP parallel pattern 3/18 - processed 152/390 (39.0%) - detected 31/390 (7.9%) - last fault N1942 s-a-1
+PPSFP parallel pattern 3/18 - processed 171/390 (43.8%) - detected 34/390 (8.7%) - last fault N2030 s-a-1
+PPSFP parallel pattern 3/18 - processed 190/390 (48.7%) - detected 41/390 (10.5%) - last fault N1841 s-a-1
+PPSFP parallel pattern 3/18 - processed 209/390 (53.6%) - detected 48/390 (12.3%) - last fault N2286 s-a-1
+PPSFP parallel pattern 3/18 - processed 228/390 (58.5%) - detected 56/390 (14.4%) - last fault N1376 s-a-1
+PPSFP parallel pattern 3/18 - processed 247/390 (63.3%) - detected 58/390 (14.9%) - last fault N2326 s-a-1
+PPSFP parallel pattern 3/18 - processed 266/390 (68.2%) - detected 66/390 (16.9%) - last fault N2617 s-a-1
+PPSFP parallel pattern 3/18 - processed 285/390 (73.1%) - detected 73/390 (18.7%) - last fault N2286 s-a-1
+PPSFP parallel pattern 3/18 - processed 304/390 (77.9%) - detected 79/390 (20.3%) - last fault N2561 s-a-0
+PPSFP parallel pattern 3/18 - processed 323/390 (82.8%) - detected 84/390 (21.5%) - last fault N2738 s-a-1
+PPSFP parallel pattern 3/18 - processed 342/390 (87.7%) - detected 84/390 (21.5%) - last fault N2690 s-a-1
+PPSFP parallel pattern 3/18 - processed 361/390 (92.6%) - detected 86/390 (22.1%) - last fault N2733 s-a-1
+PPSFP parallel pattern 3/18 - processed 380/390 (97.4%) - detected 87/390 (22.3%) - last fault N275 s-a-1
+PPSFP parallel pattern 3/18 - processed 390/390 (100.0%) - detected 87/390 (22.3%) - last fault N2725 s-a-1
 PPSFP: pattern 3/18 done - detected in this pattern: 87 - cumulative detected: 1555/1858 (83.7%)
 PPSFP: starting pattern 4/18
-PPSFP pattern 4/18 - fault 15/303 (N2807, s-a-1) - processed 5.0% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 30/303 (N1167, s-a-1) - processed 9.9% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 45/303 (N2741, s-a-1) - processed 14.9% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 60/303 (N541, s-a-1) - processed 19.8% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 75/303 (N2552, s-a-1) - processed 24.8% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 90/303 (N2683, s-a-1) - processed 29.7% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 105/303 (N2611, s-a-1) - processed 34.7% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 120/303 (N2326, s-a-1) - processed 39.6% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 135/303 (N2326, s-a-1) - processed 44.6% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 150/303 (N2561, s-a-0) - processed 49.5% - detected 0/303 (0.0%)
-PPSFP pattern 4/18 - fault 165/303 (N2257, s-a-1) - processed 54.5% - detected 1/303 (0.3%)
-PPSFP pattern 4/18 - fault 180/303 (N2256, s-a-1) - processed 59.4% - detected 2/303 (0.7%)
-PPSFP pattern 4/18 - fault 195/303 (N2026, s-a-0) - processed 64.4% - detected 2/303 (0.7%)
-PPSFP pattern 4/18 - fault 210/303 (N1872, s-a-1) - processed 69.3% - detected 2/303 (0.7%)
-PPSFP pattern 4/18 - fault 225/303 (N2148, s-a-1) - processed 74.3% - detected 3/303 (1.0%)
-PPSFP pattern 4/18 - fault 240/303 (N2039, s-a-1) - processed 79.2% - detected 10/303 (3.3%)
-PPSFP pattern 4/18 - fault 255/303 (N1707, s-a-1) - processed 84.2% - detected 19/303 (6.3%)
-PPSFP pattern 4/18 - fault 270/303 (N1643, s-a-0) - processed 89.1% - detected 25/303 (8.3%)
-PPSFP pattern 4/18 - fault 285/303 (N1171, s-a-0) - processed 94.1% - detected 27/303 (8.9%)
-PPSFP pattern 4/18 - fault 300/303 (N661, s-a-1) - processed 99.0% - detected 28/303 (9.2%)
-PPSFP pattern 4/18 - fault 303/303 (N297, s-a-1) - processed 100.0% - detected 28/303 (9.2%)
-PPSFP: pattern 4/18 done - detected in this pattern: 28 - cumulative detected: 1583/1858 (85.2%)
-PPSFP: starting pattern 5/18
-PPSFP pattern 5/18 - fault 13/275 (N2019, s-a-1) - processed 4.7% - detected 0/275 (0.0%)
-PPSFP pattern 5/18 - fault 26/275 (N2633, s-a-1) - processed 9.5% - detected 1/275 (0.4%)
-PPSFP pattern 5/18 - fault 39/275 (N926, s-a-1) - processed 14.2% - detected 2/275 (0.7%)
-PPSFP pattern 5/18 - fault 52/275 (N2736, s-a-1) - processed 18.9% - detected 3/275 (1.1%)
-PPSFP pattern 5/18 - fault 65/275 (N2726, s-a-1) - processed 23.6% - detected 3/275 (1.1%)
-PPSFP pattern 5/18 - fault 78/275 (N2537, s-a-1) - processed 28.4% - detected 3/275 (1.1%)
-PPSFP pattern 5/18 - fault 91/275 (N543, s-a-1) - processed 33.1% - detected 3/275 (1.1%)
-PPSFP pattern 5/18 - fault 104/275 (N2606, s-a-1) - processed 37.8% - detected 3/275 (1.1%)
-PPSFP pattern 5/18 - fault 117/275 (N2603, s-a-1) - processed 42.5% - detected 3/275 (1.1%)
-PPSFP pattern 5/18 - fault 130/275 (N2639, s-a-0) - processed 47.3% - detected 7/275 (2.5%)
-PPSFP pattern 5/18 - fault 143/275 (N2594, s-a-1) - processed 52.0% - detected 11/275 (4.0%)
-PPSFP pattern 5/18 - fault 156/275 (N2546, s-a-1) - processed 56.7% - detected 15/275 (5.5%)
-PPSFP pattern 5/18 - fault 169/275 (N2253, s-a-1) - processed 61.5% - detected 17/275 (6.2%)
-PPSFP pattern 5/18 - fault 182/275 (N661, s-a-1) - processed 66.2% - detected 21/275 (7.6%)
-PPSFP pattern 5/18 - fault 195/275 (N2008, s-a-1) - processed 70.9% - detected 27/275 (9.8%)
-PPSFP pattern 5/18 - fault 208/275 (N1872, s-a-1) - processed 75.6% - detected 31/275 (11.3%)
-PPSFP pattern 5/18 - fault 221/275 (N2257, s-a-1) - processed 80.4% - detected 35/275 (12.7%)
-PPSFP pattern 5/18 - fault 234/275 (N1953, s-a-1) - processed 85.1% - detected 38/275 (13.8%)
-PPSFP pattern 5/18 - fault 247/275 (N1471, s-a-1) - processed 89.8% - detected 43/275 (15.6%)
-PPSFP pattern 5/18 - fault 260/275 (N297, s-a-1) - processed 94.5% - detected 45/275 (16.4%)
-PPSFP pattern 5/18 - fault 273/275 (N303, s-a-1) - processed 99.3% - detected 49/275 (17.8%)
-PPSFP pattern 5/18 - fault 275/275 (N297, s-a-1) - processed 100.0% - detected 49/275 (17.8%)
-PPSFP: pattern 5/18 done - detected in this pattern: 49 - cumulative detected: 1632/1858 (87.8%)
-PPSFP: starting pattern 6/18
-PPSFP pattern 6/18 - fault 11/226 (N2863, s-a-1) - processed 4.9% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 22/226 (N2385, s-a-1) - processed 9.7% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 33/226 (N2630, s-a-1) - processed 14.6% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 44/226 (N2740, s-a-1) - processed 19.5% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 55/226 (N2731, s-a-1) - processed 24.3% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 66/226 (N538, s-a-1) - processed 29.2% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 77/226 (N2543, s-a-1) - processed 34.1% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 88/226 (N543, s-a-1) - processed 38.9% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 99/226 (N2669, s-a-1) - processed 43.8% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 110/226 (N2546, s-a-1) - processed 48.7% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 121/226 (N2645, s-a-0) - processed 53.5% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 132/226 (N2594, s-a-1) - processed 58.4% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 143/226 (N2540, s-a-1) - processed 63.3% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 154/226 (N2232, s-a-1) - processed 68.1% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 165/226 (N2151, s-a-1) - processed 73.0% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 176/226 (N1919, s-a-1) - processed 77.9% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 187/226 (N2231, s-a-1) - processed 82.7% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 198/226 (N1707, s-a-1) - processed 87.6% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 209/226 (N1261, s-a-1) - processed 92.5% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 220/226 (N712, s-a-0) - processed 97.3% - detected 0/226 (0.0%)
-PPSFP pattern 6/18 - fault 226/226 (N297, s-a-1) - processed 100.0% - detected 0/226 (0.0%)
-PPSFP: pattern 6/18 done - detected in this pattern: 0 - cumulative detected: 1632/1858 (87.8%)
-PPSFP: starting pattern 7/18
-PPSFP pattern 7/18 - fault 11/226 (N2863, s-a-1) - processed 4.9% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 22/226 (N2385, s-a-1) - processed 9.7% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 33/226 (N2630, s-a-1) - processed 14.6% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 44/226 (N2740, s-a-1) - processed 19.5% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 55/226 (N2731, s-a-1) - processed 24.3% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 66/226 (N538, s-a-1) - processed 29.2% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 77/226 (N2543, s-a-1) - processed 34.1% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 88/226 (N543, s-a-1) - processed 38.9% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 99/226 (N2669, s-a-1) - processed 43.8% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 110/226 (N2546, s-a-1) - processed 48.7% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 121/226 (N2645, s-a-0) - processed 53.5% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 132/226 (N2594, s-a-1) - processed 58.4% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 143/226 (N2540, s-a-1) - processed 63.3% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 154/226 (N2232, s-a-1) - processed 68.1% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 165/226 (N2151, s-a-1) - processed 73.0% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 176/226 (N1919, s-a-1) - processed 77.9% - detected 0/226 (0.0%)
-PPSFP pattern 7/18 - fault 187/226 (N2231, s-a-1) - processed 82.7% - detected 1/226 (0.4%)
-PPSFP pattern 7/18 - fault 198/226 (N1707, s-a-1) - processed 87.6% - detected 2/226 (0.9%)
-PPSFP pattern 7/18 - fault 209/226 (N1261, s-a-1) - processed 92.5% - detected 8/226 (3.5%)
-PPSFP pattern 7/18 - fault 220/226 (N712, s-a-0) - processed 97.3% - detected 10/226 (4.4%)
-PPSFP pattern 7/18 - fault 226/226 (N297, s-a-1) - processed 100.0% - detected 10/226 (4.4%)
-PPSFP: pattern 7/18 done - detected in this pattern: 10 - cumulative detected: 1642/1858 (88.4%)
-PPSFP: starting pattern 8/18
-PPSFP pattern 8/18 - fault 10/216 (N2857, s-a-1) - processed 4.6% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 20/216 (N2634, s-a-1) - processed 9.3% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 30/216 (N2632, s-a-1) - processed 13.9% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 40/216 (N2747, s-a-1) - processed 18.5% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 50/216 (N2735, s-a-1) - processed 23.1% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 60/216 (N540, s-a-1) - processed 27.8% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 70/216 (N2614, s-a-1) - processed 32.4% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 80/216 (N2597, s-a-1) - processed 37.0% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 90/216 (N2675, s-a-1) - processed 41.7% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 100/216 (N534, s-a-1) - processed 46.3% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 110/216 (N2546, s-a-1) - processed 50.9% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 120/216 (N2143, s-a-1) - processed 55.6% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 130/216 (N2600, s-a-1) - processed 60.2% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 140/216 (N2143, s-a-1) - processed 64.8% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 150/216 (N2257, s-a-1) - processed 69.4% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 160/216 (N2234, s-a-1) - processed 74.1% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 170/216 (N1975, s-a-1) - processed 78.7% - detected 0/216 (0.0%)
-PPSFP pattern 8/18 - fault 180/216 (N2024, s-a-1) - processed 83.3% - detected 2/216 (0.9%)
-PPSFP pattern 8/18 - fault 190/216 (N2143, s-a-0) - processed 88.0% - detected 4/216 (1.9%)
-PPSFP pattern 8/18 - fault 200/216 (N1225, s-a-1) - processed 92.6% - detected 4/216 (1.9%)
-PPSFP pattern 8/18 - fault 210/216 (N303, s-a-1) - processed 97.2% - detected 5/216 (2.3%)
-PPSFP pattern 8/18 - fault 216/216 (N297, s-a-1) - processed 100.0% - detected 5/216 (2.3%)
-PPSFP: pattern 8/18 done - detected in this pattern: 5 - cumulative detected: 1647/1858 (88.6%)
-PPSFP: starting pattern 9/18
-PPSFP pattern 9/18 - fault 10/211 (N2857, s-a-1) - processed 4.7% - detected 0/211 (0.0%)
-PPSFP pattern 9/18 - fault 20/211 (N2634, s-a-1) - processed 9.5% - detected 0/211 (0.0%)
-PPSFP pattern 9/18 - fault 30/211 (N2632, s-a-1) - processed 14.2% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 40/211 (N2747, s-a-1) - processed 19.0% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 50/211 (N2735, s-a-1) - processed 23.7% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 60/211 (N540, s-a-1) - processed 28.4% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 70/211 (N2614, s-a-1) - processed 33.2% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 80/211 (N2597, s-a-1) - processed 37.9% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 90/211 (N2675, s-a-1) - processed 42.7% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 100/211 (N534, s-a-1) - processed 47.4% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 110/211 (N2546, s-a-1) - processed 52.1% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 120/211 (N2143, s-a-1) - processed 56.9% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 130/211 (N2600, s-a-1) - processed 61.6% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 140/211 (N2143, s-a-1) - processed 66.4% - detected 2/211 (0.9%)
-PPSFP pattern 9/18 - fault 150/211 (N2257, s-a-1) - processed 71.1% - detected 6/211 (2.8%)
-PPSFP pattern 9/18 - fault 160/211 (N2234, s-a-1) - processed 75.8% - detected 6/211 (2.8%)
-PPSFP pattern 9/18 - fault 170/211 (N1975, s-a-1) - processed 80.6% - detected 6/211 (2.8%)
-PPSFP pattern 9/18 - fault 180/211 (N2269, s-a-1) - processed 85.3% - detected 7/211 (3.3%)
-PPSFP pattern 9/18 - fault 190/211 (N1953, s-a-1) - processed 90.0% - detected 9/211 (4.3%)
-PPSFP pattern 9/18 - fault 200/211 (N1171, s-a-0) - processed 94.8% - detected 10/211 (4.7%)
-PPSFP pattern 9/18 - fault 210/211 (N297, s-a-0) - processed 99.5% - detected 11/211 (5.2%)
-PPSFP pattern 9/18 - fault 211/211 (N297, s-a-1) - processed 100.0% - detected 12/211 (5.7%)
-PPSFP: pattern 9/18 done - detected in this pattern: 12 - cumulative detected: 1659/1858 (89.3%)
-PPSFP: starting pattern 10/18
-PPSFP pattern 10/18 - fault 9/199 (N2076, s-a-1) - processed 4.5% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 18/199 (N2821, s-a-0) - processed 9.0% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 27/199 (N1167, s-a-1) - processed 13.6% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 36/199 (N2627, s-a-1) - processed 18.1% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 45/199 (N2737, s-a-1) - processed 22.6% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 54/199 (N2730, s-a-1) - processed 27.1% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 63/199 (N2724, s-a-1) - processed 31.7% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 72/199 (N275, s-a-1) - processed 36.2% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 81/199 (N2690, s-a-1) - processed 40.7% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 90/199 (N2674, s-a-1) - processed 45.2% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 99/199 (N2606, s-a-1) - processed 49.7% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 108/199 (N2546, s-a-1) - processed 54.3% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 117/199 (N2648, s-a-0) - processed 58.8% - detected 0/199 (0.0%)
-PPSFP pattern 10/18 - fault 126/199 (N2603, s-a-1) - processed 63.3% - detected 1/199 (0.5%)
-PPSFP pattern 10/18 - fault 135/199 (N2561, s-a-0) - processed 67.8% - detected 3/199 (1.5%)
-PPSFP pattern 10/18 - fault 144/199 (N2353, s-a-0) - processed 72.4% - detected 4/199 (2.0%)
-PPSFP pattern 10/18 - fault 153/199 (N2244, s-a-0) - processed 76.9% - detected 8/199 (4.0%)
-PPSFP pattern 10/18 - fault 162/199 (N2008, s-a-1) - processed 81.4% - detected 8/199 (4.0%)
-PPSFP pattern 10/18 - fault 171/199 (N1872, s-a-1) - processed 85.9% - detected 8/199 (4.0%)
-PPSFP pattern 10/18 - fault 180/199 (N1911, s-a-1) - processed 90.5% - detected 10/199 (5.0%)
-PPSFP pattern 10/18 - fault 189/199 (N922, s-a-1) - processed 95.0% - detected 12/199 (6.0%)
-PPSFP pattern 10/18 - fault 198/199 (N303, s-a-1) - processed 99.5% - detected 15/199 (7.5%)
-PPSFP pattern 10/18 - fault 199/199 (N297, s-a-0) - processed 100.0% - detected 15/199 (7.5%)
-PPSFP: pattern 10/18 done - detected in this pattern: 15 - cumulative detected: 1674/1858 (90.1%)
-PPSFP: starting pattern 11/18
-PPSFP pattern 11/18 - fault 9/184 (N2076, s-a-1) - processed 4.9% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 18/184 (N2821, s-a-0) - processed 9.8% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 27/184 (N1167, s-a-1) - processed 14.7% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 36/184 (N2627, s-a-1) - processed 19.6% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 45/184 (N2737, s-a-1) - processed 24.5% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 54/184 (N2730, s-a-1) - processed 29.3% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 63/184 (N2724, s-a-1) - processed 34.2% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 72/184 (N275, s-a-1) - processed 39.1% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 81/184 (N2690, s-a-1) - processed 44.0% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 90/184 (N2674, s-a-1) - processed 48.9% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 99/184 (N2606, s-a-1) - processed 53.8% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 108/184 (N2546, s-a-1) - processed 58.7% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 117/184 (N2648, s-a-0) - processed 63.6% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 126/184 (N2600, s-a-1) - processed 68.5% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 135/184 (N2546, s-a-1) - processed 73.4% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 144/184 (N2256, s-a-1) - processed 78.3% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 153/184 (N2026, s-a-0) - processed 83.2% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 162/184 (N1919, s-a-1) - processed 88.0% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 171/184 (N1953, s-a-1) - processed 92.9% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 180/184 (N926, s-a-1) - processed 97.8% - detected 0/184 (0.0%)
-PPSFP pattern 11/18 - fault 184/184 (N297, s-a-0) - processed 100.0% - detected 0/184 (0.0%)
-PPSFP: pattern 11/18 done - detected in this pattern: 0 - cumulative detected: 1674/1858 (90.1%)
-PPSFP: starting pattern 12/18
-PPSFP pattern 12/18 - fault 9/184 (N2076, s-a-1) - processed 4.9% - detected 0/184 (0.0%)
-PPSFP pattern 12/18 - fault 18/184 (N2821, s-a-0) - processed 9.8% - detected 0/184 (0.0%)
-PPSFP pattern 12/18 - fault 27/184 (N1167, s-a-1) - processed 14.7% - detected 0/184 (0.0%)
-PPSFP pattern 12/18 - fault 36/184 (N2627, s-a-1) - processed 19.6% - detected 0/184 (0.0%)
-PPSFP pattern 12/18 - fault 45/184 (N2737, s-a-1) - processed 24.5% - detected 0/184 (0.0%)
-PPSFP pattern 12/18 - fault 54/184 (N2730, s-a-1) - processed 29.3% - detected 0/184 (0.0%)
-PPSFP pattern 12/18 - fault 63/184 (N2724, s-a-1) - processed 34.2% - detected 0/184 (0.0%)
-PPSFP pattern 12/18 - fault 72/184 (N275, s-a-1) - processed 39.1% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 81/184 (N2690, s-a-1) - processed 44.0% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 90/184 (N2674, s-a-1) - processed 48.9% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 99/184 (N2606, s-a-1) - processed 53.8% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 108/184 (N2546, s-a-1) - processed 58.7% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 117/184 (N2648, s-a-0) - processed 63.6% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 126/184 (N2600, s-a-1) - processed 68.5% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 135/184 (N2546, s-a-1) - processed 73.4% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 144/184 (N2256, s-a-1) - processed 78.3% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 153/184 (N2026, s-a-0) - processed 83.2% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 162/184 (N1919, s-a-1) - processed 88.0% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 171/184 (N1953, s-a-1) - processed 92.9% - detected 1/184 (0.5%)
-PPSFP pattern 12/18 - fault 180/184 (N926, s-a-1) - processed 97.8% - detected 2/184 (1.1%)
-PPSFP pattern 12/18 - fault 184/184 (N297, s-a-0) - processed 100.0% - detected 3/184 (1.6%)
-PPSFP: pattern 12/18 done - detected in this pattern: 3 - cumulative detected: 1677/1858 (90.3%)
-PPSFP: starting pattern 13/18
-PPSFP pattern 13/18 - fault 9/181 (N2076, s-a-1) - processed 5.0% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 18/181 (N2821, s-a-0) - processed 9.9% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 27/181 (N1167, s-a-1) - processed 14.9% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 36/181 (N2627, s-a-1) - processed 19.9% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 45/181 (N2737, s-a-1) - processed 24.9% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 54/181 (N2730, s-a-1) - processed 29.8% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 63/181 (N2724, s-a-1) - processed 34.8% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 72/181 (N2537, s-a-1) - processed 39.8% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 81/181 (N2689, s-a-1) - processed 44.8% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 90/181 (N2673, s-a-1) - processed 49.7% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 99/181 (N2611, s-a-1) - processed 54.7% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 108/181 (N2594, s-a-1) - processed 59.7% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 117/181 (N2645, s-a-0) - processed 64.6% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 126/181 (N2597, s-a-1) - processed 69.6% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 135/181 (N2543, s-a-1) - processed 74.6% - detected 0/181 (0.0%)
-PPSFP pattern 13/18 - fault 144/181 (N2244, s-a-0) - processed 79.6% - detected 2/181 (1.1%)
-PPSFP pattern 13/18 - fault 153/181 (N2008, s-a-1) - processed 84.5% - detected 4/181 (2.2%)
-PPSFP pattern 13/18 - fault 162/181 (N1872, s-a-1) - processed 89.5% - detected 4/181 (2.2%)
-PPSFP pattern 13/18 - fault 171/181 (N1930, s-a-1) - processed 94.5% - detected 4/181 (2.2%)
-PPSFP pattern 13/18 - fault 180/181 (N673, s-a-1) - processed 99.4% - detected 4/181 (2.2%)
-PPSFP pattern 13/18 - fault 181/181 (N661, s-a-1) - processed 100.0% - detected 5/181 (2.8%)
-PPSFP: pattern 13/18 done - detected in this pattern: 5 - cumulative detected: 1682/1858 (90.5%)
-PPSFP: starting pattern 14/18
-PPSFP pattern 14/18 - fault 8/176 (N2858, s-a-1) - processed 4.5% - detected 4/176 (2.3%)
-PPSFP pattern 14/18 - fault 16/176 (N2018, s-a-1) - processed 9.1% - detected 7/176 (4.0%)
-PPSFP pattern 14/18 - fault 24/176 (N2633, s-a-1) - processed 13.6% - detected 8/176 (4.5%)
-PPSFP pattern 14/18 - fault 32/176 (N926, s-a-1) - processed 18.2% - detected 8/176 (4.5%)
-PPSFP pattern 14/18 - fault 40/176 (N2741, s-a-1) - processed 22.7% - detected 8/176 (4.5%)
-PPSFP pattern 14/18 - fault 48/176 (N2735, s-a-1) - processed 27.3% - detected 8/176 (4.5%)
-PPSFP pattern 14/18 - fault 56/176 (N2729, s-a-1) - processed 31.8% - detected 8/176 (4.5%)
-PPSFP pattern 14/18 - fault 64/176 (N538, s-a-1) - processed 36.4% - detected 8/176 (4.5%)
-PPSFP pattern 14/18 - fault 72/176 (N2537, s-a-1) - processed 40.9% - detected 8/176 (4.5%)
-PPSFP pattern 14/18 - fault 80/176 (N2690, s-a-1) - processed 45.5% - detected 8/176 (4.5%)
-PPSFP pattern 14/18 - fault 88/176 (N537, s-a-1) - processed 50.0% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 96/176 (N2669, s-a-1) - processed 54.5% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 104/176 (N2537, s-a-1) - processed 59.1% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 112/176 (N2664, s-a-0) - processed 63.6% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 120/176 (N2620, s-a-1) - processed 68.2% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 128/176 (N2573, s-a-0) - processed 72.7% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 136/176 (N2540, s-a-1) - processed 77.3% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 144/176 (N2205, s-a-1) - processed 81.8% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 152/176 (N1930, s-a-1) - processed 86.4% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 160/176 (N1953, s-a-1) - processed 90.9% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 168/176 (N1872, s-a-1) - processed 95.5% - detected 10/176 (5.7%)
-PPSFP pattern 14/18 - fault 176/176 (N673, s-a-1) - processed 100.0% - detected 10/176 (5.7%)
-PPSFP: pattern 14/18 done - detected in this pattern: 10 - cumulative detected: 1692/1858 (91.1%)
-PPSFP: starting pattern 15/18
-PPSFP pattern 15/18 - fault 8/166 (N2807, s-a-1) - processed 4.8% - detected 0/166 (0.0%)
-PPSFP pattern 15/18 - fault 16/166 (N2633, s-a-1) - processed 9.6% - detected 0/166 (0.0%)
-PPSFP pattern 15/18 - fault 24/166 (N926, s-a-1) - processed 14.5% - detected 0/166 (0.0%)
-PPSFP pattern 15/18 - fault 32/166 (N2741, s-a-1) - processed 19.3% - detected 0/166 (0.0%)
-PPSFP pattern 15/18 - fault 40/166 (N2735, s-a-1) - processed 24.1% - detected 0/166 (0.0%)
-PPSFP pattern 15/18 - fault 48/166 (N2729, s-a-1) - processed 28.9% - detected 0/166 (0.0%)
-PPSFP pattern 15/18 - fault 56/166 (N538, s-a-1) - processed 33.7% - detected 0/166 (0.0%)
-PPSFP pattern 15/18 - fault 64/166 (N2537, s-a-1) - processed 38.6% - detected 1/166 (0.6%)
-PPSFP pattern 15/18 - fault 72/166 (N2690, s-a-1) - processed 43.4% - detected 1/166 (0.6%)
-PPSFP pattern 15/18 - fault 80/166 (N2673, s-a-1) - processed 48.2% - detected 2/166 (1.2%)
-PPSFP pattern 15/18 - fault 88/166 (N2606, s-a-1) - processed 53.0% - detected 2/166 (1.2%)
-PPSFP pattern 15/18 - fault 96/166 (N2543, s-a-1) - processed 57.8% - detected 3/166 (1.8%)
-PPSFP pattern 15/18 - fault 104/166 (N2655, s-a-0) - processed 62.7% - detected 3/166 (1.8%)
-PPSFP pattern 15/18 - fault 112/166 (N2611, s-a-1) - processed 67.5% - detected 3/166 (1.8%)
-PPSFP pattern 15/18 - fault 120/166 (N2564, s-a-0) - processed 72.3% - detected 4/166 (2.4%)
-PPSFP pattern 15/18 - fault 128/166 (N2361, s-a-0) - processed 77.1% - detected 6/166 (3.6%)
-PPSFP pattern 15/18 - fault 136/166 (N2151, s-a-1) - processed 81.9% - detected 6/166 (3.6%)
-PPSFP pattern 15/18 - fault 144/166 (N1979, s-a-0) - processed 86.7% - detected 6/166 (3.6%)
-PPSFP pattern 15/18 - fault 152/166 (N2151, s-a-1) - processed 91.6% - detected 6/166 (3.6%)
-PPSFP pattern 15/18 - fault 160/166 (N1225, s-a-1) - processed 96.4% - detected 8/166 (4.8%)
-PPSFP pattern 15/18 - fault 166/166 (N673, s-a-1) - processed 100.0% - detected 8/166 (4.8%)
-PPSFP: pattern 15/18 done - detected in this pattern: 8 - cumulative detected: 1700/1858 (91.5%)
-PPSFP: starting pattern 16/18
-PPSFP pattern 16/18 - fault 7/158 (N2808, s-a-1) - processed 4.4% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 14/158 (N2385, s-a-1) - processed 8.9% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 21/158 (N926, s-a-1) - processed 13.3% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 28/158 (N2627, s-a-1) - processed 17.7% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 35/158 (N546, s-a-1) - processed 22.2% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 42/158 (N2733, s-a-1) - processed 26.6% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 49/158 (N2728, s-a-1) - processed 31.0% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 56/158 (N538, s-a-1) - processed 35.4% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 63/158 (N2537, s-a-1) - processed 39.9% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 70/158 (N2603, s-a-1) - processed 44.3% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 77/158 (N2674, s-a-1) - processed 48.7% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 84/158 (N2669, s-a-1) - processed 53.2% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 91/158 (N2537, s-a-1) - processed 57.6% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 98/158 (N2603, s-a-1) - processed 62.0% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 105/158 (N2642, s-a-0) - processed 66.5% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 112/158 (N2600, s-a-1) - processed 70.9% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 119/158 (N2546, s-a-1) - processed 75.3% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 126/158 (N2222, s-a-1) - processed 79.7% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 133/158 (N2008, s-a-1) - processed 84.2% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 140/158 (N679, s-a-1) - processed 88.6% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 147/158 (N1911, s-a-1) - processed 93.0% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 154/158 (N1171, s-a-0) - processed 97.5% - detected 0/158 (0.0%)
-PPSFP pattern 16/18 - fault 158/158 (N673, s-a-1) - processed 100.0% - detected 0/158 (0.0%)
-PPSFP: pattern 16/18 done - detected in this pattern: 0 - cumulative detected: 1700/1858 (91.5%)
-PPSFP: starting pattern 17/18
-PPSFP pattern 17/18 - fault 7/158 (N2808, s-a-1) - processed 4.4% - detected 0/158 (0.0%)
-PPSFP pattern 17/18 - fault 14/158 (N2385, s-a-1) - processed 8.9% - detected 0/158 (0.0%)
-PPSFP pattern 17/18 - fault 21/158 (N926, s-a-1) - processed 13.3% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 28/158 (N2627, s-a-1) - processed 17.7% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 35/158 (N546, s-a-1) - processed 22.2% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 42/158 (N2733, s-a-1) - processed 26.6% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 49/158 (N2728, s-a-1) - processed 31.0% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 56/158 (N538, s-a-1) - processed 35.4% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 63/158 (N2537, s-a-1) - processed 39.9% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 70/158 (N2603, s-a-1) - processed 44.3% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 77/158 (N2674, s-a-1) - processed 48.7% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 84/158 (N2669, s-a-1) - processed 53.2% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 91/158 (N2537, s-a-1) - processed 57.6% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 98/158 (N2603, s-a-1) - processed 62.0% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 105/158 (N2642, s-a-0) - processed 66.5% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 112/158 (N2600, s-a-1) - processed 70.9% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 119/158 (N2546, s-a-1) - processed 75.3% - detected 1/158 (0.6%)
-PPSFP pattern 17/18 - fault 126/158 (N2222, s-a-1) - processed 79.7% - detected 4/158 (2.5%)
-PPSFP pattern 17/18 - fault 133/158 (N2008, s-a-1) - processed 84.2% - detected 4/158 (2.5%)
-PPSFP pattern 17/18 - fault 140/158 (N679, s-a-1) - processed 88.6% - detected 4/158 (2.5%)
-PPSFP pattern 17/18 - fault 147/158 (N1911, s-a-1) - processed 93.0% - detected 4/158 (2.5%)
-PPSFP pattern 17/18 - fault 154/158 (N1171, s-a-0) - processed 97.5% - detected 5/158 (3.2%)
-PPSFP pattern 17/18 - fault 158/158 (N673, s-a-1) - processed 100.0% - detected 5/158 (3.2%)
-PPSFP: pattern 17/18 done - detected in this pattern: 5 - cumulative detected: 1705/1858 (91.8%)
-PPSFP: starting pattern 18/18
-PPSFP pattern 18/18 - fault 7/153 (N2808, s-a-1) - processed 4.6% - detected 2/153 (1.3%)
-PPSFP pattern 18/18 - fault 14/153 (N2385, s-a-1) - processed 9.2% - detected 2/153 (1.3%)
-PPSFP pattern 18/18 - fault 21/153 (N926, s-a-1) - processed 13.7% - detected 2/153 (1.3%)
-PPSFP pattern 18/18 - fault 28/153 (N926, s-a-1) - processed 18.3% - detected 2/153 (1.3%)
-PPSFP pattern 18/18 - fault 35/153 (N2738, s-a-1) - processed 22.9% - detected 2/153 (1.3%)
-PPSFP pattern 18/18 - fault 42/153 (N2732, s-a-1) - processed 27.5% - detected 3/153 (2.0%)
-PPSFP pattern 18/18 - fault 49/153 (N540, s-a-1) - processed 32.0% - detected 3/153 (2.0%)
-PPSFP pattern 18/18 - fault 56/153 (N2606, s-a-1) - processed 36.6% - detected 4/153 (2.6%)
-PPSFP pattern 18/18 - fault 63/153 (N2540, s-a-1) - processed 41.2% - detected 4/153 (2.6%)
-PPSFP pattern 18/18 - fault 70/153 (N2690, s-a-1) - processed 45.8% - detected 4/153 (2.6%)
-PPSFP pattern 18/18 - fault 77/153 (N2673, s-a-1) - processed 50.3% - detected 4/153 (2.6%)
-PPSFP pattern 18/18 - fault 84/153 (N534, s-a-1) - processed 54.9% - detected 4/153 (2.6%)
-PPSFP pattern 18/18 - fault 91/153 (N2540, s-a-1) - processed 59.5% - detected 5/153 (3.3%)
-PPSFP pattern 18/18 - fault 98/153 (N2664, s-a-0) - processed 64.1% - detected 5/153 (3.3%)
-PPSFP pattern 18/18 - fault 105/153 (N2639, s-a-0) - processed 68.6% - detected 6/153 (3.9%)
-PPSFP pattern 18/18 - fault 112/153 (N2597, s-a-1) - processed 73.2% - detected 7/153 (4.6%)
-PPSFP pattern 18/18 - fault 119/153 (N2543, s-a-1) - processed 77.8% - detected 7/153 (4.6%)
-PPSFP pattern 18/18 - fault 126/153 (N2151, s-a-1) - processed 82.4% - detected 7/153 (4.6%)
-PPSFP pattern 18/18 - fault 133/153 (N2012, s-a-1) - processed 86.9% - detected 7/153 (4.6%)
-PPSFP pattern 18/18 - fault 140/153 (N1953, s-a-1) - processed 91.5% - detected 7/153 (4.6%)
-PPSFP pattern 18/18 - fault 147/153 (N976, s-a-1) - processed 96.1% - detected 7/153 (4.6%)
-PPSFP pattern 18/18 - fault 153/153 (N673, s-a-1) - processed 100.0% - detected 7/153 (4.6%)
-PPSFP: pattern 18/18 done - detected in this pattern: 7 - cumulative detected: 1712/1858 (92.1%)
-undetected faults after PPSFP: 146 
-
-algorithmic pattern generation:
-Using SAT backend: varisat
-SAT: processing 1/146 (0.7%) - fault N1163 s-a-1
-N1163 /1
-SAT: 1/146 (0.7%) - UNSAT for N1163
-SAT: processing 2/146 (1.4%) - fault N1167 s-a-1
-N1167 /1
-SAT: 2/146 (1.4%) - UNSAT for N1167
-SAT: processing 3/146 (2.1%) - fault N1171 s-a-0
-N1171 /0
-SAT: 3/146 (2.1%) - found pattern for N1171 (found 1/146)
-SAT: processing 4/146 (2.7%) - fault N1225 s-a-1
-N1225 /1
-SAT: 4/146 (2.7%) - found pattern for N1225 (found 2/146)
-SAT: processing 5/146 (3.4%) - fault N1857 s-a-1
-N1857 /1
-SAT: 5/146 (3.4%) - found pattern for N1857 (found 3/146)
-SAT: processing 6/146 (4.1%) - fault N1872 s-a-1
-N1872 /1
-SAT: 6/146 (4.1%) - found pattern for N1872 (found 4/146)
-SAT: processing 7/146 (4.8%) - fault N1872 s-a-1
-N1872->N1919 /1
-SAT: 7/146 (4.8%) - found pattern for N1872 (found 5/146)
-SAT: processing 8/146 (5.5%) - fault N1911 s-a-1
-N1911 /1
-SAT: 8/146 (5.5%) - found pattern for N1911 (found 6/146)
-SAT: processing 9/146 (6.2%) - fault N1915 s-a-1
-N1915 /1
-SAT: 9/146 (6.2%) - found pattern for N1915 (found 7/146)
-SAT: processing 10/146 (6.8%) - fault N1919 s-a-1
-N1919 /1
-SAT: 10/146 (6.8%) - found pattern for N1919 (found 8/146)
-SAT: processing 11/146 (7.5%) - fault N1930 s-a-1
-N1930 /1
-SAT: 11/146 (7.5%) - found pattern for N1930 (found 9/146)
-SAT: processing 12/146 (8.2%) - fault N1930 s-a-1
-N1930->N1975 /1
-SAT: 12/146 (8.2%) - found pattern for N1930 (found 10/146)
-SAT: processing 13/146 (8.9%) - fault N1941 s-a-1
-N1941 /1
-SAT: 13/146 (8.9%) - found pattern for N1941 (found 11/146)
-SAT: processing 14/146 (9.6%) - fault N1953 s-a-1
-N1953 /1
-SAT: 14/146 (9.6%) - found pattern for N1953 (found 12/146)
-SAT: processing 15/146 (10.3%) - fault N1953 s-a-1
-N1953->N2004 /1
-SAT: 15/146 (10.3%) - found pattern for N1953 (found 13/146)
-SAT: processing 16/146 (11.0%) - fault N1975 s-a-1
-N1975 /1
-SAT: 16/146 (11.0%) - found pattern for N1975 (found 14/146)
-SAT: processing 17/146 (11.6%) - fault N1979 s-a-0
-N1979 /0
-SAT: 17/146 (11.6%) - found pattern for N1979 (found 15/146)
-SAT: processing 18/146 (12.3%) - fault N2008 s-a-1
-N2008 /1
-SAT: 18/146 (12.3%) - found pattern for N2008 (found 16/146)
-SAT: processing 19/146 (13.0%) - fault N2012 s-a-1
-N2012 /1
-SAT: 19/146 (13.0%) - found pattern for N2012 (found 17/146)
-SAT: processing 20/146 (13.7%) - fault N2018 s-a-1
-N2018 /1
-SAT: 20/146 (13.7%) - found pattern for N2018 (found 18/146)
-SAT: processing 21/146 (14.4%) - fault N2024 s-a-1
-N2024 /1
-SAT: 21/146 (14.4%) - found pattern for N2024 (found 19/146)
-SAT: processing 22/146 (15.1%) - fault N2026 s-a-0
-N2026 /0
-^C
+PPSFP parallel pattern 4/18 - processed 15/303 (5.0%) - detected 0/303 (0.0%) - last fault N2600 s-a-1
+PPSFP parallel pattern 4/18 - processed 30/303 (9.9%) - detected 0/303 (0.0%) - last fault N2747 s-a-1
+PPSFP parallel pattern 4/18 - processed 45/303 (14.9%) - detected 0/303 (0.0%) - last fault N2689 s-a-1
+PPSFP parallel pattern 4/18 - processed 60/303 (19.8%) - detected 0/303 (0.0%) - last fault N2594 s-a-1
+PPSFP parallel pattern 4/18 - processed 75/303 (24.8%) - detected 0/303 (0.0%) - last fault N2808 s-a-1
+PPSFP parallel pattern 4/18 - processed 90/303 (29.7%) - detected 0/303 (0.0%) - last fault N2567 s-a-0
+PPSFP parallel pattern 4/18 - processed 105/303 (34.7%) - detected 0/303 (0.0%) - last fault N2279 s-a-1
+PPSFP parallel pattern 4/18 - processed 120/303 (39.6%) - detected 0/303 (0.0%) - last fault N2731 s-a-1
+PPSFP parallel pattern 4/18 - processed 135/303 (44.6%) - detected 0/303 (0.0%) - last fault N2620 s-a-1
+PPSFP parallel pattern 4/18 - processed 150/303 (49.5%) - detected 1/303 (0.3%) - last fault N926 s-a-1
+PPSFP parallel pattern 4/18 - processed 165/303 (54.5%) - detected 2/303 (0.7%) - last fault N1751 s-a-0
+PPSFP parallel pattern 4/18 - processed 180/303 (59.4%) - detected 9/303 (3.0%) - last fault N2062 s-a-1
+PPSFP parallel pattern 4/18 - processed 195/303 (64.4%) - detected 13/303 (4.3%) - last fault N2026 s-a-0

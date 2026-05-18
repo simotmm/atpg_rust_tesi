@@ -7,6 +7,7 @@ pub struct RunOptions {
     pub optimize: bool,
     pub minimizer: Option<String>, // Some("builtin") or Some("espresso") or None to disable minimization
     pub sat_backend: String, // "builtin" or "varisat"
+    pub quiet: bool, // if true, suppress non-essential stdout
 }
 
 static OPTIONS: OnceCell<Mutex<RunOptions>> = OnceCell::new();
@@ -25,7 +26,8 @@ pub fn get_options() -> RunOptions {
     RunOptions { 
         enable_sat: true, 
         optimize: true, 
-        minimizer: Some("espresso".to_string()), 
-        sat_backend: "varisat".to_string() 
+        minimizer: Some("builtin".to_string()), 
+        sat_backend: "varisat".to_string(),
+        quiet: true,
     }
 }

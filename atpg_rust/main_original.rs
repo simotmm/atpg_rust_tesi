@@ -241,11 +241,11 @@ fn main0() {
 
     //caricamento netlist da file
     let filename: String = get_filename_from_int(NET_DIR, n).unwrap_or(get_default_name());
-    if PRINT { println!("filename: {filename}"); }
+    if !crate::options::get_options().quiet && PRINT { println!("filename: {filename}"); }
     let circuit: Netlist = file_iscas89_atlanta_to_netlist(&filename);
 
     // stampa netlist
-    if PRINT { circuit.print(); }
+    if !crate::options::get_options().quiet && PRINT { circuit.print(); }
 
     //press_any_key(); //pausa per debug
 
@@ -257,11 +257,11 @@ fn main0() {
     let dag: Dag = Dag::from_netlist(&circuit.clone());
 
     //stampa dag
-    if PRINT { dag.print(); }
+    if !crate::options::get_options().quiet && PRINT { dag.print(); }
     //press_any_key(); //pausa per debug
 
     //stampa cnf (conjunctive normal form, prodotto delle somme)
-    if PRINT { println!("cnf: {}\n", dag.cnf_cone_from_outputs().to_string()); }
+    if !crate::options::get_options().quiet && PRINT { println!("cnf: {}\n", dag.cnf_cone_from_outputs().to_string()); }
     //press_any_key(); //pausa per debug
 
     //generazione dei pattern
@@ -280,7 +280,7 @@ fn main0() {
     };
 
     //stampa pattern
-    if PRINT { for pattern in &patterns { pattern.print(); } }
+    if !crate::options::get_options().quiet && PRINT { for pattern in &patterns { pattern.print(); } }
     //press_any_key(); //pausa per debug
 
     //genera lista di fault
@@ -289,7 +289,7 @@ fn main0() {
     let tot_faults: usize = faults.len();
 
     //stampa lista dei fault
-    if PRINT { print_fault_list(&faults); }
+    if !crate::options::get_options().quiet && PRINT { print_fault_list(&faults); }
     //press_any_key(); //pausa per debug
 
     //PPSFP (parallel pattern single fault propagation)
@@ -302,7 +302,7 @@ fn main0() {
     let n_ppsfp_undetected_faults = ppsfp_undetected_faults.len();
     let n_ppsfp_detected_faults = n_faults - n_ppsfp_undetected_faults;
     let all_faults_detected = n_ppsfp_undetected_faults == 0;
-    if PRINT { 
+    if !crate::options::get_options().quiet && PRINT { 
         let mut i = 0;
         for ppsfp_result in ppsfp_results.iter() {
             println!("\nsimulation results (set {}):\n  patterns: \n{}", i+1, patterns[i].to_string());
@@ -331,7 +331,7 @@ fn main0() {
 
     // costruzione stringa undetected faults
     let mut undetected_str = String::from("  -> undetected faults:\n");
-    if PRINT {
+    if !crate::options::get_options().quiet && PRINT {
         for fault in &undetected_faults {
             undetected_str.push_str(&format!("       fault on wire {} s-a-{}\n", &fault.wire, if fault.sa1 {1} else {0}));
         }

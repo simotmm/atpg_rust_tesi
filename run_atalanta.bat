@@ -20,9 +20,29 @@ if not exist "%BENCH%" (
   exit /b 4
 )
 
+if not exist "%~dp0run_atalanta.ps1" (
+  echo ERROR: PowerShell wrapper not found: "%~dp0run_atalanta.ps1"
+  exit /b 5
+)
+
 
 echo Running Atalanta-M on benchmark %num%...
 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0run_atalanta.ps1" %num%
+set "psExit=%ERRORLEVEL%"
+if not "%psExit%"=="0" (
+  echo ERROR: run_atalanta.ps1 failed with exit code %psExit%
+  endlocal & exit /b %psExit%
+)
+
+set "UND_FILE=%BASEDIR%atpg_rust\results\c%num%_atalanta_undetected.txt"
+if exist "%UND_FILE%" (
+  echo.
+  echo Undetected faults (from %UND_FILE%):
+  type "%UND_FILE%"
+) else (
+  echo No undetected-faults file found at %UND_FILE%
+)
 
 endlocal
+exit /b 0

@@ -427,7 +427,7 @@ impl Dag {
         let wire = &fault.wire;
         let sa1 = fault.sa1;
 
-        if PRINT { print!("fault injection: "); }
+        if !crate::options::get_options().quiet && PRINT { print!("fault injection: "); }
 
         let start = match self.nodes.iter().position(|n| &n.outputs[0] == wire) {
             Some(id) => id,
@@ -489,7 +489,7 @@ impl Dag {
         let stuck_literal = Literal { var: renamed_wire, neg: !sa1 };
         self.nodes[start].cnf = CNF { clauses: vec![vec![stuck_literal]] };
 
-        if PRINT { println!("fault injection on wire {} complete (stuck-at {}).\n", wire, if sa1 { 1 } else { 0 }); }
+        if !crate::options::get_options().quiet && PRINT { println!("fault injection on wire {} complete (stuck-at {}).\n", wire, if sa1 { 1 } else { 0 }); }
         true
     }
 

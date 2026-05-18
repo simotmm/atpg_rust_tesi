@@ -13,3 +13,5 @@
 0001
 1110
 0010
+
+undetectable faults (0):

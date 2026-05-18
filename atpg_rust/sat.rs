@@ -43,7 +43,7 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
     let two_sat_portion = cnf.get_2_lit_portion();
     let three_sat_portion = cnf.get_3_lit_portion();
 
-    if PRINT && VERBOSE{
+    if !crate::options::get_options().quiet && PRINT && VERBOSE{
         print!("full cnf:         {}\n", cnf.to_string());
         print!("(literal, int) map: {:?}\n", cnf.literals_to_int_map_ordered());
         print!("full cnf as int:\np cnf {} {}\n", cnf.get_n_clauses(), cnf.get_n_literals());
@@ -63,7 +63,7 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
     let two_sat_assignments_opt = generate_all_assignments(&two_sat_portion, max_2sat_assignments);
     if two_sat_assignments_opt.is_none() {
         // 2-SAT unsat => whole formula unsat
-        if PRINT { print!("2-SAT portion UNSAT -> formula UNSAT\n"); }
+        if !crate::options::get_options().quiet && PRINT { print!("2-SAT portion UNSAT -> formula UNSAT\n"); }
         return (result, None);
     }
 
@@ -73,12 +73,12 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
     // The `None` Option will cause `three_sat_solver` to use the module-level `EXTEND_2SAT` flag.
     
     let final_assignment: Option<HashMap<String, bool>> = three_sat_solver(two_sat_assignments.clone(), three_sat_portion, cnf.clone(), prioritized_vars, None);
-    if PRINT { print!("final results: {:?}\n\n", final_assignment); }
+    if !crate::options::get_options().quiet && PRINT { print!("final results: {:?}\n\n", final_assignment); }
     if final_assignment.is_none() { return (result, None); }
 
     let final_assignment = final_assignment.unwrap();
     // Debug: print the final assignment returned by the 3-SAT solver
-    if PRINT_DEBUG {
+    if !crate::options::get_options().quiet && PRINT_DEBUG {
         println!("[DEBUG] SAT final assignment: {:?}", final_assignment);
     }
 
@@ -91,7 +91,7 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
         // count variables in CNF
         let var_map = cnf.literals_to_int_map();
         let n_vars_in_cnf = var_map.len();
-        if PRINT_DEBUG {
+        if !crate::options::get_options().quiet && PRINT_DEBUG {
             println!("[DEBUG] CNF variables count: {}. Assigned vars count: {}.", n_vars_in_cnf, final_assignment.len());
         }
 
@@ -117,7 +117,7 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
         }
 
         if !unsatisfied.is_empty() || !missing_vars.is_empty() {
-            if PRINT_DEBUG {
+            if !crate::options::get_options().quiet && PRINT_DEBUG {
                 println!("[DEBUG] Assignment does NOT fully satisfy CNF: {} unsatisfied clauses, {} missing/unassigned variables",
                     unsatisfied.len(), missing_vars.len());
                 if !unsatisfied.is_empty() {
@@ -129,7 +129,7 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
                 }
             }
         } else {
-            if PRINT_DEBUG {
+            if !crate::options::get_options().quiet && PRINT_DEBUG {
                 println!("[DEBUG] Assignment satisfies CNF (no unsatisfied clauses, no unassigned vars in decisive clauses).");
             }
         }
@@ -330,7 +330,7 @@ fn three_sat_solver(two_sat_assignments: Vec<HashMap<String, bool>>, three_sat_p
         for (i, two_sat_assignment) in two_sat_assignments.into_iter().enumerate() {
         let idx = i + 1;
         let pct = if total_two_sat > 0 { (idx as f64) * 100.0 / (total_two_sat as f64) } else { 0.0 };
-        if crate::PRINT_PROGRESS { println!("three_sat: extending 2-SAT assignment {}/{} ({:.1}%)", idx, total_two_sat, pct); }
+        if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("three_sat: extending 2-SAT assignment {}/{} ({:.1}%)", idx, total_two_sat, pct); }
 
         let mut assignment = two_sat_assignment; // ownership from into_iter()
         let mut formula = three_sat_portion.clauses.clone();
@@ -435,7 +435,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
         let idx = i + 1;
         let pct = if total > 0 { (idx as f64) * 100.0 / (total as f64) } else { 0.0 };
 
-        if crate::PRINT_PROGRESS { println!("SAT: processing {}/{} ({:.1}%) - fault {} s-a-{}", idx, total, pct, fault.wire, if fault.sa1 {1} else {0}); }
+        if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT: processing {}/{} ({:.1}%) - fault {} s-a-{}", idx, total, pct, fault.wire, if fault.sa1 {1} else {0}); }
 
         // Build a primed copy of the DAG for the faulty circuit (all node outputs primed)
         // and apply the stuck-at fault on the corresponding primed wire. Also compute
@@ -543,21 +543,21 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                         cnf = min_cnf;
                     } else {
                         // fallback to builtin
-                        if let Err(_) = minimize_search_tree(&mut cnf) {
-                            if crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
+                            if let Err(_) = minimize_search_tree(&mut cnf) {
+                                if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
                             continue;
                         }
                         if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
                     }
                 } else {
                     if let Err(_) = minimize_search_tree(&mut cnf) {
-                        if crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
+                        if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
                         continue;
                     }
                     if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
                 }
             }
-        fault.print();
+        if !crate::options::get_options().quiet && PRINT { fault.print(); }
         // build prioritized vars from affected cone (prefer primary inputs in the cone)
         let mut pvars: Vec<String> = Vec::new();
         for &id in &faulty.affected {
@@ -584,7 +584,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
         if !pattern_bits.is_empty() {
             found_count += 1;
             // Debug: print the primary-input pattern bits produced by the SAT solver
-            if PRINT_DEBUG {
+            if !crate::options::get_options().quiet && PRINT_DEBUG {
                 println!("[DEBUG] pattern_bits for fault {}: {:?}", fault.wire, pattern_bits);
             }
             // If SAT returned the full boolean assignment, evaluate the DAG directly
@@ -601,7 +601,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                 let forced_wire = format!("{}'", fault.wire);
                 let faulty_eval = faulty.evaluate_boolean(&primary_assign, Some((forced_wire.clone(), fault.sa1)));
 
-                if PRINT_DEBUG {
+                if !crate::options::get_options().quiet && PRINT_DEBUG {
                     println!("[DEBUG] Boolean evaluation of DAG (single-bit) for fault {}:", fault.wire);
                 }
                 // Compare assigned values vs computed booleans for each node; report first mismatch
@@ -618,20 +618,20 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
 
                     if let Some(ax) = assigned_x {
                         if ax != g {
-                            if PRINT_DEBUG {
+                            if !crate::options::get_options().quiet && PRINT_DEBUG {
                                 println!("[DEBUG][MISMATCH] node {} ('{}'): assigned {} != computed good {}", nid, base, ax, g);
                             }
-                            if PRINT_DEBUG { println!("[DEBUG][MISMATCH] node CNF: {}", node.cnf.to_string()); }
-                            if PRINT_DEBUG { println!("[DEBUG][MISMATCH] node gate type: {}", node.gate_type.to_string()); }
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] node CNF: {}", node.cnf.to_string()); }
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] node gate type: {}", node.gate_type.to_string()); }
                             // print inputs assigned vs computed
                             for inp in &node.inputs {
                                 let a = assign_map.get(inp).cloned();
                                 let c = good_eval.get(inp).cloned().unwrap_or(false);
-                                if PRINT_DEBUG { println!("[DEBUG][MISMATCH]   input {} -> assigned={:?}, computed={}", inp, a, c); }
+                                if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH]   input {} -> assigned={:?}, computed={}", inp, a, c); }
                             }
                             // print boolean vector used by evaluator
                             let in_vals: Vec<bool> = node.inputs.iter().map(|i| *good_eval.get(i).unwrap_or(&false)).collect();
-                            if PRINT_DEBUG { println!("[DEBUG][MISMATCH]   evaluator in_vals: {:?}", in_vals); }
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH]   evaluator in_vals: {:?}", in_vals); }
                             mismatch_found = true;
                         }
                     }
@@ -639,18 +639,18 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
 
                     if let Some(axp) = assigned_xp {
                         if axp != f {
-                            if PRINT_DEBUG { println!("[DEBUG][MISMATCH] node {} ('{}'): assigned primed {} != computed faulty {}", nid, base, axp, f); }
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] node {} ('{}'): assigned primed {} != computed faulty {}", nid, base, axp, f); }
                             // print CNF from the faulty DAG for this node (if available)
                             if nid < faulty.nodes.len() {
-                                if PRINT_DEBUG { println!("[DEBUG][MISMATCH] faulty node CNF: {}", faulty.nodes[nid].cnf.to_string()); }
-                                if PRINT_DEBUG { println!("[DEBUG][MISMATCH] node gate type: {}", node.gate_type.to_string()); }
+                                if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] faulty node CNF: {}", faulty.nodes[nid].cnf.to_string()); }
+                                if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] node gate type: {}", node.gate_type.to_string()); }
                                 for inp in &node.inputs {
                                     let a = assign_map.get(inp).cloned();
                                     let c = faulty_eval.get(inp).cloned().unwrap_or(false);
-                                    if PRINT_DEBUG { println!("[DEBUG][MISMATCH]   input {} -> assigned={:?}, computed_faulty={}", inp, a, c); }
+                                    if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH]   input {} -> assigned={:?}, computed_faulty={}", inp, a, c); }
                                 }
                                 let in_vals_faulty: Vec<bool> = node.inputs.iter().map(|i| *faulty_eval.get(i).unwrap_or(&false)).collect();
-                                if PRINT_DEBUG { println!("[DEBUG][MISMATCH]   evaluator in_vals_faulty: {:?}", in_vals_faulty); }
+                                if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH]   evaluator in_vals_faulty: {:?}", in_vals_faulty); }
                             }
                             mismatch_found = true;
                         }
@@ -660,25 +660,25 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                     if let Some(bd) = bd_assigned {
                         let computed_xor = g ^ f;
                         if bd != computed_xor {
-                            if PRINT_DEBUG { println!("[DEBUG][MISMATCH] node {} ('{}'): BD__ assigned={} but computed XOR(good,faulty)={}", nid, base, bd, computed_xor); }
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] node {} ('{}'): BD__ assigned={} but computed XOR(good,faulty)={}", nid, base, bd, computed_xor); }
                             // print clauses from the whole CNF that mention this BD__ var
                             let bd_clauses: Vec<String> = cnf.clauses.iter()
                                 .filter(|cl| cl.iter().any(|l| l.var == bd_var))
                                 .map(|cl| cl.iter().map(|l| format!("{}{}", if l.neg {"!"} else {""}, l.var)).collect::<Vec<_>>().join(" + "))
                                 .collect();
-                            if PRINT_DEBUG { println!("[DEBUG][MISMATCH] BD__ clauses: {:?}", bd_clauses); }
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] BD__ clauses: {:?}", bd_clauses); }
                             mismatch_found = true;
                         }
                     }
                     if mismatch_found { break; }
                 }
-                if !mismatch_found { if PRINT_DEBUG { println!("[DEBUG] No node-level mismatches found between SAT assignment and boolean evaluation."); } }
+                if !mismatch_found { if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG] No node-level mismatches found between SAT assignment and boolean evaluation."); } }
             }
-            if crate::PRINT_PROGRESS { println!("SAT: {}/{} ({:.1}%) - found pattern for {} (found {}/{})", idx, total, pct, fault.wire, found_count, total); }
+            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT: {}/{} ({:.1}%) - found pattern for {} (found {}/{})", idx, total, pct, fault.wire, found_count, total); }
             solutions.insert(fault.clone(), pattern_bits);
         } else {
-            if crate::PRINT_PROGRESS { println!("SAT: {}/{} ({:.1}%) - UNSAT for {}", idx, total, pct, fault.wire); }
-            if PRINT {
+            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT: {}/{} ({:.1}%) - UNSAT for {}", idx, total, pct, fault.wire); }
+            if !crate::options::get_options().quiet && PRINT {
                 println!("SAT UNSAT for fault {} stuck-at{}", fault.wire, fault.sa1);
                 // Diagnostic output to help understand why SAT failed for this fault
                 println!("--- Diagnostic: sequential SAT failed for fault {} stuck-at-{} ---", fault.wire, fault.sa1);
@@ -728,7 +728,7 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
 
             let idx = processed.fetch_add(1, Ordering::SeqCst) + 1;
             let pct = if total > 0 { (idx as f64) * 100.0 / (total as f64) } else { 0.0 };
-            if crate::PRINT_PROGRESS { println!("SAT (parallel): processing {}/{} ({:.1}%) - fault {} s-a-{}", idx, total, pct, fault.wire, if fault.sa1 {1} else {0}); }
+            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT (parallel): processing {}/{} ({:.1}%) - fault {} s-a-{}", idx, total, pct, fault.wire, if fault.sa1 {1} else {0}); }
 
             // Build a primed copy of the DAG for the faulty circuit and apply the stuck-at fault
             let mut faulty = dag.primed_clone();
@@ -788,14 +788,14 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
                         cnf = min_cnf;
                     } else {
                         if let Err(_) = minimize_search_tree(&mut cnf) {
-                            if crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
+                            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
                             return sol;
                         }
                         if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
                     }
                 } else {
                     if let Err(_) = minimize_search_tree(&mut cnf) {
-                        if crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
+                        if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
                         return sol;
                     }
                     if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
@@ -822,8 +822,8 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
                 sat_solver_bits(cnf.clone(), Some(&inputs), Some(&pvars))
             };
             if pattern_bits.is_empty() {
-                if crate::PRINT_PROGRESS { println!("SAT (parallel): {}/{} ({:.1}%) - UNSAT for {}", idx, total, pct, fault.wire); }
-                if PRINT { println!("SAT UNSAT for fault {} stuck-at{}", fault.wire, fault.sa1); }
+                if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT (parallel): {}/{} ({:.1}%) - UNSAT for {}", idx, total, pct, fault.wire); }
+                if !crate::options::get_options().quiet && PRINT { println!("SAT UNSAT for fault {} stuck-at{}", fault.wire, fault.sa1); }
                 return sol;
             }
 
@@ -837,7 +837,7 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
                 let good_eval = dag.evaluate_boolean(&primary_assign, None);
                 let forced_wire = format!("{}'", (*fault).wire);
                 let faulty_eval = faulty.evaluate_boolean(&primary_assign, Some((forced_wire.clone(), (*fault).sa1)));
-                println!("[DEBUG] (parallel) Boolean evaluation for fault {}:", (*fault).wire);
+                if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG] (parallel) Boolean evaluation for fault {}:", (*fault).wire); }
                 // Compare assigned values vs computed booleans for each node; report first mismatch
                 let mut mismatch_found = false;
                 for (nid, node) in dag.nodes.iter().enumerate() {
@@ -852,13 +852,13 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
 
                     if let Some(ax) = assigned_x {
                         if ax != g {
-                            println!("[DEBUG][MISMATCH] node {} ('{}'): assigned {} != computed good {}", nid, base, ax, g);
-                            println!("[DEBUG][MISMATCH] node CNF: {}", node.cnf.to_string());
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] node {} ('{}'): assigned {} != computed good {}", nid, base, ax, g); }
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] node CNF: {}", node.cnf.to_string()); }
                             // print inputs assigned vs computed
                             for inp in &node.inputs {
                                 let a = assign_map.get(inp).cloned();
                                 let c = good_eval.get(inp).cloned().unwrap_or(false);
-                                println!("[DEBUG][MISMATCH]   input {} -> assigned={:?}, computed={}", inp, a, c);
+                                if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH]   input {} -> assigned={:?}, computed={}", inp, a, c); }
                             }
                             mismatch_found = true;
                         }
@@ -867,13 +867,13 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
 
                     if let Some(axp) = assigned_xp {
                         if axp != f {
-                            println!("[DEBUG][MISMATCH] node {} ('{}'): assigned primed {} != computed faulty {}", nid, base, axp, f);
+                            if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] node {} ('{}'): assigned primed {} != computed faulty {}", nid, base, axp, f); }
                             if nid < faulty.nodes.len() {
-                                println!("[DEBUG][MISMATCH] faulty node CNF: {}", faulty.nodes[nid].cnf.to_string());
+                                if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH] faulty node CNF: {}", faulty.nodes[nid].cnf.to_string()); }
                                 for inp in &node.inputs {
                                     let a = assign_map.get(inp).cloned();
                                     let c = faulty_eval.get(inp).cloned().unwrap_or(false);
-                                    println!("[DEBUG][MISMATCH]   input {} -> assigned={:?}, computed_faulty={}", inp, a, c);
+                                    if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG][MISMATCH]   input {} -> assigned={:?}, computed_faulty={}", inp, a, c); }
                                 }
                             }
                             mismatch_found = true;
@@ -884,22 +884,22 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
                     if let Some(bd) = bd_assigned {
                         let computed_xor = g ^ f;
                         if bd != computed_xor {
-                            println!("[DEBUG][MISMATCH] node {} ('{}'): BD__ assigned={} but computed XOR(good,faulty)={}", nid, base, bd, computed_xor);
+                            if !crate::options::get_options().quiet { println!("[DEBUG][MISMATCH] node {} ('{}'): BD__ assigned={} but computed XOR(good,faulty)={}", nid, base, bd, computed_xor); }
                             let bd_clauses: Vec<String> = cnf.clauses.iter()
                                 .filter(|cl| cl.iter().any(|l| l.var == bd_var))
                                 .map(|cl| cl.iter().map(|l| format!("{}{}", if l.neg {"!"} else {""}, l.var)).collect::<Vec<_>>().join(" + "))
                                 .collect();
-                            println!("[DEBUG][MISMATCH] BD__ clauses: {:?}", bd_clauses);
+                            if !crate::options::get_options().quiet { println!("[DEBUG][MISMATCH] BD__ clauses: {:?}", bd_clauses); }
                             mismatch_found = true;
                         }
                     }
                     if mismatch_found { break; }
                 }
-                if !mismatch_found { println!("[DEBUG] (parallel) No node-level mismatches found between SAT assignment and boolean evaluation."); }
+                    if !mismatch_found { if !crate::options::get_options().quiet { println!("[DEBUG] (parallel) No node-level mismatches found between SAT assignment and boolean evaluation."); } }
             }
 
             let found_idx = found.fetch_add(1, Ordering::SeqCst) + 1;
-            if crate::PRINT_PROGRESS { println!("SAT (parallel): {}/{} ({:.1}%) - found pattern for {} (found {}/{})", idx, total, pct, fault.wire, found_idx, total); }
+            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT (parallel): {}/{} ({:.1}%) - found pattern for {} (found {}/{})", idx, total, pct, fault.wire, found_idx, total); }
 
             sol.insert((*fault).clone(), pattern_bits);
             sol
