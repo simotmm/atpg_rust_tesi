@@ -1,4 +1,3 @@
-@echo off
 pushd "%~dp0"
 echo Starting sequential benchmarks...
 
@@ -10,8 +9,11 @@ for %%I in (%IDS%) do (
   echo === Running bench full %%I ===
   cargo run -- bench full %%I
   echo === Completed %%I ===
+  git add README.md
+  git commit -m "add benchmark %%I in readme"
 )
 
 echo All benchmarks completed.
+git push
 popd
 pause
