@@ -265,12 +265,12 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
 
     // Read existing README to avoid duplicating the table header
     let existing = std::fs::read_to_string(filename).unwrap_or_default();
-    if !existing.contains("| File | Total (s) |") {
+        if !existing.contains("| File | Total (s) |") {
         let prefix_display = prefixes.iter().map(|s| s.to_string()).collect::<Vec<_>>().join(",");
         if let Err(e) = writeln!(readme, "\n## Automatic benchmark results (prefixes={})\n", prefix_display) { eprintln!("Failed writing README header: {}", e); }
-        // Markdown table header
-        if let Err(e) = writeln!(readme, "| File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Coverage (%) |") { eprintln!("Failed writing README header: {}", e); }
-        if let Err(e) = writeln!(readme, "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|") { eprintln!("Failed writing README header: {}", e); }
+        // Markdown table header (added 'Undetected' column)
+        if let Err(e) = writeln!(readme, "| File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Undetected | Coverage (%) |") { eprintln!("Failed writing README header: {}", e); }
+        if let Err(e) = writeln!(readme, "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|") { eprintln!("Failed writing README header: {}", e); }
     }
 
     for path_str in paths {
@@ -367,7 +367,7 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         // append summary to README
         let file_name = std::path::Path::new(&path_str).file_name().and_then(|s| s.to_str()).unwrap_or(&path_str);
         println!("Appending benchmark results to README.md for file: {}", file_name);
-        if let Err(e) = writeln!(readme, "| {} | {:.3} | {:.3} | {:.3} | {:.3} | {}/{} | {:.3} | {}/{} | {}/{} | {} | {:.2} |",
+        if let Err(e) = writeln!(readme, "| {} | {:.3} | {:.3} | {:.3} | {:.3} | {}/{} | {:.3} | {}/{} | {}/{} | {} | {} | {:.2} |",
             file_name,
             total_time.as_secs_f64(),
             dt_parse.as_secs_f64(),
@@ -378,6 +378,7 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             sat_detected, n_faults,
             total_detected, n_faults,
             n_faults,
+            final_uncovered.len(),
             coverage) { eprintln!("Failed writing README row for {}: {}", file_name, e); }
         println!("Benchmark summary appended to README.md for file: {}", file_name);
         
