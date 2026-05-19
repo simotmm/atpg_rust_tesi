@@ -137,10 +137,6 @@ Options include `mode` (`rand` / `alg` / `both`), `sat_backend` (`varisat` or `b
 | s641_to_iscas89_atlanta.bench | 0.245 | 0.001 | 0.001 | 0.055 | 517/582 | 0.188 | 39/582 | 556/582 | 582 | 95.53 |
 | s713_to_iscas89_atlanta.bench | 0.478 | 0.001 | 0.001 | 0.086 | 519/656 | 0.390 | 46/656 | 565/656 | 656 | 86.13 |
 | s38417_to_iscas89_atlanta.bench | 4158.404 | 0.046 | 0.050 | 3234.419 | 1132/24940 | 923.889 | 72/24940 | 1204/24940 | 24940 | 4.83 |
-| **riga: ora ottimizzato** (si spera) | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Coverage (%) |
+| **ora ottimizzato** (si spera) | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Coverage (%) |
 | c17_to_iscas89_atlanta.bench | 0.005 | 0.000 | 0.000 | 0.004 | 16/16 | 0.000 | 0/16 | 16/16 | 16 | 100.00 |
-| c432_to_iscas89_atlanta.bench | 0.109 | 0.000 | 0.000 | 0.069 | 469/472 | 0.039 | 0/472 | 469/472 | 472 | 99.36 |
-| c499_to_iscas89_atlanta.bench | 0.211 | 0.001 | 0.001 | 0.112 | 683/684 | 0.099 | 1/684 | 684/684 | 684 | 100.00 |
-| c880_to_iscas89_atlanta.bench | 0.343 | 0.001 | 0.001 | 0.177 | 938/949 | 0.164 | 11/949 | 949/949 | 949 | 100.00 |
-| c1355_to_iscas89_atlanta.bench | 0.757 | 0.001 | 0.002 | 0.412 | 1551/1564 | 0.342 | 13/1564 | 1564/1564 | 1564 | 100.00 |
-| c1908_to_iscas89_atlanta.bench | 3.016 | 0.002 | 0.002 | 1.167 | 1795/1859 | 1.845 | 62/1859 | 1857/1859 | 1859 | 99.89 |
+| c17_to_iscas89_atlanta.bench | 0.002 | 0.000 | 0.000 | 0.002 | 16/16 | 0.000 | 0/16 | 16/16 | 16 | 100.00 |
