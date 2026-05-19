@@ -4,7 +4,7 @@ echo starting sequential benchmarks...
 
 rem lista di netlist da processare
 rem set IDS=17 432 499 880 1355 1908 2670 3540 5315 27 382 420 641 713 1238 1423 1488 5378 9234 13207 15850 35932 38417 38584 7552 6288
-set IDS=6288
+set IDS=17 432 6288
 
 for %%I in (%IDS%) do (
   echo.
