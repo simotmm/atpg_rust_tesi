@@ -312,7 +312,8 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             let rand_uncovered: std::collections::BTreeSet<crate::ppsfp::Fault> = faults.iter().cloned().collect();
             // algorithmic-phase handling below will use rand_uncovered
         }
-        let n_patterns = std::cmp::max(1, n_faults/100);
+        let mut n_patterns = std::cmp::max(1, n_faults/100);
+        if n_patterns > 50 { n_patterns = 50; } // cap patterns for quicker runs
         let mut simulator = PPSFPSimulator::new(&dag);
         println!("simulating random patterns ({}) and determining uncovered faults", n_patterns);
         let (rand_uncovered, rand_detected, dt_rand, patterns) = if run_random_phase {
