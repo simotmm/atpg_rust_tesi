@@ -12,17 +12,19 @@ for %%I in (%IDS%) do (
   cargo run -- bench full %%I
   echo === completed %%I ===
   echo === updating README.md with benchmark %%I ===
-  git add README.md
+  echo === adding test input %%I to results folder ===
+  git add .
   echo README.md updated with benchmark %%I
-  echo committing changes to README.md
-  git commit -m "add benchmark %%I in readme (3rd bench run)"
-  echo changes committed. pushing to remote repository
+  echo test input %%I added to results folder
+  echo committing changes to git repository
+  git commit -m "adding benchmark %%I in readme (3rd bench run) and test input %%I in results folder"
+  echo changes committed. pushing to remote repository.
   git push
   echo Benchmark %%I processed and changes pushed to remote repository.
 )
 
 echo === all benchmarks completed ===
 popd
-echo waiting 10 seconds before shutting down...
+echo waiting 10 seconds before shutting down.
 timeout /t 10 /nobreak >nul
 shutdown /s /t 0
