@@ -312,8 +312,8 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             let rand_uncovered: std::collections::BTreeSet<crate::ppsfp::Fault> = faults.iter().cloned().collect();
             // algorithmic-phase handling below will use rand_uncovered
         }
-        let mut n_patterns = std::cmp::max(1, n_faults/100);
-        if n_patterns > 50 { n_patterns = 50; } // cap patterns for quicker runs
+        let mut n_patterns = std::cmp::max(2, n_faults/1000);
+        if n_patterns > 20 { n_patterns = 20; } // cap patterns for quicker runs
         let mut simulator = PPSFPSimulator::new(&dag);
         println!("simulating random patterns ({}) and determining uncovered faults", n_patterns);
         let (rand_uncovered, rand_detected, dt_rand, patterns) = if run_random_phase {
@@ -333,6 +333,8 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         println!("starting algorithmic phase (SAT-based pattern generation and simulation)");
         let mut sat_detected = 0usize;
         let mut dt_sat = std::time::Duration::new(0,0);
+        // store SAT-produced patterns for later saving to avoid recomputing SAT
+        let mut sat_patterns_saved: Vec<crate::pattern_generator::InputPattern> = Vec::new();
         // final_uncovered starts as the set left after random phase
         let mut final_uncovered: std::collections::BTreeSet<crate::ppsfp::Fault> = rand_uncovered.iter().cloned().collect();
         if run_algorithmic_phase && final_uncovered.len() > 0 {
@@ -345,7 +347,8 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             sat_detected = final_uncovered.len() - sat_uncovered.len();
             dt_sat = t_sat.elapsed();
             final_uncovered = sat_uncovered;
-            // append SAT patterns to patterns list for saving below (all_patterns will be built later)
+            // save SAT patterns here for later use (avoid recomputing SAT again)
+            sat_patterns_saved = sat_patterns;
         }
         println!("algorithmic phase complete: detected {}, uncovered {}, time {:?}", sat_detected, final_uncovered.len(), dt_sat);
 
@@ -374,11 +377,9 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         println!("Saving detected patterns to results folder");
         // save patterns for this netlist in results folder (optional)
         let mut all_patterns = patterns.clone();
-        // collect sat patterns if present (we may have computed them above)
-        if run_algorithmic_phase && rand_uncovered.len() > 0 {
-            let sat_results = crate::sat::sat_solving(&netlist, &dag, rand_uncovered.iter().collect(), Some(true));
-            let sat_patterns = sat_solutions_to_input_patterns(netlist.clone(), sat_results.clone());
-            for p in sat_patterns { all_patterns.push(p); }
+        // append SAT patterns computed above (if any) instead of recomputing SAT
+        if !sat_patterns_saved.is_empty() {
+            all_patterns.extend(sat_patterns_saved.into_iter());
         }
         // pass final_uncovered (undetected faults after all phases) to save_patterns_to_test_inputs
         let _ = save_patterns_to_test_inputs(&all_patterns, &final_uncovered, &path_str, Some(true));
