@@ -135,7 +135,7 @@ fn main() {
             if !optimize_flag { minimizer = None; }
             let parallel = minimizer.is_some() && PARALLEL;
             let sat_backend_choice = get_nth_arg_to_string(11).unwrap_or_else(|| SAT_BACKEND_DEFAULT.unwrap_or("varisat").to_string());
-            crate::options::set_options(crate::options::RunOptions { enable_sat, optimize: parallel, minimizer: minimizer.clone(), sat_backend: sat_backend_choice.clone(), quiet: true });
+            crate::options::set_options(crate::options::RunOptions { enable_sat, optimize: parallel, minimizer: minimizer.clone(), sat_backend: sat_backend_choice.clone(), quiet: !PRINT_PROGRESS });
 
             let prefixes = [NET_PREFIX_DEFAULT, NET_PREFIX_DEFAULT_2];
             crate::benchmarks::run_full_benchmarks_for_prefixes(&prefixes, specific, Some(seed_val), effective_mode);
