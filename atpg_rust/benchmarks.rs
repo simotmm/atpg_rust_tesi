@@ -314,7 +314,7 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         }
         let n_patterns = std::cmp::max(1, n_faults/100);
         let mut simulator = PPSFPSimulator::new(&dag);
-        println!("simulating random patterns and determining uncovered faults");
+        println!("simulating random patterns ({}) and determining uncovered faults", n_patterns);
         let (rand_uncovered, rand_detected, dt_rand, patterns) = if run_random_phase {
             let patterns = generator.generate_n_patterns_from_netlist(&netlist, n_patterns);
             let (_rand_results, rand_uncovered) = simulator.simulate_patterns_blocks(patterns.clone(), faults.clone(), Some(true));
