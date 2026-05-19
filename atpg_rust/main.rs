@@ -106,6 +106,7 @@ fn main() {
         return;
     }
 
+    // CLI helper: run benchmarks (with optional "full" mode for more detailed control and output)
     if get_nth_arg_to_string(1).as_deref() == Some("bench") {
         // special case: allow `bench ppsfp` to run only the micro-benchmark
         if get_nth_arg_to_string(2).as_deref() == Some("ppsfp") {
@@ -261,16 +262,15 @@ fn main() {
     let tot_faults: usize = faults.len();
     if !crate::options::get_options().quiet && PRINT { print_fault_list(&faults); }
 
+    // inizializzazione variabili per raccolta risultati
     let mut ppsfp_detected_faults = 0;
     let mut ppsfp_patterns: Vec<InputPattern> = Vec::new();
     let mut ppsfp_results: Vec<HashMap<Fault, u32>> = Vec::new();
     let mut ppsfp_undetected_faults: BTreeSet<Fault> = BTreeSet::new(); 
-
     let mut sat_detected_faults = 0;
     let mut sat_patterns: Vec<InputPattern> = Vec::new();
     let mut sat_results: HashMap<Fault, Vec<(String, u32)>> = HashMap::new();
     let mut sat_undetected_faults: BTreeSet<Fault> = BTreeSet::new(); 
-    
     let mut undetected_faults: BTreeSet<Fault> = faults.iter().cloned().collect(); 
     let n_faults = faults.len();
     // Simple adaptive heuristic: number of random patterns scales with
@@ -286,6 +286,7 @@ fn main() {
         };
     let mut prev_undetected_before_sat: usize = 0;
 
+    // -- parte II: pattern generation e simulazione -- //
     if run_random_phase {
         println!("pattern generation ({n_patterns} patterns):");
         let mut pattern_generator = PatternGenerator::new(Some(seed));
@@ -298,6 +299,7 @@ fn main() {
         println!("undetected faults after PPSFP: {} ", undetected_faults.len());
     }
 
+    // parte III: se ci sono ancora fault non rilevati, prova a generarne altri con approccio algoritmico (SAT solving)
     if run_algorithmic_phase && undetected_faults.len() > 0 {
         print!("\nalgorithmic pattern generation:\n");
         // Select SAT backend based on runtime options (or compile-time default)
@@ -409,6 +411,7 @@ fn main() {
         ((ppsfp_detected_faults + sat_detected_faults) as f64/n_faults as f64)*100.00
     );
 
+    // salva i pattern generati in un file di testo (nella stessa cartella del benchmark, con nome derivato dal benchmark)
     let _ = save_patterns_to_test_inputs(&patterns, &undetected_faults, &filename, Some(SAVE_UNDETECTED_TO_FILE));
 }
 

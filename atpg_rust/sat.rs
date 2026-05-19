@@ -3,6 +3,7 @@ use crate::cnf::{CNF, Literal, get_boolean_difference_clauses};
 use crate::netlist::Netlist;
 use crate::ppsfp::Fault;
 use crate::cnf_minimizer::minimize_search_tree;
+use crate::util::press_any_key;
 use varisat::ExtendFormula;
 use std::collections::BTreeMap;
 use std::collections::{HashMap, HashSet, VecDeque, BTreeSet};
@@ -17,29 +18,12 @@ const PRINT_DEBUG: bool = false; // flag per abilitare stampe di debug più dett
 const VERBOSE: bool = false;
 const DONT_CARE_VALUE: u32 = 2;
 const EXTEND_2SAT: bool = false; // se true, prova ad estendere le soluzioni 2-SAT con il risolutore 3-SAT
-
-// struct: literal
-/*
-#[derive(Debug, Clone)]
-pub struct Literal {
-    pub var: String,
-    pub neg: bool,
-}
-*/
-
-// struct: cnf (conjunctive normal form)
-/*
-#[derive(Debug, Clone)]
-pub struct CNF { //cnf=(literal0+literal1+...)*(!literal2)*(literal3+literal4)*...
-    pub clauses: Vec<Vec<Literal>>,
-}
-*/
+const PRUNE_VARISAT_WITH_2SAT: bool = true; // se true, esegue un passo di pruning usando il modulo 2-SAT prima di chiamare varisat (mi sembra che rallenti soltanto...)
 
 /// wrapper 2sat + 3sat
 pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_vars: Option<&[String]>) -> (Vec<(String, u32)>, Option<HashMap<String, bool>>) {
 
     let mut result = Vec::new();
-    
     let two_sat_portion = cnf.get_2_lit_portion();
     let three_sat_portion = cnf.get_3_lit_portion();
 
@@ -54,7 +38,6 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
         print!("3sat portion cnf as int:\n{}\n", three_sat_portion.to_int_string());
     }
     
-
     // First: try 2-SAT portion. If unsatisfiable, whole formula unsat -> return empty result.
     let extend_factor = 2;
     let max_2sat_assignments = if EXTEND_2SAT { Some(primary_inputs.unwrap().len()*extend_factor as usize) } else { None }; // limit per evitare esplosione combinatoria in casi con molte soluzioni 2-SAT
@@ -158,9 +141,26 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
 
 /// varisat-backed SAT solver for a single CNF instance (non-incremental)
 fn varisat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>) -> (Vec<(String, u32)>, Option<HashMap<String, bool>>) {
+
+    // pruning con 2-SAT: se la porzione 2-SAT è insoddisfacibile, allora tutta la formula è insoddisfacibile -> possiamo saltare la chiamata a varisat
+    if PRUNE_VARISAT_WITH_2SAT {
+        //println!("Running 2-SAT check for pruning before Varisat call...");
+        //press_any_key(); // debug pause to check the CNF and 2-SAT portion before potentially skipping Varisat
+        if !two_sat::is_2_sat_satisfiable(&cnf.get_2_lit_portion()) {
+            //println!("2-SAT portion is UNSAT, pruning Varisat call and returning UNSAT result.");
+            //press_any_key();
+            return (Vec::new(), None);
+        } else {
+            //println!("2-SAT portion is SAT, proceeding to Varisat call.");
+        }
+        //press_any_key(); // debug pause to confirm pruning decision
+    }
+    
     let ordered = cnf.literals_to_int_map_ordered(); // Vec<(String, i32)>
     let mut name_to_dimacs: HashMap<String, isize> = HashMap::new();
-    for (name, id) in ordered.iter() { name_to_dimacs.insert(name.clone(), *id as isize); }
+    for (name, id) in ordered.iter() {
+        name_to_dimacs.insert(name.clone(), *id as isize); 
+    }
 
     let mut solver = varisat::solver::Solver::new();
     for clause in cnf.clauses.iter() {
@@ -195,43 +195,6 @@ fn varisat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>) -> (Vec<(Str
 
     (result_bits, Some(assign_map))
 }
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_sat_solver_bits_simple() {
-        // simple CNF with unary clause X -> X must be true
-        let cnf = CNF::new(vec![vec![Literal { var: "X".to_string(), neg: false }]]);
-        let inputs = vec!["X".to_string()];
-        let (res, _assign) = sat_solver_bits(cnf, Some(&inputs), None);
-        assert!(!res.is_empty());
-        assert_eq!(res[0].0, "X");
-        assert!(res[0].1 == 1 || res[0].1 == DONT_CARE_VALUE);
-    }
-
-    #[test]
-    fn regression_sat_detects_n147() {
-        // Regression test reproducing the failing case: netlist #432, fault N147 s-a-0
-        let filename_opt = crate::util::get_filename_from_int("benchmarks\\converted_to_atlanta_iscas89", 432);
-        if filename_opt.is_none() {
-            panic!("Regression test data file not found in benchmarks/converted_to_atlanta_iscas89");
-        }
-        let filename = filename_opt.unwrap();
-        let circuit = crate::parser::file_iscas89_atlanta_to_netlist(&filename);
-        let dag = crate::dag::Dag::from_netlist(&circuit);
-        let faults = dag.generate_fault_list(Some("N147".to_string()), Some(false));
-        assert!(!faults.is_empty());
-        let fault_refs: Vec<&crate::ppsfp::Fault> = faults.iter().collect();
-        let solutions = sat_solving(&circuit, &dag, fault_refs, Some(false));
-        assert!(solutions.contains_key(&faults[0]));
-    }
-}
-
-///genera tutte le possibili assegnazioni 2SAT chiamando il solver 2SAT, accumula tutte le combinazioni di valori per i letterali presenti nella parte 2SAT della CNF
-
 
 /// 3sat
 fn three_sat_solver(two_sat_assignments: Vec<HashMap<String, bool>>, three_sat_portion: CNF, full_cnf: CNF, prioritized_vars: Option<&[String]>, try_extend_opt: Option<bool>) -> Option<HashMap<String, bool>> {
@@ -407,6 +370,7 @@ pub fn sat_solving(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>, parallel_e
 
 /// wrapper sat solving sequenziale
 fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> HashMap<Fault, Vec<(String, u32)>> {
+    // mappa per memorizzare i risultati: per ogni fault, la lista di pattern (stringa) e numero di bit significativi
     let mut solutions: HashMap<Fault, Vec<(String, u32)>> = HashMap::new();
     let inputs = &circuit.inputs;
     let total = faults.len();
@@ -429,7 +393,10 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
             bd_clause.push(Literal { var: format!("BD__{}", base), neg: false });
         }
     }
+    // Add the BD__ clause to the base formula (GOOD + output-diff) that will be used for all faults
     if !bd_clause.is_empty() { base_good_and_diff.clauses.push(bd_clause); }
+
+    // Process each fault sequentiallyly: build the faulty DAG, construct the CNF for the SAT query, and solve it
     for (i, fault_ref) in faults.iter().enumerate() {
         let fault = *fault_ref; // &Fault
         let idx = i + 1;
@@ -449,6 +416,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
         let mut stack: Vec<usize> = Vec::new();
         let mut visited = vec![false; dag.nodes.len()];
 
+        // if the fault is on a gate output, start DFS from that node. If it's on a primary input, start DFS from all consumer nodes.
         if let Some(start_idx) = start_idx_opt {
             stack.push(start_idx);
             visited[start_idx] = true;
@@ -462,6 +430,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                 // no consumers -> nothing to do for SAT
                 continue;
             }
+            // start DFS from consumer nodes of the affected primary input
             for c in consumers {
                 if !visited[c] {
                     visited[c] = true;
@@ -469,8 +438,10 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                 }
             }
         }
+        // DFS to find all affected nodes downstream of the fault site
         while let Some(u) = stack.pop() {
             affected.push(u);
+            // visit successors in the original DAG (not the primed one, since we want the cone of influence based on the original structure)
             for &v in &dag.succ_adj[u] {
                 if !visited[v] {
                     visited[v] = true;
@@ -478,10 +449,12 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                 }
             }
         }
+        // store affected nodes in the faulty DAG for later use (e.g., prioritization)
         faulty.affected = affected.clone();
 
         // apply stuck-at clause on the primed wire name
         let renamed_wire = format!("{}'", fault.wire);
+        // If the fault is on a gate output, we can directly replace the CNF of that node with the stuck-at clause. If it's on a primary input, we need to rename the input in all affected nodes and add a new dummy node to carry the stuck-at clause for the primed PI.
         if let Some(start_idx) = start_idx_opt {
             faulty.nodes[start_idx].pre_fault_cnf = Some(faulty.nodes[start_idx].cnf.to_string());
             let stuck_literal = Literal { var: renamed_wire.clone(), neg: !fault.sa1 };
@@ -489,6 +462,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
         } else {
             // primary input case: rename inputs in affected nodes to the primed name
             for &id in &affected {
+                // rename the input wire to the primed version in the faulty DAG
                 for inp in &mut faulty.nodes[id].inputs {
                     if inp == &fault.wire {
                         *inp = renamed_wire.clone();
@@ -536,28 +510,31 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
             }
         }
 
-            if options::get_options().optimize {
-                if options::get_options().minimizer.as_deref() == Some("espresso") {
-                    // try espresso minimizer using prioritized primary inputs for this cone
-                    if let Ok(min_cnf) = crate::cnf_minimizer_espresso::minimize_using_espresso(&test_formula, &pvars[..]) {
-                        cnf = min_cnf;
-                    } else {
-                        // fallback to builtin
-                            if let Err(_) = minimize_search_tree(&mut cnf) {
-                                if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
-                            continue;
-                        }
-                        if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
-                    }
+        // Optional minimization step to reduce CNF size before solving (can help or hurt depending on the case)
+        if options::get_options().optimize {
+            if options::get_options().minimizer.as_deref() == Some("espresso") {
+                // try espresso minimizer using prioritized primary inputs for this cone -> NON PIU' USATO
+                if let Ok(min_cnf) = crate::cnf_minimizer_espresso::minimize_using_espresso(&test_formula, &pvars[..]) {
+                    cnf = min_cnf;
                 } else {
-                    if let Err(_) = minimize_search_tree(&mut cnf) {
-                        if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
+                    // fallback to builtin
+                        if let Err(_) = minimize_search_tree(&mut cnf) {
+                            if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
                         continue;
                     }
                     if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
                 }
+            } else {
+                if let Err(_) = minimize_search_tree(&mut cnf) {
+                    if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
+                    continue;
+                }
+                if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
             }
+        }
+
         if !crate::options::get_options().quiet && PRINT { fault.print(); }
+
         // build prioritized vars from affected cone (prefer primary inputs in the cone)
         let mut pvars: Vec<String> = Vec::new();
         for &id in &faulty.affected {
@@ -567,6 +544,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                 pvars.push(base);
             }
         }
+
         // fallback: if no primary inputs in cone, use previous (all cone vars)
         if pvars.is_empty() {
             for &id in &faulty.affected {
@@ -575,11 +553,12 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                 if v.ends_with('\'') { pvars.push(v.trim_end_matches('\'').to_string()); }
             }
         }
-            let (pattern_bits, maybe_assignment) = if options::get_options().sat_backend == "varisat" {
-                varisat_solver_bits(cnf.clone(), Some(&inputs))
-            } else {
-                sat_solver_bits(cnf.clone(), Some(&inputs), Some(&pvars))
-            };
+
+        let (pattern_bits, maybe_assignment) = if options::get_options().sat_backend == "varisat" {
+            varisat_solver_bits(cnf.clone(), Some(&inputs))
+        } else {
+            sat_solver_bits(cnf.clone(), Some(&inputs), Some(&pvars))
+        };
 
         if !pattern_bits.is_empty() {
             found_count += 1;

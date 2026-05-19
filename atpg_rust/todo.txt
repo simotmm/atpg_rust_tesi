@@ -1,12 +1,17 @@
-funzione per insieme minimo: SU TUTTI I NON COPERTI DA RANDOM E NON UNTESTABLE
+-funzione per insieme minimo: SU TUTTI I NON COPERTI DA RANDOM E NON UNTESTABLE
 
-dare in input ad atlanta i fault non coperti dal mio rust -> fatto, tutto ok
+-dare in input ad atlanta i fault non coperti dal mio rust -> fatto, tutto ok
 
-fare tutto in inglese -> ok
+-fare tutto in inglese -> ok
 
-aggiornare report con tabelle e tempi -> da fare sui circuiti più grandi
+-aggiornare report con tabelle e tempi -> da fare sui circuiti più grandi
 
-fare tutto su iscas85 e 89 -> file iscas89 convertiti in combinatori, uno mi da problemi (uno dei primi)
+-fare tutto su iscas85 e 89 -> file iscas89 convertiti in combinatori, uno mi da problemi (uno dei primi)
 
+-script di validazione: implementare per i bench iscas89
 
-script di validazione: implementare per i bench iscas89
+-nella parte randomica: c'è un punto oltre il quale i nuovi pattern non trovano fault, in quel caso
+ si può fare continue invece di continuare a simulare per tutti gli N_PATTERNS.
+
+-nella parte algoritmica: fare simulazione tra una soluzione sat e l'altra.
+ un'assegnazione può coprire più di un fault! da fare bene. 

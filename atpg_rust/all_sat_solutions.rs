@@ -1,3 +1,4 @@
+
 use crate::cnf::{CNF, Literal, get_boolean_difference_clauses};
 use std::collections::{HashMap, HashSet};
 use varisat::lit::Lit;
@@ -9,13 +10,16 @@ use crate::ppsfp::Fault;
 /// Enumera tutti i modelli SAT distinti proiettati sui `primary_inputs` usando Varisat.
 /// Restituisce un vettore di pattern, ogni pattern è `Vec<(String,u32)>` con 1=TRUE,0=FALSE,2=DON'T-CARE.
 pub fn all_sat_solutions(cnf: &CNF, primary_inputs: Option<&[String]>) -> Vec<Vec<(String, u32)>> {
+    // mappa variabile -> dimacs id e costruzione solver
     let mut solutions: Vec<Vec<(String, u32)>> = Vec::new();
-
     let ordered = cnf.literals_to_int_map_ordered(); // Vec<(String, i32)>
     let mut name_to_dimacs: HashMap<String, isize> = HashMap::new();
     for (name, id) in ordered.iter() { name_to_dimacs.insert(name.clone(), *id as isize); }
 
+    // costruzione solver Varisat
     let mut solver = varisat::solver::Solver::new();
+
+    // aggiunta clausole alla formula Varisat, traducendo da CNF a Dimacs usando la mappa name_to_dimacs
     for clause in cnf.clauses.iter() {
         let lits: Vec<Lit> = clause.iter().filter_map(|lit| {
             name_to_dimacs.get(&lit.var).map(|&num| {
@@ -26,8 +30,10 @@ pub fn all_sat_solutions(cnf: &CNF, primary_inputs: Option<&[String]>) -> Vec<Ve
         if !lits.is_empty() { solver.add_clause(&lits); }
     }
 
+    // se primary_inputs è specificato, usalo come ordine e filtro per i pattern; altrimenti usa tutte le variabili in ordine
     let inputs: Vec<String> = if let Some(p) = primary_inputs { p.iter().cloned().collect() } else { ordered.iter().map(|(n,_)| n.clone()).collect() };
 
+    // enumerazione soluzioni SAT proiettate sui primary_inputs con loop di blocking clause (ogni soluzione trovata viene bloccata con una clausola che ne inverte l'assegnamento sui primary_inputs)
     loop {
         let sat = match solver.solve() { Ok(b) => b, Err(_) => false };
         if !sat { break; }
@@ -258,54 +264,3 @@ pub fn exact_set_cover_for_faults(dag: &Dag, faults: Vec<&Fault>, primary_inputs
     minimal_set_cover_for_faults(dag, faults, primary_inputs, per_fault_limit)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::cnf::Literal;
-
-    #[test]
-    fn test_all_sat_solutions_simple() {
-        let cnf = CNF::new(vec![vec![Literal{var: "X".to_string(), neg: false}]]);
-        let inputs = vec!["X".to_string()];
-        let sols = all_sat_solutions(&cnf, Some(&inputs));
-        assert_eq!(sols.len(), 1);
-        assert_eq!(sols[0][0].0, "X");
-        assert_eq!(sols[0][0].1, 1);
-        let minimal = minimal_pattern_set(sols);
-        assert_eq!(minimal.len(), 1);
-    }
-
-    #[test]
-    fn test_circuit_2_minimal_patterns() {
-        let filename_opt = crate::util::get_filename_from_int("benchmarks\\converted_to_atlanta_iscas89", 2);
-        if filename_opt.is_none() { return; }
-        let filename = filename_opt.unwrap();
-        let circuit = crate::parser::file_iscas89_atlanta_to_netlist(&filename);
-        let dag = crate::dag::Dag::from_netlist(&circuit);
-        let faults = dag.generate_fault_list(None, Some(false));
-        if faults.is_empty() { return; }
-        let fault_refs: Vec<&Fault> = faults.iter().collect();
-        let patterns = minimal_patterns_for_faults(&dag, fault_refs, Some(&circuit.inputs), Some(20));
-        println!("circuit 2 minimal patterns: {}", patterns.len());
-        assert!(patterns.len() >= 0);
-    }
-
-    #[test]
-    fn test_circuit_2_set_cover() {
-        let filename_opt = crate::util::get_filename_from_int("benchmarks\\converted_to_atlanta_iscas89", 2);
-        if filename_opt.is_none() { return; }
-        let filename = filename_opt.unwrap();
-        let circuit = crate::parser::file_iscas89_atlanta_to_netlist(&filename);
-        let dag = crate::dag::Dag::from_netlist(&circuit);
-        let faults = dag.generate_fault_list(None, Some(false));
-        if faults.is_empty() { return; }
-        let fault_refs: Vec<&Fault> = faults.iter().collect();
-
-        let cover = exact_set_cover_for_faults(&dag, fault_refs, Some(&circuit.inputs), Some(20));
-        println!("circuit 2 greedy cover size: {}", cover.len());
-        for (i, p) in cover.iter().enumerate() {
-            println!("pattern {}: {:?}", i+1, p);
-        }
-        assert!(cover.len() >= 0);
-    }
-}

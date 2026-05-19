@@ -3,6 +3,7 @@ use std::collections::{HashMap, VecDeque};
 
 type Graph = Vec<Vec<usize>>;
 
+/// Builds the implication graph for the 2-SAT portion of the CNF and returns both the graph and its reverse, along with the variable ordering.
 fn build_implication_graph(cnf: &CNF) -> (Graph, Graph, Vec<String>) {
     // deterministically collect variables
     let mut vars: Vec<String> = cnf.clauses.iter().flat_map(|cl| cl.iter().map(|lit| lit.var.clone())).collect();
@@ -45,6 +46,7 @@ fn build_implication_graph(cnf: &CNF) -> (Graph, Graph, Vec<String>) {
     (graph, rev_graph, vars)
 }
 
+/// Kosaraju's algorithm to find strongly connected components in the implication graph.
 fn kosaraju_scc(graph: &Graph, rev_graph: &Graph) -> Vec<i32> {
     let n = graph.len();
     let mut visited = vec![false; n];
@@ -80,6 +82,7 @@ fn kosaraju_scc(graph: &Graph, rev_graph: &Graph) -> Vec<i32> {
     comp
 }
 
+/// Solves the 2-SAT portion of the CNF and returns a satisfying assignment if it exists, or None if unsatisfiable.
 pub fn solve_2sat(cnf: &CNF) -> Option<Vec<bool>> {
     let (graph, rev_graph, vars) = build_implication_graph(cnf);
     let comp = kosaraju_scc(&graph, &rev_graph);
@@ -99,6 +102,12 @@ pub fn solve_2sat(cnf: &CNF) -> Option<Vec<bool>> {
     Some(assignment)
 }
 
+/// Returns true if the 2-SAT portion of the CNF is satisfiable, false otherwise.
+pub fn is_2_sat_satisfiable(cnf: &CNF) -> bool {
+    solve_2sat(cnf).is_some()
+}
+
+/// Generates up to max_solutions satisfying assignments for the 2-SAT portion of the CNF.
 pub fn generate_all_assignments(cnf: &CNF, max_solutions: Option<usize>) -> Option<Vec<HashMap<String, bool>>> {
     // Enumerate up to max_solutions satisfying assignments deterministically using DFS
     let max_solutions = max_solutions.unwrap_or(1usize);
@@ -150,6 +159,7 @@ pub fn generate_all_assignments(cnf: &CNF, max_solutions: Option<usize>) -> Opti
         solve_2sat(&augmented).is_some()
     }
 
+    /// DFS to enumerate satisfying assignments for the 2-SAT portion, using the heuristic variable ordering and pruning with is_sat_with_prefix.
     fn dfs(i: usize, prefix: &mut Vec<(String, bool)>, vars: &Vec<String>, base: &CNF, sols: &mut Vec<HashMap<String,bool>>, max_solutions: usize) {
         if sols.len() >= max_solutions { return; }
         if i == vars.len() {

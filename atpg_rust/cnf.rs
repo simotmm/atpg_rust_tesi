@@ -28,14 +28,17 @@ impl CNF {
         CNF { clauses }
     }
 
+    /// get number of clauses
     pub fn get_n_clauses(&self) -> usize {
         self.clauses.len()
     }
 
+    /// get number of literals (unique variables)
     pub fn get_n_literals(&self) -> usize {
         self.literals_to_int_map().len()
     }
 
+    /// get number of clauses and literals
     pub fn get_n_clauses_and_n_literals(&self) -> (usize, usize) {
         (self.get_n_clauses(), self.get_n_literals())
     }
@@ -59,10 +62,12 @@ impl CNF {
 
     /// print cnf
     pub fn print(&self){
+        let (clauses, literals) = self.get_n_clauses_and_n_literals();
+        println!("cnf\nclauses: {}, literals: {}", clauses, literals);
         println!("{}", self.to_string());
     }
 
-
+    /// cnf -> mappa da variabili a numeri interi (per rappresentazione compatta)
     pub fn literals_to_int_map(&self) -> HashMap<String, i32> {
         // Raccogliamo tutte le variabili uniche
         let mut vars: Vec<String> = self.clauses.iter()
@@ -106,6 +111,7 @@ impl CNF {
         result
     }
 
+    /// cnf -> mappa ordinata da variabili a numeri interi (per rappresentazione compatta)
     pub fn literals_to_int_map_ordered(&self) -> Vec<(String, i32)> {
         let mut var_to_int: HashMap<String, i32> = self.literals_to_int_map();
         let mut vec: Vec<(String, i32)> = var_to_int.into_iter().collect();
