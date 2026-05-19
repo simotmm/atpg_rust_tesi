@@ -15,7 +15,7 @@ for %%I in (%IDS%) do (
   git add README.md
   echo README.md updated with benchmark %%I
   echo committing changes to README.md
-  git commit -m "add benchmark %%I in readme"
+  git commit -m "add benchmark %%I in readme (2nd bench run)"
   echo changes committed. pushing to remote repository
   git push
   echo Benchmark %%I processed and changes pushed to remote repository.
