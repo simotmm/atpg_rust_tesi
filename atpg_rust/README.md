@@ -94,3 +94,9 @@ Options include `mode` (`rand` / `alg` / `both`), `sat_backend` (`varisat` or `b
 
 ## Benchmark results
 
+
+## Automatic benchmark results (prefixes=c,s)
+
+| File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Undetected | Coverage (%) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| c17_to_iscas89_atlanta.bench | 0.004 | 0.000 | 0.000 | 0.003 | 16/16 | 0.000 | 0/16 | 16/16 | 16 | 0 | 100.00 |
