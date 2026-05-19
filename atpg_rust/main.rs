@@ -272,8 +272,19 @@ fn main() {
     
     let mut undetected_faults: BTreeSet<Fault> = faults.iter().cloned().collect(); 
     let n_faults = faults.len();
-    let decrease_factor = 100; 
-    let n_patterns = if N_PATTERNS > 0 { N_PATTERNS } else { max(1, n_faults/decrease_factor) };
+    // Simple adaptive heuristic: number of random patterns scales with
+    // sqrt(number_of_faults), clamped to reasonable bounds.
+    // Can be overridden by constant `N_PATTERNS`.
+    let n_patterns = if N_PATTERNS > 0 {
+        N_PATTERNS
+    } else {
+        if n_faults == 0 {
+            2usize
+        } else {
+            let s = (n_faults as f64).sqrt().ceil() as usize;
+            std::cmp::max(2, std::cmp::min(s, 100))
+        }
+    };
     let mut prev_undetected_before_sat: usize = 0;
 
     if run_random_phase {
