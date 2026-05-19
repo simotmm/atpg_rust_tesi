@@ -366,6 +366,9 @@ impl<'a> PPSFPSimulator<'a> {
                     println!("PPSFP parallel pattern {}/{} - processed {}/{} ({:.1}%) - detected {}/{} ({:.1}%) - last fault {} s-a-{}",
                         pattern_idx, total_patterns, proc, total_faults, pct, det_cnt, total_faults, det_pct, fault.wire, if fault.sa1 {1} else {0});
                 }
+                //per debug: benchmark
+                println!("PPSFP parallel pattern {}/{} - processed {}/{} ({:.1}%) - detected {}/{} ({:.1}%) - last fault {} s-a-{}",
+                    pattern_idx, total_patterns, proc, total_faults, pct, det_cnt, total_faults, det_pct, fault.wire, if fault.sa1 {1} else {0});
 
                 if det != 0 { Some((fault.clone(), det)) } else { None }
             })
