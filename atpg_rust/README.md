@@ -139,3 +139,4 @@ Options include `mode` (`rand` / `alg` / `both`), `sat_backend` (`varisat` or `b
 | s38417_to_iscas89_atlanta.bench | 4158.404 | 0.046 | 0.050 | 3234.419 | 1132/24940 | 923.889 | 72/24940 | 1204/24940 | 24940 | 4.83 |
 | **riga: ora ottimizzato** (si spera) | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Coverage (%) |
 
+| c17_to_iscas89_atlanta.bench | 0.052 | 0.000 | 0.000 | 0.052 | 16/16 | 0.000 | 0/16 | 16/16 | 16 | 100.00 |
