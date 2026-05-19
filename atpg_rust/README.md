@@ -100,3 +100,4 @@ Options include `mode` (`rand` / `alg` / `both`), `sat_backend` (`varisat` or `b
 | File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Undetected | Coverage (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | c17_to_iscas89_atlanta.bench | 0.004 | 0.000 | 0.000 | 0.003 | 16/16 | 0.000 | 0/16 | 16/16 | 16 | 0 | 100.00 |
+| c432_to_iscas89_atlanta.bench | 0.097 | 0.000 | 0.001 | 0.057 | 469/472 | 0.038 | 0/472 | 469/472 | 472 | 3 | 99.36 |
