@@ -319,7 +319,7 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             2usize
         } else {
             let s = (n_faults as f64).sqrt().ceil() as usize;
-            std::cmp::max(2, std::cmp::min(s, 100))
+            std::cmp::max(2, std::cmp::min(s, crate::MAX_PATTERNS))
         };
         let mut simulator = PPSFPSimulator::new(&dag);
         println!("simulating random patterns ({}) and determining uncovered faults", n_patterns);

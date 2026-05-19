@@ -50,6 +50,7 @@ const NET_SUFFIX_DEFAULT: &str = "_to_iscas89_atlanta";
 const FILE_FORMAT:        &str = "bench";
 const RANDOM_PATTERNS:    bool = true;
 const N_PATTERNS:        usize = 0; // se > 0, sovrascrive il numero di pattern da generare (default: n_faults/100)
+pub const MAX_PATTERNS:  usize = 50; // limite massimo di pattern da generare (sovrascrive anche N_PATTERNS se troppo alto)
 const DEFAULT_SEED:        i32 = 762000;
 const PARALLEL:           bool = true; // se true, simula i pattern in parallelo su più thread (sia per random che per sat), altrimenti in sequenziale (utile per debug e confronto con risultati sequenziali)
 const PRINT:              bool = false;
@@ -275,16 +276,14 @@ fn main() {
     // Simple adaptive heuristic: number of random patterns scales with
     // sqrt(number_of_faults), clamped to reasonable bounds.
     // Can be overridden by constant `N_PATTERNS`.
-    let n_patterns = if N_PATTERNS > 0 {
-        N_PATTERNS
-    } else {
-        if n_faults == 0 {
-            2usize
-        } else {
-            let s = (n_faults as f64).sqrt().ceil() as usize;
-            std::cmp::max(2, std::cmp::min(s, 100))
-        }
-    };
+    let n_patterns = if N_PATTERNS > 0 { N_PATTERNS } 
+        else { 
+            if n_faults == 0 { 2usize} 
+            else { 
+                let s = (n_faults as f64).sqrt().ceil() as usize;
+                std::cmp::max(2, std::cmp::min(s, MAX_PATTERNS)) 
+            }
+        };
     let mut prev_undetected_before_sat: usize = 0;
 
     if run_random_phase {
@@ -298,8 +297,6 @@ fn main() {
         ppsfp_detected_faults = n_faults - ppsfp_undetected_faults.len();
         println!("undetected faults after PPSFP: {} ", undetected_faults.len());
     }
-
-    
 
     if run_algorithmic_phase && undetected_faults.len() > 0 {
         print!("\nalgorithmic pattern generation:\n");
