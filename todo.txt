@@ -1,3 +1,0 @@
-il validatore (es: ".\validate-atlanta-m.bat 880") funziona.
-ma il numero di faults rilevati dai atpg e atlanta è diverso. 
-TODO: bisogna indagare. -> ora i valori sono simili ma c'è da indagare ulteriormente.
