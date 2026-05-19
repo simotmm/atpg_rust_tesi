@@ -317,7 +317,9 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         let mut simulator = PPSFPSimulator::new(&dag);
         println!("simulating random patterns ({}) and determining uncovered faults", n_patterns);
         let (rand_uncovered, rand_detected, dt_rand, patterns) = if run_random_phase {
+            println!("generating {} random patterns for random phase", n_patterns);
             let patterns = generator.generate_n_patterns_from_netlist(&netlist, n_patterns);
+            println!("simulating random patterns and determining uncovered faults");
             let (_rand_results, rand_uncovered) = simulator.simulate_patterns_blocks(patterns.clone(), faults.clone(), Some(true));
             let rand_detected = n_faults - rand_uncovered.len();
             let dt_rand = t_rand.elapsed();
@@ -335,7 +337,9 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         let mut final_uncovered: std::collections::BTreeSet<crate::ppsfp::Fault> = rand_uncovered.iter().cloned().collect();
         if run_algorithmic_phase && final_uncovered.len() > 0 {
             let t_sat = Instant::now();
+            println!("generating SAT patterns for {} uncovered faults", final_uncovered.len());
             let sat_results = crate::sat::sat_solving(&netlist, &dag, final_uncovered.iter().collect(), Some(true));
+            println!("simulating SAT patterns ({}) and determining final uncovered faults", sat_results.len());
             let sat_patterns = sat_solutions_to_input_patterns(netlist.clone(), sat_results.clone());
             let (_sat_sim_res, sat_uncovered) = simulator.simulate_patterns_blocks(sat_patterns.clone(), final_uncovered.iter().cloned().collect(), Some(true));
             sat_detected = final_uncovered.len() - sat_uncovered.len();
@@ -380,6 +384,8 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         let _ = save_patterns_to_test_inputs(&all_patterns, &final_uncovered, &path_str, Some(true));
         println!("Detected patterns saved to results folder for file: {}", file_name);
 
+        // per debug print anyway
+        println!("Finished benchmark for {}: total time {:?}, coverage {:.2}%", path_str, total_time, coverage);
         if !crate::options::get_options().quiet { println!("Finished: {} — coverage: {:.2}%", path_str, coverage); }
     }
 }
