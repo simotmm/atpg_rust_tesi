@@ -2,10 +2,7 @@ use crate::cnf::{CNF, Literal};
 use std::collections::{HashMap, HashSet};
 use std::time::Instant;
 
-/// Modulo: cnf_minimizer
-/// Tecniche per "minimizing the search tree" (parte 4)
-/// Ogni funzione implementa una singola sotto-tecnica.
-
+/// Restituisce il literal opposto (stesso nome, segno invertito).
 fn opposite(l: &Literal) -> Literal {
     Literal { var: l.var.clone(), neg: !l.neg }
 }

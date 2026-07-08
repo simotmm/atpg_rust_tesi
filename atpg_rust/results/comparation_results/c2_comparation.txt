@@ -1,0 +1,9 @@
+bench c2
+rust_count: 0
+atalanta_count: 0
+common_count: 0
+rust_match_pct: 0.00
+atalanta_match_pct: 0.00
+exact_match: YES
+
+Sets are identical.

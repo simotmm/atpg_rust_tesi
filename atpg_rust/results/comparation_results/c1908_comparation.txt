@@ -1,0 +1,9 @@
+bench c1908
+rust_count: 2
+atalanta_count: 2
+common_count: 2
+rust_match_pct: 100.00
+atalanta_match_pct: 100.00
+exact_match: YES
+
+Sets are identical.

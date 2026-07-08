@@ -1,0 +1,26 @@
+bench s38417
+rust_count: 15
+atalanta_count: 0
+common_count: 0
+rust_match_pct: 0.00
+atalanta_match_pct: 0.00
+exact_match: NO
+
+in_rust_only (15):
+  g13151 /1
+  g9229 /1
+  II16499 /1
+  g7528 /0
+  g10100 /0
+  II21381 /0
+  g12017->g24795 /1
+  g9229 /0
+  g12017 /1
+  g13157 /1
+  II19753 /0
+  g19691 /0
+  II17070 /1
+  II16499 /0
+  g10865 /1
+
+in_atalanta_only (0):

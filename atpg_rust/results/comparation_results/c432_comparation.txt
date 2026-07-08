@@ -1,0 +1,9 @@
+bench c432
+rust_count: 3
+atalanta_count: 3
+common_count: 3
+rust_match_pct: 100.00
+atalanta_match_pct: 100.00
+exact_match: YES
+
+Sets are identical.

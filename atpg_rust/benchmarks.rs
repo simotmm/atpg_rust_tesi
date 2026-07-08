@@ -8,6 +8,7 @@ use crate::pattern_generator::PatternGenerator;
 use crate::netlist::{Netlist, Gate, GateType};
 use std::collections::BTreeSet;
 
+/// Run a limited benchmark suite on a subset of the available CNF files in the `benchmarks/converted_to_atlanta_iscas89` directory. For each file, measure parse time, DAG build time, CNF build time, and optimization time, and print a summary. This is intended as a quick sanity check and performance snapshot on a few representative benchmarks before running the full benchmark suite (which can be triggered separately with `run_full_benchmarks_for_prefix`).
 pub fn run_benchmarks() {
     if !crate::options::get_options().quiet { println!("-- running CNF benchmark suite (limited sample) --"); }
     let dir = "benchmarks/converted_to_atlanta_iscas89";
@@ -390,7 +391,7 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             all_patterns.extend(sat_patterns_saved.into_iter());
         }
         // pass final_uncovered (undetected faults after all phases) to save_patterns_to_test_inputs
-        let _ = save_patterns_to_test_inputs(&all_patterns, &final_uncovered, &path_str, Some(true));
+        let _ = save_patterns_to_test_inputs(&all_patterns, &final_uncovered, &path_str, None, Some(true), None);
         println!("Detected patterns saved to results folder for file: {}", file_name);
 
         // per debug print anyway

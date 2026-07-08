@@ -31,7 +31,29 @@ pub struct Dag {
     pub affected: Vec<usize>       // per test formula
 }
 
-/// imlplementation: dag
+/// implementation: dagnode
+impl DagNode {
+
+    /// node is an input if it has no inputs
+    pub fn is_input(&self) -> bool {
+        self.inputs.is_empty()
+    }
+    /// node is an output if it has no outputs
+    pub fn is_output(&self) -> bool {
+        self.outputs.is_empty()
+    }
+    /// node is a gate if it is not an input and not an output
+    pub fn is_gate(&self) -> bool {
+        !self.is_input() && !self.is_output()
+    }
+
+    /// node is a primary output if it is marked as final (output of the circuit)
+    pub fn is_primary_output(&self) -> bool {
+        self.is_final
+    }
+}
+
+/// implementation: dag
 impl Dag {
 
     /// netlist -> dag
@@ -261,12 +283,7 @@ impl Dag {
         faults
     }
 
-    /// true se esiste un wire con quel nome nel dag (cioè come output di un nodo)
-    fn wire_exists(&self, wire: &str) -> bool {
-        self.nodes.iter().any(|n| n.outputs.get(0).map_or(false, |o| o == wire))
-    }
-
-    /// util: lista di tutti i fault
+    /// enumerate all faults in the DAG (stuck-at 0 and 1 on each node output)
     fn all_faults(&self) -> Vec<Fault> {
         // Re-implement fault enumeration to match Atalanta's FFR/stem traversal
         // Build producer map and consumer (fanout) counts for each signal
@@ -322,9 +339,11 @@ impl Dag {
                 pfaults_per_gate[idx].push(crate::ppsfp::Fault::new(w.clone(), true));
             }
 
-            // INPUT-line faults: follow Atalanta: for multi-input gates consider faults
-            // on each source wire only when the source has fanout > 1
+            // INPUT-line faults: follow Atalanta optionally. For multi-input gates
+            // consider faults on each source wire when the source has fanout > 1
+            // or when `atalanta_compat` runtime flag is enabled (to match Atalanta enumeration).
             if node.inputs.len() > 1 {
+                let atalanta_mode = crate::ATALANTA_FAULT_ENUMERATION;
                 for inp in &node.inputs {
                     // determine producer wire name and its fanout
                     let prod_wire = if let Some(&pid) = producer.get(inp) {
@@ -334,23 +353,41 @@ impl Dag {
                     };
 
                     let src_fanout = fanout_count.get(&prod_wire).cloned().unwrap_or(0);
-                    if src_fanout > 1 {
+                    if src_fanout > 1 || atalanta_mode {
                         // create site descriptor like "src->dst" to match Atalanta
-                        let site = Some(format!("{}->{}", prod_wire, node.outputs[0]));
+                        let site = if atalanta_mode { None } else { Some(format!("{}->{}", prod_wire, node.outputs[0])) };
                         match node.gate_type {
                             crate::netlist::GateType::XOR | crate::netlist::GateType::XNOR => {
-                                pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), false, site.clone()));
-                                pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), true, site.clone()));
+                                if atalanta_mode {
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new(prod_wire.clone(), false));
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new(prod_wire.clone(), true));
+                                } else {
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), false, site.clone()));
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), true, site.clone()));
+                                }
                             }
                             crate::netlist::GateType::AND | crate::netlist::GateType::NAND => {
-                                pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), true, site.clone()));
+                                if atalanta_mode {
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new(prod_wire.clone(), true));
+                                } else {
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), true, site.clone()));
+                                }
                             }
                             crate::netlist::GateType::OR | crate::netlist::GateType::NOR => {
-                                pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), false, site.clone()));
+                                if atalanta_mode {
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new(prod_wire.clone(), false));
+                                } else {
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), false, site.clone()));
+                                }
                             }
                             _ => {
-                                pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), false, site.clone()));
-                                pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), true, site.clone()));
+                                if atalanta_mode {
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new(prod_wire.clone(), false));
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new(prod_wire.clone(), true));
+                                } else {
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), false, site.clone()));
+                                    pfaults_per_gate[idx].push(crate::ppsfp::Fault::new_with_site(prod_wire.clone(), true, site.clone()));
+                                }
                             }
                         }
                     }
@@ -398,7 +435,7 @@ impl Dag {
         // da debug: confronta con enumerazione semplice (tutti i fault di ogni nodo) per verificare che non manchi nulla
         // Return full fault list (including site-specific and producer-specific
         // entries) to match Atalanta's enumeration.
-        fault_list
+        
 
         /*
         // If a producer-level (site==None) fault exists for a given wire/sa,
@@ -419,8 +456,15 @@ impl Dag {
         filtered
          */ // riduce il numero di fault, da vedere se lasciarlo o no per debug (confronto con enumerazione semplice) e per avere più pattern (es: per input line faults)
 
-
+        fault_list
     }
+
+
+    /// true se esiste un wire con quel nome nel dag (cioè come output di un nodo)
+    fn wire_exists(&self, wire: &str) -> bool {
+        self.nodes.iter().any(|n| n.outputs.get(0).map_or(false, |o| o == wire))
+    }
+
 
     /// fault injection O(n) usando succ_adj
     pub fn inject_fault(&mut self, fault: Fault) -> bool {

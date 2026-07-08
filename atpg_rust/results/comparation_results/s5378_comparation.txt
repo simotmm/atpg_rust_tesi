@@ -1,0 +1,70 @@
+bench s5378
+rust_count: 59
+atalanta_count: 0
+common_count: 0
+rust_match_pct: 0.00
+atalanta_match_pct: 0.00
+exact_match: NO
+
+in_rust_only (59):
+  n2260gat->n2258gat /0
+  n1956gat->n1959gat /0
+  n2328gat /0
+  n2707gat /1
+  n1887gat /0
+  II3923 /0
+  II3394 /1
+  n3152gat /1
+  II3461 /1
+  n3038gat /0
+  n410gat /0
+  n3112gat /1
+  II3513 /1
+  n2184gat /0
+  n923gat /0
+  n1959gat /0
+  n2392gat /0
+  II4687 /0
+  II2696 /0
+  n2694gat /1
+  II4678 /0
+  n2053gat /0
+  n68gat /1
+  n3115gat /1
+  n2710gat /1
+  n3033gat /0
+  n69gat /0
+  II3174 /0
+  n2258gat /0
+  n2697gat /1
+  II3390 /1
+  n2188gat /0
+  II4798 /0
+  n2438gat /0
+  n2690gat /1
+  n2701gat /1
+  n923gat /1
+  n2994gat /1
+  II3465 /1
+  n3039gat /0
+  II4566 /0
+  n1898gat /1
+  n68gat /0
+  n1328gat /1
+  n2438gat->n2053gat /0
+  n1381gat /0
+  n3032gat /0
+  II4587 /0
+  n1956gat /0
+  n2138gat /1
+  n921gat /0
+  n1328gat /0
+  n3003gat /1
+  n2048gat /0
+  n3008gat /1
+  n3046gat /0
+  n2260gat /0
+  II3509 /1
+  n3045gat /0
+
+in_atalanta_only (0):

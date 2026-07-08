@@ -1,0 +1,43 @@
+@echo off
+pushd "%~dp0"
+echo starting sequential benchmarks...
+
+rem benchmarks eseguiti in sequenza e aggiornamento readme con commit e push
+rem c6288 è l'ultimo che rimane da testare, ci mette piu' di 10 ore: 
+rem  pochi secondi per 7663 fault con approccio pseudo-random
+rem  parte sat per i 17 fault rimasti: esplosione combinatoria
+rem set IDS=6288
+rem qui tutti i benchmark
+rem set IDS=17 432 499 880 1355 1908 2670 3540 5315 7552 27 382 420 641 713 1238 1423 1488 5378 9234 13207 15850 35932 38417 38584 6288
+rem set iscas85_IDS=17 432 499 880 1355 1908 2670 3540 5315 6288
+rem set iscas89_IDS=27 382 420 641 713 1238 1423 1488 5378 9234 13207 15850 35932 38417 38584
+rem set time_consuming_IDS=15850 35932 38417 38584 6288 
+set IDS=6288
+
+set
+cd ..
+for %%I in (%IDS%) do (
+  echo.
+  echo === running bench full %%I ===
+  cargo run -- bench full %%I
+  echo === completed %%I ===
+  echo === updating README.md with benchmark %%I ===
+  echo === adding test input %%I to results folder ===
+  git add .
+  echo README.md updated with benchmark %%I
+  echo test input %%I added to results folder
+  echo committing changes to git repository
+  git commit -m "adding benchmark %%I in readme and test input %%I in results folder"
+  echo changes committed. pushing to remote repository.
+  git push
+  echo Benchmark %%I processed and changes pushed to remote repository.
+)
+
+echo === all benchmarks completed ===
+popd
+rem goto usato come commento multininea
+goto comment
+echo waiting 10 seconds before shutting down.
+timeout /t 10 /nobreak >nul
+shutdown /s /t 0
+:comment

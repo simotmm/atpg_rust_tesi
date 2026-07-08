@@ -53,10 +53,10 @@ impl Fault {
 
 /// struct PPSFPSimulator
 pub struct PPSFPSimulator<'a> {
-    dag: &'a Dag,
-    good: HashMap<String, u32>,
-    faulty: HashMap<String, u32>,
-    topo: Vec<usize>            // nuovo: ordine topologico ricavato da rev_adj
+    dag: &'a Dag,                 // riferimento al DAG del circuito (non posseduto)
+    good: HashMap<String, u32>,   // map: signal name -> value (32-bit pattern) for good circuit
+    faulty: HashMap<String, u32>, // map: signal name -> value (32-bit pattern) for faulty circuit
+    topo: Vec<usize>              // nuovo: ordine topologico ricavato da rev_adj
 }
 
 /// implementation: PPSFPSimulator
@@ -226,9 +226,9 @@ impl<'a> PPSFPSimulator<'a> {
         diff
     }
 
-    /// XOR good/faulty finali
+    /// XOR good/faulty final outputs (full 32-bit mask)
     pub fn diff_outputs(&self) -> u32 {
-        let mut diff = 0;
+        let mut diff = 0u32;
         for &u in &self.topo {
             let node = &self.dag.nodes[u];
             if node.is_final {
@@ -239,8 +239,63 @@ impl<'a> PPSFPSimulator<'a> {
         diff
     }
 
+    /// Simulate the circuit for a single input position (bit) inside a packed `InputPattern`.
+    /// `pos` is the bit position (0 = LSB, 31 = MSB). Returns 0 if no output difference
+    /// at that position, or 1 if any final output differs at that bit.
+    pub fn simulate_single_input(&mut self, patterns: &InputPattern, pos: usize, fault: &Fault) -> u32 {
+        if pos > 31 { panic!("simulate_single_input: pos {} out of range", pos); }
+
+        // Build good map with single-bit values (0 or 1) extracted from packed pattern
+        self.good.clear();
+        let mut keys: Vec<String> = patterns.values.keys().cloned().collect();
+        keys.sort();
+        for name in keys.iter() {
+            let full = *patterns.values.get(name).unwrap_or(&0u32);
+            let bit = ((full >> pos) & 1) as u32;
+            self.good.insert(name.clone(), bit);
+        }
+
+        // Propagate good values through topo
+        for &u in &self.topo {
+            let node = &self.dag.nodes[u];
+            if node.inputs.len() == 0 { continue; }
+            let vals: Vec<u32> = node.inputs.iter().map(|inp| *self.good.get(inp).unwrap_or(&0u32)).collect();
+            let out = simulate_gate(node.gate_type, &vals) & 1u32; // keep single bit
+            self.good.insert(node.outputs[0].clone(), out);
+        }
+
+        // Build faulty map starting from good
+        self.faulty.clear();
+        for (k, v) in &self.good { self.faulty.insert(k.clone(), *v); }
+
+        // Force the fault wire at the single-bit value
+        let forced = if fault.sa1 { 1u32 } else { 0u32 };
+        self.faulty.insert(fault.wire.clone(), forced);
+
+        // Recompute faulty outputs in topo order (skip the node that is the fault wire output)
+        for &u in &self.topo {
+            let node = &self.dag.nodes[u];
+            if node.inputs.len() == 0 { continue; }
+            if node.outputs[0] == fault.wire { continue; }
+            let vals: Vec<u32> = node.inputs.iter().map(|i| *self.faulty.get(i).unwrap_or(&0u32)).collect();
+            let out = simulate_gate(node.gate_type, &vals) & 1u32;
+            self.faulty.insert(node.outputs[0].clone(), out);
+        }
+
+        // Compute diff across final outputs, but only for this single bit (values are 0/1)
+        let mut diff_bit: u32 = 0;
+        for &u in &self.topo {
+            let node = &self.dag.nodes[u];
+            if node.is_final {
+                let g = *self.good.get(&node.outputs[0]).unwrap_or(&0u32);
+                let f = *self.faulty.get(&node.outputs[0]).unwrap_or(&0u32);
+                diff_bit |= g ^ f;
+            }
+        }
+        diff_bit & 1u32
+    }
+
     /// simulazione di più blocchi di pattern e più fault, con raccolta dei risultati in un unico passaggio
-    /// TODO IMPORTANTE: implementare anche il fatto che i fault vadano diminuendo man mano che si trovano soluzioni
     pub fn simulate_patterns_blocks(&mut self, patterns: Vec<InputPattern>, faults: Vec<Fault>, parallel: Option<bool>) -> (Vec<HashMap<Fault, u32>>, BTreeSet<Fault>) {
         let mut result = Vec::new();
         let mut covered_faults = BTreeSet::new(); // Set per i fault coperti (deterministico)
@@ -253,6 +308,13 @@ impl<'a> PPSFPSimulator<'a> {
 
         // Simulazione per ogni pattern
         let total_patterns = patterns.len();
+
+        // Track stagnation: if the number of remaining faults does not
+        // decrease for `stagnation_limit` consecutive patterns, stop early.
+        let stagnation_limit = 20usize;
+        let mut consecutive_no_progress = 0usize;
+        let mut prev_remaining = faults_remaining.len();
+
         for (pidx, pattern) in patterns.into_iter().enumerate() {
             let pnum = pidx + 1;
             if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("PPSFP: starting pattern {}/{}", pnum, total_patterns); }
@@ -288,6 +350,23 @@ impl<'a> PPSFPSimulator<'a> {
             let total_faults = initial_total_faults;
             let covered_pct = if total_faults > 0 { (covered_count as f64) * 100.0 / (total_faults as f64) } else { 0.0 };
             if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("PPSFP: pattern {}/{} done - detected in this pattern: {} - cumulative detected: {}/{} ({:.1}%)", pnum, total_patterns, result.last().map(|m| m.len()).unwrap_or(0), covered_count, total_faults, covered_pct); }
+
+            // Check for stagnation: stop early if no remaining faults have
+            // been removed for `stagnation_limit` consecutive patterns.
+            let new_remaining = faults_remaining.len();
+            if new_remaining < prev_remaining {
+                consecutive_no_progress = 0;
+            } else {
+                consecutive_no_progress += 1;
+            }
+            prev_remaining = new_remaining;
+
+            if consecutive_no_progress >= stagnation_limit {
+                if !crate::options::get_options().quiet && crate::PRINT_PROGRESS {
+                    println!("PPSFP: no progress for {} consecutive patterns - stopping early at pattern {}/{}", consecutive_no_progress, pnum, total_patterns);
+                }
+                break;
+            }
         }
 
         // Fault non coperti (ordine deterministico usando BTreeSet)
@@ -394,10 +473,121 @@ impl<'a> PPSFPSimulator<'a> {
         s
     }
 
+    /// Return a clone of the `good` map (input/output values after last `simulate_good`)
+    pub fn good_map_clone(&self) -> std::collections::HashMap<String,u32> {
+        self.good.clone()
+    }
+
+    /// Return a clone of the `faulty` map (values after last `simulate_fault`)
+    pub fn faulty_map_clone(&self) -> std::collections::HashMap<String,u32> {
+        self.faulty.clone()
+    }
+
     /// util: print simulation parameters
     pub fn print(&self) {
         println!("{}", self.to_string());
     }
+
+    /// Given a compact `InputPattern` (packed 32 combinations per u32),
+    /// find the pair of input combination positions (p, q) that maximizes
+    /// the number of signal changes between those two positions and return
+    /// the pair together with the count of changing signals.
+    /// Returns `((p, q), count)` where `p` and `q` are 0-based positions
+    /// in the compact pattern (range 0..31). 
+    /// If no nodes/signals exist, returns `((0,0), 0)`.
+    /// This simulates the good circuit to populate `self.good` and then counts
+    /// the number of signals that differ between the two input combinations at positions p and q.
+    pub fn most_transitions_for_compact_pattern(&mut self, pattern: &InputPattern) -> ((usize, usize), u32) {
+        // If the number of signals (S) is below this threshold, use the simple
+        // per-signal brute-force counting instead of building bitsets.
+        const BRUTE_FORCE_THRESHOLD: usize = 128;
+
+        // simulate packed (bit-parallel) good circuit
+        self.simulate_good(pattern);
+
+        // If no nodes, nothing to count
+        if self.topo.is_empty() || self.good.is_empty() {
+            return ((0, 0), 0);
+        }
+
+        // Prepare ordered list of signals so indices are deterministic
+        let mut keys: Vec<&String> = self.good.keys().collect();
+        keys.sort();
+        let s = keys.len();
+
+        // If the signal count is small, prefer a simple per-signal brute-force
+        // loop to avoid the overhead of allocating bitsets.
+        if s <= BRUTE_FORCE_THRESHOLD {
+            // counts[p][q] for p<q
+            let mut counts: Vec<Vec<u32>> = vec![vec![0u32; 32]; 32];
+            for name in keys.iter() {
+                let val = *self.good.get(*name).unwrap_or(&0u32); // val: 
+                for p in 0..32 {
+                    let bp = (val >> p) & 1;
+                    for q in (p + 1)..32 {
+                        let bq = (val >> q) & 1;
+                        if bp != bq {
+                            counts[p][q] += 1;
+                        }
+                    }
+                }
+            }
+
+            let mut best_p = 0usize;
+            let mut best_q = 0usize;
+            let mut best_count: u32 = 0;
+            for p in 0..32 {
+                for q in (p + 1)..32 {
+                    let c = counts[p][q];
+                    if c > best_count {
+                        best_count = c;
+                        best_p = p;
+                        best_q = q;
+                    }
+                }
+            }
+            return ((best_p, best_q), best_count);
+        }
+
+        // Otherwise build word-parallel bitsets for efficiency
+        let words = (s + 63) / 64; // number of u64 words needed
+
+        // Build bitsets: for each local bit position p (0..31) we keep a Vec<u64>
+        // where bit i indicates whether signal i has bit p == 1.
+        let mut bitsets: Vec<Vec<u64>> = vec![vec![0u64; words]; 32];
+        for (idx, name) in keys.iter().enumerate() {
+            let val = *self.good.get(*name).unwrap_or(&0u32);
+            let w = idx / 64;
+            let b = (idx % 64) as u64;
+            let mask = 1u64 << b;
+            for p in 0..32 {
+                if ((val >> p) & 1) != 0 {
+                    bitsets[p][w] |= mask;
+                }
+            }
+        }
+
+        // Now compute pairwise popcount of XOR between bitsets[p] and bitsets[q]
+        let mut best_p = 0usize;
+        let mut best_q = 0usize;
+        let mut best_count: u32 = 0;
+        for p in 0..32 {
+            for q in (p + 1)..32 {
+                let mut cnt: u32 = 0;
+                for w in 0..words {
+                    cnt = cnt.wrapping_add((bitsets[p][w] ^ bitsets[q][w]).count_ones());
+                }
+                if cnt > best_count {
+                    best_count = cnt;
+                    best_p = p;
+                    best_q = q;
+                }
+            }
+        }
+
+        ((best_p, best_q), best_count)
+    }
+
 
 }
 
@@ -450,5 +640,60 @@ mod tests {
         let f = Fault::new("OUT".to_string(), true);
         let det = sim.simulate_fault(&f);
         assert!(det != 0);
+    }
+
+    #[test]
+    fn test_most_transitions_for_compact_pattern_simple() {
+        // small netlist: two inputs A,B -> two outputs O1,O2 via BUFs
+        let mut nl = Netlist::new();
+        nl.inputs = vec!["A".to_string(), "B".to_string()];
+        nl.outputs = vec!["O1".to_string(), "O2".to_string()];
+        let g1 = Gate { name: "G1".to_string(), gate_type: GateType::BUF, outputs: vec!["O1".to_string()], inputs: vec!["A".to_string()] };
+        let g2 = Gate { name: "G2".to_string(), gate_type: GateType::BUF, outputs: vec!["O2".to_string()], inputs: vec!["B".to_string()] };
+        nl.gates.push(g1);
+        nl.gates.push(g2);
+
+        let dag = crate::dag::Dag::from_netlist(&nl);
+        let mut sim = PPSFPSimulator::new(&dag);
+
+        let mut pat = InputPattern::from_strings(vec!["A".to_string(), "B".to_string()]);
+        // set position 1 (bit 1) to 1 for both inputs; position 0 remains 0
+        pat.set("A", 1u32 << 1);
+        pat.set("B", 1u32 << 1);
+
+        let ((p, q), count) = sim.most_transitions_for_compact_pattern(&pat);
+        assert_eq!((p, q), (0usize, 1usize));
+        // signals: A,B,O1,O2 => all four flip between pos 0 and 1
+        assert_eq!(count, 4u32);
+    }
+
+    #[test]
+    fn test_most_transitions_for_compact_pattern_large_bitset() {
+        // build a larger netlist to exercise the bitset code path
+        let n_inputs = 130usize; // > BRUTE_FORCE_THRESHOLD (128)
+        let mut nl = Netlist::new();
+        for i in 0..n_inputs {
+            nl.inputs.push(format!("I{}", i));
+            nl.outputs.push(format!("O{}", i));
+            let gate = Gate { name: format!("G{}", i), gate_type: GateType::BUF, outputs: vec![format!("O{}", i)], inputs: vec![format!("I{}", i)] };
+            nl.gates.push(gate);
+        }
+
+        let dag = crate::dag::Dag::from_netlist(&nl);
+        let mut sim = PPSFPSimulator::new(&dag);
+
+        let inputs: Vec<String> = (0..n_inputs).map(|i| format!("I{}", i)).collect();
+        let mut pat = InputPattern::from_strings(inputs.clone());
+
+        // set bit 1 to 1 for every input (pos 0 = 0, pos 1 = 1)
+        for name in inputs.iter() {
+            pat.set(name, 1u32 << 1);
+        }
+
+        let ((p, q), count) = sim.most_transitions_for_compact_pattern(&pat);
+        assert_eq!((p, q), (0usize, 1usize));
+        // total signals = inputs + outputs
+        let total_signals = (n_inputs * 2) as u32;
+        assert_eq!(count, total_signals);
     }
 }

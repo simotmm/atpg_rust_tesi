@@ -1,0 +1,5 @@
+fault list (4):
+X /0
+X /1
+E /0
+D /0

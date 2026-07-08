@@ -1,3 +1,5 @@
+// da eliminare. non lo uso più, ma lo tengo come riferimento per la chiamata a espresso. In futuro potrei volerlo riabilitare o migliorare, quindi lo lascio qui per ora. Se decidessi di eliminarlo definitivamente, potrei rimuovere anche il file e tutte le dipendenze correlate.
+
 use crate::cnf::{CNF, Literal};
 use std::collections::{HashMap, HashSet};
 use std::process::{Command, Stdio};
@@ -6,7 +8,7 @@ use std::sync::{Mutex, OnceLock};
 
 const PRINT_DEBUG: bool = true; // flag per abilitare stampe di debug più dettagliate (es: output di espresso, errori, ecc)
 
-// Install package globally so `espresso` becomes available in PATH
+/// Attempt to install espresso-iisojs globally via npm. This is a best-effort attempt and may fail if npm is not available or if the user does not have permissions to install global packages. We will try other methods to run espresso even if this fails, so we don't treat it as a hard error.
 fn install_global_espresso_iisojs() -> Result<(), String> {
     if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: npm install -g espresso-iisojs"); }
     match Command::new("npm").arg("install").output() {
@@ -18,6 +20,7 @@ fn install_global_espresso_iisojs() -> Result<(), String> {
     }
 }
 
+/// Run espresso with the given PLA input and return the output as a string. The `n` and `total` parameters are used for debug logging to indicate the number of primary inputs and total assignments being processed, which can help diagnose performance issues or failures in espresso.
 fn run_espresso(pla: &str, n: usize, total: usize) -> Result<String, String> {
     if !crate::options::get_options().quiet && PRINT_DEBUG { eprintln!("[debug] espresso: minimizing with {} primary inputs, total assignments {}", n, total); }
 

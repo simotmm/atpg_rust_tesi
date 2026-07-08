@@ -69,6 +69,24 @@ impl InputPattern {
         self.values.insert(input.to_string(), val);
     }
 
+    /// Given a packed `InputPattern`, extract the bit values (0 or 1)
+    /// for all inputs at the specified `position` (0 = LSB, 31 = MSB).
+    /// Returns a vector of integers in the sorted order of input names.
+    pub fn get_input_pattern_from_position(&self, position: usize) -> Vec<u32> {
+        if position > 31 { panic!("get_input_pattern_from_position: position {} out of range", position); }
+
+        let mut keys: Vec<String> = self.values.keys().cloned().collect();
+        keys.sort();
+
+        let mut res: Vec<u32> = Vec::with_capacity(keys.len());
+        for k in keys {
+            let v = *self.values.get(&k).unwrap_or(&0u32);
+            let bit = ((v >> position) & 1) as u32;
+            res.push(bit);
+        }
+        res
+    }
+
     /// pattern -> string
     pub fn to_string(&self) -> String {
         let mut entries: Vec<_> = self.values.iter().collect();
@@ -142,6 +160,9 @@ impl InputPattern {
     }
 
     /// inserisce un pattern a partire da una posizione specificata
+    /// word: vettore di bit (0/1) da inserire
+    /// position: posizione del bit più significativo da inserire (0-31)
+    /// order: ordine delle chiavi da cui prendere i valori (deve corrispondere alla lunghezza di word)
     pub fn insert_pattern_at_position(&mut self, word: Vec<u32>, position: usize, order: Vec<String>) {
         // Verifica che la lunghezza di word corrisponda al numero di valori in self.values
         if position > 31 || word.len() != self.values.len() {
@@ -225,6 +246,68 @@ impl PatternGenerator {
         }
         p
     }
+
+    /// generate all input combinations (2^N) N<=32
+    /// if compact is true, pack combinations into 32-bit blocks (1 pattern per 32 combinations), otherwise one pattern per combination
+    pub fn generate_all_input_combinations(&self, netlist: &Netlist, compact: Option<bool>) -> Vec<InputPattern> {
+        let mut res: Vec<InputPattern> = Vec::new();
+        // Copy and sort input names to have a stable order
+        let mut keys = netlist.inputs.clone();
+        keys.sort();
+        let n = keys.len();
+
+        // If no inputs, return a single empty pattern
+        if n == 0 {
+            res.push(InputPattern::from_strings(vec![]));
+            return res;
+        }
+
+        let total = 1usize << n;
+
+        // if compact is true, pack combinations into 32-bit blocks
+        if compact.unwrap_or(false) {
+            // Guard against too many inputs for packing into u32 per input
+            if n > 32 {
+                panic!("generate_all_input_combinations: number of inputs {} exceeds 32", n);
+            }
+
+            // number of 32-bit blocks needed to pack all combinations
+            let blocks = (total + 31) / 32;
+            // initialize one InputPattern per 32-combination block
+            for _ in 0..blocks {
+                res.push(InputPattern::from_strings(keys.clone()));
+            }
+
+            for comb in 0..total {
+                let block = comb / 32;
+                let pos = (comb % 32) as u32; // bit position inside u32
+                for (i, key) in keys.iter().enumerate() {
+                    let bit = ((comb >> (n - 1 - i)) & 1) as u32;
+                    // set/clear the bit at `pos` inside the corresponding block's u32 value
+                    if let Some(val) = res[block].values.get_mut(key) {
+                        set_bit(val, bit, pos);
+                    } else {
+                        panic!("generate_all_input_combinations: key not found: {}", key);
+                    }
+                }
+            }
+            return res;
+        }
+
+        // non-compact mode: one InputPattern per combination (each input gets 0/1)
+        for comb in 0..total {
+            let mut p = InputPattern::from_strings(keys.clone());
+            for (i, key) in keys.iter().enumerate() {
+                // assign bits from MSB to LSB across the sorted keys
+                let bit = ((comb >> (n - 1 - i)) & 1) as u32;
+                p.set(key, bit);
+            }
+            res.push(p);
+        }
+
+        res
+
+    }
     
 }
 
@@ -277,6 +360,23 @@ mod tests {
         let p2 = InputPattern::random_from_netlist(nl.clone(), Some(42));
         assert_eq!(p1.get("X"), p2.get("X"));
         assert_eq!(p1.get("Y"), p2.get("Y"));
+    }
+
+    #[test]
+    fn test_get_input_pattern_from_position() {
+        let mut p = InputPattern::from_strings(vec!["A".to_string(), "B".to_string(), "C".to_string()]);
+        // set bit patterns: A = 0b1010, B = 0b0010, C = 0b0000
+        p.set("A", 0b1010);
+        p.set("B", 0b0010);
+        p.set("C", 0b0000);
+
+        // position 1 (second LSB) should yield A=1, B=1, C=0 (sorted keys A,B,C)
+        let vec = p.get_input_pattern_from_position(1);
+        assert_eq!(vec, vec![1,1,0]);
+
+        // position 3 (bit 3) should be A=1, B=0, C=0
+        let vec2 = p.get_input_pattern_from_position(3);
+        assert_eq!(vec2, vec![1,0,0]);
     }
 }
 

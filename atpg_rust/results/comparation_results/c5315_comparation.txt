@@ -1,0 +1,21 @@
+bench c5315
+rust_count: 10
+atalanta_count: 0
+common_count: 0
+rust_match_pct: 0.00
+atalanta_match_pct: 0.00
+exact_match: NO
+
+in_rust_only (10):
+  N3691->N4038 /1
+  N3691->N4040 /1
+  N3691->N4034 /1
+  N3691 /1
+  N3691->N4035 /1
+  N3691->N4032 /1
+  N3691->N4039 /1
+  N3691->N4033 /1
+  N3691->N4037 /1
+  N5726 /0
+
+in_atalanta_only (0):

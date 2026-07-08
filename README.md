@@ -4,8 +4,8 @@ This document provides an overview of the `atpg` folder, explaining where the tw
 
 ## Main structure
 - `atpg_rust/` — Rust implementation of the ATPG generator and related tools.
-- `atpg_atlanta/` — sources for three Atalanta versions (atalanta, atalanta-m (used by scripts), atalanta-m2). Contains a local `README` and a `makefile`/Visual Studio solution.
-- Scripts in the root — various `.bat` and `.ps1` files to run, validate and print summaries.
+- `atpg_atlanta/` — sources and Windows builds for the Atalanta family. The scripts in this repo currently use the `atalanta-M` executable.
+- `scripts/` — batch files to run Rust ATPG, generate fault lists, and compare/validate results.
 
 ## Requirements
 - Rust toolchain (`cargo`, `rustc`) for `atpg_rust`.
@@ -47,50 +47,49 @@ make
 - The produced executable (e.g. `Atalanta.exe`) is used for simulation/validation of patterns. Consult the local `README` in that folder or internal documentation for executable parameters.
 
 ## Root scripts — quick examples
-- `run_atpg_rust.bat` — runs the Rust ATPG with default settings.
-- `run_atalanta.bat` / `run_atalanta.ps1` — runs Atalanta on predefined input.
-- `run_and_validate_all.bat` — runs the full flow (generation with Rust / Atalanta) and then validation.
-- `run_rust_and_validate_with_atlanta.bat` — runs `atpg_rust` and validates produced patterns with Atalanta.
-- `validate_with_atlanta.bat` / `validate_with_atlanta.ps1` — validates pattern/netlist files using Atalanta.
-- `print_atlanta_summary.ps1` — produces a summary of results from Atalanta (human-readable).
-- `print_validation_summary.ps1` — prints a summary of validations performed.
-- `tests.bat` (in `atpg_rust/`) — runs the test suite for the Rust version.
+The active scripts are the `.bat` files in `scripts/` and `atpg_rust/`:
+- `scripts/run_atpg_rust.bat` — runs the Rust ATPG for a benchmark id.
+- `scripts/run_atalanta_with_rust_inputs.bat` — runs Atalanta-M on the `.bench` and `.pat` produced by Rust, then writes a comparison summary.
+- `scripts/run_atalanta_and_generate_und_faults_list.bat` — generates the Atalanta fault list and the undetected-fault list for a benchmark.
+- `scripts/run_rust_generate_all_faults_list.bat` — generates fault lists for the full benchmark set using Rust.
+- `scripts/atalanta_und_faults_list_for_all.bat` — runs the undetected-fault-list flow for the preset benchmark set.
+- `atpg_rust/tests.bat` — runs the Rust test suite.
 
-Quick usage examples (scripts accept a numeric argument selecting a benchmark in `atpg_rust/benchmarks/`):
+Quick usage examples (the benchmark-specific scripts accept a numeric argument that selects a benchmark in `atpg_rust/benchmarks/`):
 
-- Run `atpg_rust` on benchmark number `3`:
+- Run the Rust ATPG wrapper on benchmark number `3`:
 
 ```powershell
-.\run_atpg_rust.bat 3
+.\scripts\run_atpg_rust.bat 3
 ```
 
-- Run Atalanta on benchmark `3` (or on the file produced for benchmark 3):
+- Run Atalanta-M on benchmark `3` (or on the file produced for benchmark 3):
 
 ```powershell
-.\run_atalanta.bat 3
+.\scripts\run_atalanta_with_rust_inputs.bat 3
 ```
 
-- Run the whole pipeline (Rust → validation with Atalanta) on benchmark `3`:
+- Run the whole pipeline (Rust → validation with Atalanta-M) on benchmark `3`:
 
 ```powershell
-.\run_rust_and_validate_with_atlanta.bat 3
+.\scripts\run_atalanta_and_generate_und_faults_list.bat 3
 ```
 
-- Validate directly from PowerShell specifying index `3`:
+- Generate the fault lists for all preset benchmarks:
 
 ```powershell
-.\validate_with_atlanta.ps1 3
+.\scripts\run_rust_generate_all_faults_list.bat
 ```
 
 How script numeric arguments work
-- Scripts accept an integer argument (e.g. `1`, `2`, `3`) used to select the corresponding benchmark file in `atpg_rust/benchmarks/`.
-- Files in `atpg_rust/benchmarks/converted_to_atlanta_iscas89` are ISCAS85 versions converted to Atalanta format; the passed index maps to the related benchmark file (typically following alphabetical order or the indexing implemented by the scripts).
-- If no argument is provided, scripts may run a default set or iterate over multiple benchmarks (behavior depends on the specific script).
+- Scripts that take a benchmark id accept an integer argument (for example `2`, `3`, `432`) and map it to the corresponding benchmark file in `atpg_rust/benchmarks/`.
+- The batch files that iterate over the full benchmark set use a preset list of ids and do not require an argument.
+- The scripts under `scripts/` are Windows batch files; there are no active `.ps1` wrappers in this repository snapshot.
 
 ## Troubleshooting and tips
 - If `cargo` is missing, install Rust via the official installer (`rustup`).
 - If building Atalanta fails with Visual Studio errors, open the solution in Visual Studio and rebuild to resolve missing dependencies.
-- Ensure PowerShell scripts have the correct execution policy or run PowerShell with appropriate privileges if necessary.
+- The batch scripts use relative paths, so run them from the repository root.
 
 ## Where to dig deeper
-- Examples, test cases and operating details are located in subfolders (`atpg_rust/README.md`, `atpg_atlanta/Atalanta/README`). Consult those files for advanced options and formats.
+- Examples, test cases and operating details are located in subfolders ([atpg_rust/README.md](atpg_rust/README.md), [atpg_atlanta/Atalanta/README](atpg_atlanta/Atalanta/README)). Consult those files for advanced options and formats.

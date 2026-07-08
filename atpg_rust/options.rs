@@ -29,5 +29,6 @@ pub fn get_options() -> RunOptions {
         minimizer: Some("builtin".to_string()), 
         sat_backend: "varisat".to_string(),
         quiet: true,
+    
     }
 }

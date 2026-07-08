@@ -16,7 +16,7 @@ use crate::options;
 const PRINT: bool = false;
 const PRINT_DEBUG: bool = false; // flag per abilitare stampe di debug più dettagliate (es: valutazione booleana passo-passo)
 const VERBOSE: bool = false;
-const DONT_CARE_VALUE: u32 = 2;
+pub const DONT_CARE_VALUE: u32 = 2;
 const EXTEND_2SAT: bool = false; // se true, prova ad estendere le soluzioni 2-SAT con il risolutore 3-SAT
 const PRUNE_VARISAT_WITH_2SAT: bool = true; // se true, esegue un passo di pruning usando il modulo 2-SAT prima di chiamare varisat (mi sembra che rallenti soltanto...)
 
@@ -143,7 +143,7 @@ pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_
 fn varisat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>) -> (Vec<(String, u32)>, Option<HashMap<String, bool>>) {
 
     // pruning con 2-SAT: se la porzione 2-SAT è insoddisfacibile, allora tutta la formula è insoddisfacibile -> possiamo saltare la chiamata a varisat
-    if PRUNE_VARISAT_WITH_2SAT {
+    if PRUNE_VARISAT_WITH_2SAT { 
         //println!("Running 2-SAT check for pruning before Varisat call...");
         //press_any_key(); // debug pause to check the CNF and 2-SAT portion before potentially skipping Varisat
         if !two_sat::is_2_sat_satisfiable(&cnf.get_2_lit_portion()) {
@@ -153,7 +153,7 @@ fn varisat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>) -> (Vec<(Str
         } else {
             //println!("2-SAT portion is SAT, proceeding to Varisat call.");
         }
-        //press_any_key(); // debug pause to confirm pruning decision
+        //press_any_key(); // debug pause to confirm pruning decision  
     }
     
     let ordered = cnf.literals_to_int_map_ordered(); // Vec<(String, i32)>
@@ -375,7 +375,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
     let inputs = &circuit.inputs;
     let total = faults.len();
     let mut found_count: usize = 0;
-    // Precompute GOOD circuit CNF + output boolean-difference clauses once to avoid
+    // Precompute GOO CNF + outpuD circuitt boolean-difference clauses once to avoid
     // regenerating them for every fault (significant saving).
     let mut base_good_and_diff: CNF = dag.cnf_cone_from_outputs();
     for node in &dag.nodes {
@@ -396,7 +396,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
     // Add the BD__ clause to the base formula (GOOD + output-diff) that will be used for all faults
     if !bd_clause.is_empty() { base_good_and_diff.clauses.push(bd_clause); }
 
-    // Process each fault sequentiallyly: build the faulty DAG, construct the CNF for the SAT query, and solve it
+    // Process each fault sequentially: build the faulty DAG, construct the CNF for the SAT query, and solve it
     for (i, fault_ref) in faults.iter().enumerate() {
         let fault = *fault_ref; // &Fault
         let idx = i + 1;
@@ -894,3 +894,322 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
     solutions
 }
 
+/// generate all possibile assignments for the given CNF (xor(cnf_good, cnf_faulty)) given a dag (circuit->cnf) and a fault (circuit modification -> cnf_faulty)
+/// using varisat as backend solver
+const STOP_AFTER_ALL_INPUT_COMBINATIONS: bool = true; // if true, stop enumerating SAT solutions after covering all 2^N distinct primary-input combinations (for N primary inputs), to avoid combinatorial explosion in large circuits
+pub fn generate_all_sat_solutions(dag: &Dag, fault: &Fault, pruning_for_inputs: Option<bool>) -> Vec<Vec<(String, u32)>> {
+    // Use the same per-fault logic as `sat_solving_sequential`, but enumerate all models
+    let mut solutions: Vec<Vec<(String, u32)>> = Vec::new();
+
+    // Build base GOOD CNF + boolean-difference clauses
+    let mut base_good_and_diff: CNF = dag.cnf_cone_from_outputs();
+    for node in &dag.nodes {
+        if node.is_final {
+            let x = &node.outputs[0];
+            let xp = format!("{}'", x);
+            base_good_and_diff.clauses.extend(get_boolean_difference_clauses(x, &xp).clauses);
+        }
+    }
+    // require at least one BD__ to be true
+    let mut bd_clause: Vec<Literal> = Vec::new();
+    for node in &dag.nodes {
+        if node.is_final {
+            let base = node.outputs[0].trim_end_matches('\'').to_string();
+            bd_clause.push(Literal { var: format!("BD__{}", base), neg: false });
+        }
+    }
+    if !bd_clause.is_empty() { base_good_and_diff.clauses.push(bd_clause); }
+
+    // Build a primed copy of the DAG for the faulty circuit and apply the stuck-at fault
+    let mut faulty = dag.primed_clone();
+    // locate node index in original dag (if any)
+    let start_idx_opt = dag.nodes.iter().position(|n| n.outputs[0] == fault.wire);
+
+    // compute affected nodes (downstream)
+    let mut affected: Vec<usize> = Vec::new();
+    let mut stack: Vec<usize> = Vec::new();
+    let mut visited = vec![false; dag.nodes.len()];
+    if let Some(start_idx) = start_idx_opt {
+        stack.push(start_idx);
+        visited[start_idx] = true;
+    } else {
+        // fault on a primary input: find consumer nodes that have this wire as input
+        let mut consumers: Vec<usize> = dag.nodes.iter().enumerate()
+            .filter(|(_, n)| n.inputs.iter().any(|inp| inp == &fault.wire))
+            .map(|(i, _)| i)
+            .collect();
+        if consumers.is_empty() {
+            // no consumers -> nothing to do
+            return solutions;
+        }
+        for c in consumers {
+            if !visited[c] {
+                visited[c] = true;
+                stack.push(c);
+            }
+        }
+    }
+    while let Some(u) = stack.pop() {
+        affected.push(u);
+        for &v in &dag.succ_adj[u] {
+            if !visited[v] {
+                visited[v] = true;
+                stack.push(v);
+            }
+        }
+    }
+    faulty.affected = affected.clone();
+
+    // apply stuck-at clause on primed wire
+    let renamed_wire = format!("{}'", fault.wire);
+    if let Some(start_idx) = start_idx_opt {
+        faulty.nodes[start_idx].pre_fault_cnf = Some(faulty.nodes[start_idx].cnf.to_string());
+        let stuck_literal = Literal { var: renamed_wire.clone(), neg: !fault.sa1 };
+        faulty.nodes[start_idx].cnf = CNF { clauses: vec![vec![stuck_literal]] };
+    } else {
+        for &id in &affected {
+            for inp in &mut faulty.nodes[id].inputs {
+                if inp == &fault.wire {
+                    *inp = renamed_wire.clone();
+                }
+            }
+            faulty.nodes[id].cnf = crate::cnf::gate_to_cnf_literals(faulty.nodes[id].gate_type, &faulty.nodes[id].outputs[0].clone(), &faulty.nodes[id].inputs);
+        }
+        let new_id = faulty.nodes.len();
+        let dummy_node = crate::dag::DagNode {
+            id: new_id,
+            name: format!("PI_FAULT_{}", fault.wire),
+            gate_type: crate::netlist::GateType::INVALID,
+            outputs: vec![renamed_wire.clone()],
+            inputs: vec![],
+            cnf: CNF { clauses: vec![vec![Literal { var: renamed_wire.clone(), neg: !fault.sa1 }]] },
+            pre_fault_cnf: None,
+            is_final: false,
+        };
+        faulty.nodes.push(dummy_node);
+        faulty.affected.push(new_id);
+    }
+
+    // Build test formula and (optionally) minimize it
+    let mut test_formula: CNF = base_good_and_diff.clone();
+    test_formula.clauses.extend(faulty.cnf_cone_from_outputs().clauses.clone());
+    let mut cnf: CNF = test_formula.clone();
+
+    // build prioritized vars from affected cone (no circuit input list available here,
+    // so prefer outputs in the cone, and include primed/unprimed variants)
+    let mut pvars: Vec<String> = Vec::new();
+    for &id in &faulty.affected {
+        let v = faulty.nodes[id].outputs[0].clone();
+        pvars.push(v.clone());
+        if v.ends_with('\'') { pvars.push(v.trim_end_matches('\'').to_string()); }
+    }
+
+    if crate::options::get_options().optimize {
+        if crate::options::get_options().minimizer.as_deref() == Some("espresso") {
+            if let Ok(min_cnf) = crate::cnf_minimizer_espresso::minimize_using_espresso(&test_formula, &pvars[..]) {
+                cnf = min_cnf;
+            } else {
+                if let Err(_) = minimize_search_tree(&mut cnf) {
+                    return solutions;
+                }
+                if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
+            }
+        } else {
+            if let Err(_) = minimize_search_tree(&mut cnf) {
+                return solutions;
+            }
+            if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
+        }
+    }
+
+    // Prepare DIMACS mapping and build solver
+    let ordered = cnf.literals_to_int_map_ordered(); // Vec<(String,i32)>
+    let mut name_to_dimacs: HashMap<String, isize> = HashMap::new();
+    for (name, id) in ordered.iter() {
+        name_to_dimacs.insert(name.clone(), *id as isize);
+    }
+
+    let mut solver = varisat::solver::Solver::new();
+    for clause in cnf.clauses.iter() {
+        let lits: Vec<varisat::lit::Lit> = clause.iter().filter_map(|lit| {
+            name_to_dimacs.get(&lit.var).map(|&num| {
+                let dim: isize = if lit.neg { -num } else { num };
+                varisat::lit::Lit::from_dimacs(dim)
+            })
+        }).collect();
+        if !lits.is_empty() { solver.add_clause(&lits); }
+    }
+
+    // compute primary inputs set from dag: inputs that are not outputs of any node
+    let mut outputs_set: HashSet<String> = HashSet::new();
+    let mut inputs_set: HashSet<String> = HashSet::new();
+    for n in &dag.nodes {
+        outputs_set.insert(n.outputs[0].clone());
+        for inp in &n.inputs { inputs_set.insert(inp.clone()); }
+    }
+    let primary_inputs_set: HashSet<String> = inputs_set.difference(&outputs_set).cloned().collect();
+
+    // Prepare ordered list of primary inputs and a seen-key set for pruning
+    let do_prune = pruning_for_inputs.unwrap_or(false); // if pruning enabled, we will track combinations of primary input values and skip duplicates
+    let mut primary_inputs_ordered: Vec<String> = if do_prune { primary_inputs_set.iter().cloned().collect() } else { Vec::new() };
+    if do_prune { primary_inputs_ordered.sort(); }
+    let mut seen_input_keys: HashSet<String> = if do_prune { HashSet::new() } else { HashSet::new() };
+
+    // Enumerate models and block each found model
+    let mut model_idx: usize = 0;
+    loop {
+        let sat = match solver.solve() { Ok(b) => b, Err(_) => false };
+        if !sat { break; }
+        let model = match solver.model() { Some(m) => m, None => break };
+
+        model_idx += 1;
+        println!("[DEBUG] generate_all_sat_solutions: found model #{} for fault {}", model_idx, fault.to_string());
+
+        // convert model to map
+        let mut assign_map: HashMap<String, bool> = HashMap::new();
+        for lit in model.iter() {
+            let d = lit.to_dimacs();
+            let var_id = d.abs() as isize;
+            for (name, &id) in name_to_dimacs.iter() {
+                if id == var_id { assign_map.insert(name.clone(), d > 0); break; }
+            }
+        }
+
+        // brief debug: count BD__ variables true and total assigned
+        let bd_true_count = assign_map.iter().filter(|entry| entry.0.starts_with("BD__") && *entry.1).count();
+        println!("[DEBUG] model #{}: {} BD__ true, {} assigned vars", model_idx, bd_true_count, assign_map.len());
+
+        // Debug: show values of primary inputs (including primed forms)
+        let mut primary_input_vals: Vec<(String, bool)> = Vec::new();
+        for (name, &val) in assign_map.iter() {
+            let base = if name.ends_with('\'') { name.trim_end_matches('\'').to_string() } else { name.clone() };
+            if primary_inputs_set.contains(&base) {
+                primary_input_vals.push((name.clone(), val));
+            }
+        }
+        if !primary_input_vals.is_empty() {
+            println!("[DEBUG] model #{} primary inputs: {:?}", model_idx, primary_input_vals);
+        }
+
+        // Validate that the assignment is realizable by some primary-input vector
+        // Build primary_assign map from primary_inputs_set using values from assign_map (default false)
+        let mut primary_assign: HashMap<String, bool> = HashMap::new();
+        for inp in primary_inputs_set.iter() {
+            let v = *assign_map.get(inp).unwrap_or(&false);
+            primary_assign.insert(inp.clone(), v);
+        }
+        // Evaluate DAG boolean values for good and faulty circuits using primary_assign
+        let good_eval = dag.evaluate_boolean(&primary_assign, None);
+        let forced_wire = format!("{}'", fault.wire);
+        let faulty_eval = faulty.evaluate_boolean(&primary_assign, Some((forced_wire.clone(), fault.sa1)));
+
+        // Check consistency between assigned vars in assign_map and computed evaluations
+        let mut mismatch_found = false;
+        for (nid, node) in dag.nodes.iter().enumerate() {
+            let base = node.outputs[0].clone();
+            let primed = format!("{}'", base);
+            let g = *good_eval.get(&base).unwrap_or(&false);
+            let f = *faulty_eval.get(&primed).unwrap_or(&false);
+            let assigned_x = assign_map.get(&base).cloned();
+            let assigned_xp = assign_map.get(&primed).cloned();
+            let bd_var = format!("BD__{}", base);
+            let bd_assigned = assign_map.get(&bd_var).cloned();
+
+            if let Some(ax) = assigned_x {
+                if ax != g {
+                    if !crate::options::get_options().quiet && PRINT_DEBUG {
+                        println!("[DEBUG][MISMATCH] node {} ('{}'): assigned {} != computed good {}", nid, base, ax, g);
+                    }
+                    mismatch_found = true;
+                }
+            }
+            if mismatch_found { break; }
+            if let Some(axp) = assigned_xp {
+                if axp != f {
+                    if !crate::options::get_options().quiet && PRINT_DEBUG {
+                        println!("[DEBUG][MISMATCH] node {} ('{}'): assigned primed {} != computed faulty {}", nid, base, axp, f);
+                    }
+                    mismatch_found = true;
+                }
+            }
+            if mismatch_found { break; }
+            if let Some(bd) = bd_assigned {
+                let computed_xor = g ^ f;
+                if bd != computed_xor {
+                    if !crate::options::get_options().quiet && PRINT_DEBUG {
+                        println!("[DEBUG][MISMATCH] node {} ('{}'): BD__ assigned={} but computed XOR(good,faulty)={}", nid, base, bd, computed_xor);
+                    }
+                    mismatch_found = true;
+                }
+            }
+            if mismatch_found { break; }
+        }
+
+        if mismatch_found {
+            println!("[DEBUG] generate_all_sat_solutions: model #{} rejected (assignment inconsistent with boolean evaluation)", model_idx);
+            // still add a blocking clause to avoid repeating the same invalid model
+            // Build blocking clause only on primary inputs to avoid excluding valid internal assignments
+            let mut block_clause: Vec<varisat::lit::Lit> = Vec::new();
+            for inp in primary_inputs_set.iter() {
+                if let Some(&id) = name_to_dimacs.get(inp) {
+                    let val = *assign_map.get(inp).unwrap_or(&false);
+                    let dim: isize = if val { -(id) } else { id };
+                    block_clause.push(varisat::lit::Lit::from_dimacs(dim));
+                }
+            }
+            if !block_clause.is_empty() { solver.add_clause(&block_clause); println!("[DEBUG] generate_all_sat_solutions: added blocking clause for invalid model #{} (primary-input projection)", model_idx); }
+            continue; // skip adding this model to solutions
+        }
+
+        // build pattern vector for this model (ordered by variable name)
+        let mut pattern: Vec<(String, u32)> = Vec::new();
+        for (name, _id) in ordered.iter() {
+            if let Some(&val) = assign_map.get(name) {
+                pattern.push((name.clone(), if val { 1 } else { 0 }));
+            } else {
+                pattern.push((name.clone(), DONT_CARE_VALUE));
+            }
+        }
+        // If pruning enabled, compute a key for primary-input combination (ordered) and prune duplicates.
+        if do_prune {
+            let mut input_key_parts: Vec<String> = Vec::new();
+            for inp in &primary_inputs_ordered {
+                let vch = match assign_map.get(inp) {
+                    Some(true) => "1",
+                    Some(false) => "0",
+                    None => "X",
+                };
+                input_key_parts.push(format!("{}:{}", inp, vch));
+            }
+            let input_key = input_key_parts.join(",");
+            if !seen_input_keys.contains(&input_key) {
+                    seen_input_keys.insert(input_key.clone());
+                    solutions.push(pattern);
+                    // If requested, stop enumerating after covering all 2^N primary-input combinations.
+                    let n_inputs = primary_inputs_ordered.len();
+                    let max_combs: usize = if n_inputs < (usize::BITS as usize) { 1usize.checked_shl(n_inputs as u32).unwrap_or(usize::MAX) } else { usize::MAX };
+                    if STOP_AFTER_ALL_INPUT_COMBINATIONS && seen_input_keys.len() >= max_combs {
+                        println!("[DEBUG] generate_all_sat_solutions: reached all {} input combinations, stopping enumeration", max_combs);
+                        break;
+                    }
+            } else {
+                println!("[DEBUG] generate_all_sat_solutions: skipping model #{} due to duplicate primary-input combination: {}", model_idx, input_key);
+            }
+        } else {
+            solutions.push(pattern);
+        }
+
+        // build blocking clause (negate current model) and add to solver
+        let mut block_clause: Vec<varisat::lit::Lit> = Vec::new();
+        for (name, &id) in name_to_dimacs.iter() {
+            if let Some(&val) = assign_map.get(name) {
+                let dim: isize = if val { -(id) } else { id };
+                block_clause.push(varisat::lit::Lit::from_dimacs(dim));
+            }
+        }
+        if !block_clause.is_empty() { solver.add_clause(&block_clause); }
+        println!("[DEBUG] generate_all_sat_solutions: added blocking clause for model #{}", model_idx);
+    }
+
+    solutions
+}

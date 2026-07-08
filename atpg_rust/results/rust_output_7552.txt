@@ -1,9 +1,0 @@
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-    Blocking waiting for file lock on package cache
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
-     Running `target\debug\atpg_rust.exe 7552`
-pattern generation (73 patterns):
-parallel pattern single fault propagation (PPSFP):
-PPSFP: starting pattern 1/73
