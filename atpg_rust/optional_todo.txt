@@ -1,6 +1,0 @@
-2 input in entrata -> con 5 bit posso farlo fino a 5 input.
-modo per massimizzare lo stress = massimizzare i cambiamenti di stato.
-input: circuito e insieme di input pattern (tutte le combinazioni).
-output: coppia di combinazioni in input che massimizza le transizioni.
-
-(#sym:most_transitions_for_compact_pattern non funziona come voglio. io voglio che in output ci sia la coppia di input che massimizza le commutazioni, l'output dovrebbe essere "((usize, usize), u32)". usize sono le posizioni in #sym:pattern  e u32 è il numero di commutazioni)
