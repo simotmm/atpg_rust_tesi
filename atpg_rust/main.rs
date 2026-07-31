@@ -718,6 +718,17 @@ fn fault_list() {
     print_fault_list(&faults);
 }
 
+fn min_full(full: Option<bool>) {
+    let n_patterns = get_nth_arg_to_int(3).map(|v| v as usize);
+    if full.is_some() && full.unwrap() {
+        println!("Running full minimal cover workflow with easy/hard/undetectable fault split");
+        minimal_combination_full_workflow(n_patterns);
+    } else {
+        println!("Running minimal cover computation without fault split (all faults considered)");
+        minimal_combination(n_patterns);
+    }
+}
+
 /// Checks for special CLI commands and executes the corresponding helper functions. Returns true if a special command was detected and handled, false otherwise. This allows the main workflow to be bypassed for commands that are meant for data processing, benchmarking, or other utilities that don't require the full ATPG flow.
 fn cli_helpers() -> bool {
     // Make CLI helper matching case-insensitive by lowercasing the first arg
@@ -731,18 +742,10 @@ fn cli_helpers() -> bool {
         // CLI helper: run benchmarks (with optional "full" mode for more detailed control and output)
         Some("bench") | Some("benchmark") | Some("b") => { bench(); return true; },
         // CLI: compute minimal (exact) cover for a specific circuit: `minimal <n>`
-        Some("minimal") | Some("min") | Some("m") => { 
-            let run_rand = if { get_nth_arg_to_string(3).map(|s| s.to_lowercase()).as_deref() == Some("rand") } { true } else { false };
-            let n_patterns = get_nth_arg_to_int(4).map(|v| v as usize);
-            minimal_combination(n_patterns);
-            return true; 
-        },
+        Some("minimal") | Some("min") | Some("m") => { min_full(None); return true; },
         // CLI: full main-workflow-style minimal cover with easy/hard/undetectable split
-        Some("minfull") | Some("minwf") | Some("mf") => {
-            let n_patterns = get_nth_arg_to_int(3).map(|v| v as usize);
-            minimal_combination_full_workflow(n_patterns);
-            return true;
-        },
+        Some("minfull") | Some("minwf") | Some("mf") => { min_full(Some(true)); return true; },
+        // CLI: generate the complete fault list for a specific circuit
         Some("fault_list") | Some("fl") | Some("f") => { fault_list(); return true; },
         _ => {}
     }

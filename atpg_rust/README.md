@@ -250,7 +250,7 @@ Prefixes:
  - "c": iscas85
  - "s": iscas89 (snapshot converted)
 
-| File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Undetected | Coverage (%) |
+| File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Und. faults | Coverage (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | c17_to_iscas89_atlanta.bench | 0.002 | 0.000 | 0.000 | 0.002 | 16/16 | 0.000 | 0/16 | 16/16 | 16 | 0 | 100.00 |
 | c432_to_iscas89_atlanta.bench | 0.091 | 0.001 | 0.001 | 0.053 | 469/472 | 0.037 | 0/472 | 469/472 | 472 | 3 | 99.36 |

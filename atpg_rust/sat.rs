@@ -360,6 +360,176 @@ fn three_sat_solver(two_sat_assignments: Vec<HashMap<String, bool>>, three_sat_p
     None // nessuna soluzione trovata
 }
 
+/// 3sat ottimizzato da gemini -> da testare
+/// DPLL ottimizzato in-place per CNF con Literal e Pure Literal Elimination
+fn dpll_cnf_optimized(assignment: &mut HashMap<String, bool>, formula: &mut Vec<Vec<Literal>>) -> bool {
+    // 1. UNIT PROPAGATION (In-place con track dei cambiamenti per il rollback)
+    let mut unit_propagated = Vec::new();
+    let mut conflict = false;
+
+    loop {
+        let mut unit_literal: Option<Literal> = None;
+        
+        // Verifica lo stato corrente della formula sotto l'attuale assegnamento
+        for clause in formula.iter() {
+            let mut active_literals = Vec::new();
+            let mut clause_satisfied = false;
+
+            for lit in clause.iter() {
+                match assignment.get(&lit.var) {
+                    Some(&val) => {
+                        if lit.neg != val {
+                            clause_satisfied = true;
+                            break;
+                        }
+                    }
+                    None => active_literals.push(lit.clone()),
+                }
+            }
+
+            if clause_satisfied {
+                continue;
+            }
+
+            if active_literals.is_empty() {
+                conflict = true;
+                break;
+            }
+
+            if active_literals.len() == 1 {
+                unit_literal = Some(active_literals[0].clone());
+                break;
+            }
+        }
+
+        if conflict {
+            break;
+        }
+
+        if let Some(lit) = unit_literal {
+            // Se la variabile è già assegnata in modo discordante, c'è un conflitto
+            if let Some(&curr_val) = assignment.get(&lit.var) {
+                if curr_val == lit.neg {
+                    conflict = true;
+                    break;
+                }
+            } else {
+                let assigned_val = !lit.neg;
+                assignment.insert(lit.var.clone(), assigned_val);
+                unit_propagated.push(lit.var.clone());
+                continue; // Ricomincia il ciclo per cercare nuove clausole unitarie
+            }
+        }
+
+        break; // Nessuna clausola unitaria trovata, esce dal loop
+    }
+
+    if conflict {
+        // Rollback delle variabili assegnate in questa fase di unit propagation
+        for var in unit_propagated {
+            assignment.remove(&var);
+        }
+        return false;
+    }
+
+    // 2. PURE LITERAL ELIMINATION (Potatura dei letterali puri)
+    let mut pure_propagated = Vec::new();
+    let mut pure_conflict = false;
+
+    // Mappe per tracciare se un letterale non assegnato appare positivo o negativo nelle clausole non soddisfatte
+    let mut pos_seen = HashSet::new();
+    let mut neg_seen = HashSet::new();
+
+    for clause in formula.iter() {
+        let clause_satisfied = clause.iter().any(|lit| {
+            assignment.get(&lit.var).map(|v| if lit.neg { !*v } else { *v }).unwrap_or(false)
+        });
+
+        if !clause_satisfied {
+            for lit in clause.iter() {
+                if !assignment.contains_key(&lit.var) {
+                    if lit.neg {
+                        neg_seen.insert(lit.var.clone());
+                    } else {
+                        pos_seen.insert(lit.var.clone());
+                    }
+                }
+            }
+        }
+    }
+
+    // Identifica e assegna i letterali puri
+    for var in pos_seen.iter().chain(neg_seen.iter()) {
+        if !assignment.contains_key(var) {
+            let is_pos = pos_seen.contains(var);
+            let is_neg = neg_seen.contains(var);
+
+            if is_pos && !is_neg {
+                assignment.insert(var.clone(), true);
+                pure_propagated.push(var.clone());
+            } else if !is_pos && is_neg {
+                assignment.insert(var.clone(), false);
+                pure_propagated.push(var.clone());
+            }
+        }
+    }
+
+    // 3. VERIFICA CONDIZIONE DI TERMINAZIONE
+    let mut all_satisfied = true;
+    for clause in formula.iter() {
+        let clause_satisfied = clause.iter().any(|lit| {
+            assignment.get(&lit.var).map(|v| if lit.neg { !*v } else { *v }).unwrap_or(false)
+        });
+        if !clause_satisfied {
+            all_satisfied = false;
+            break;
+        }
+    }
+
+    if all_satisfied {
+        return true;
+    }
+
+    // 4. BRANCHING (Scelta della variabile e Ricorsione in-place)
+    let mut unassigned_vars = BTreeSet::new();
+    for clause in formula.iter() {
+        for lit in clause.iter() {
+            if !assignment.contains_key(&lit.var) {
+                unassigned_vars.insert(lit.var.clone());
+            }
+        }
+    }
+
+    if let Some(var) = unassigned_vars.iter().next().cloned() {
+        // Tentativo 1: Assegna TRUE
+        assignment.insert(var.clone(), true);
+        if dpll_cnf_optimized(assignment, formula) {
+            return true;
+        }
+        // Rollback del tentativo TRUE (In-place)
+        assignment.remove(&var);
+
+        // Tentativo 2: Assegna FALSE
+        assignment.insert(var.clone(), false);
+        if dpll_cnf_optimized(assignment, formula) {
+            return true;
+        }
+        // Rollback del tentativo FALSE
+        assignment.remove(&var);
+    }
+
+    // ROLLBACK GLOBALE delle propagazioni (Pure Literals e Unit Prop) prima di fare backtrack al livello superiore
+    for var in pure_propagated {
+        assignment.remove(&var);
+    }
+    for var in unit_propagated {
+        assignment.remove(&var);
+    }
+
+    false
+}
+
+
 /// wrapper sat solving: se parallel=true usa sat_solving_parallel, altrimenti sat_solving_sequential
 pub fn sat_solving(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>, parallel_execution: Option<bool>) -> HashMap<Fault, Vec<(String, u32)>> {
     if parallel_execution.is_some() && parallel_execution.unwrap() == true {

@@ -1,0 +1,1 @@
+fare script che confronta le fault list di atpg_rust e atalanta. -> fatto

@@ -1,0 +1,5 @@
+bench: c2_to_iscas89_atlanta
+total_faults: 6
+detected: 6
+undetected: 0
+ud_file: validation_results\atalanta_und_faults_from_rust_inputs\c2_to_iscas89_atlanta_atalanta.ud
