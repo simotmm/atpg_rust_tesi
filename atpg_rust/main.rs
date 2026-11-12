@@ -124,6 +124,8 @@ fn main_workflow() {
     let mut sat_detected_faults = 0;
     let mut sat_patterns: Vec<InputPattern> = Vec::new();
     let mut sat_results: HashMap<Fault, Vec<(String, u32)>> = HashMap::new();
+    let mut sat_untestable_faults: BTreeSet<Fault> = BTreeSet::new();
+    let mut sat_aborted_faults: BTreeSet<Fault> = BTreeSet::new();
     let mut sat_undetected_faults: BTreeSet<Fault> = BTreeSet::new(); 
     let mut undetected_faults: BTreeSet<Fault> = faults.iter().cloned().collect(); 
     let n_faults = faults.len();
@@ -161,7 +163,12 @@ fn main_workflow() {
         // Delegate all SAT orchestration to `sat::sat_solving`; it will choose the
         // appropriate internal or varisat-backed solver based on options.
         println!("Using SAT backend: {}", opts.sat_backend);
-        sat_results = crate::sat::sat_solving(&circuit, &dag, undetected_faults.iter().collect(), Some(PARALLEL));
+        let sat_status = crate::sat::sat_solving_with_status(&circuit, &dag, undetected_faults.iter().collect(), Some(PARALLEL));
+        sat_results = sat_status.solutions;
+        sat_untestable_faults = sat_status.untestable;
+        sat_aborted_faults = sat_status.aborted;
+        println!("SAT classification: testable {}, untestable {}, aborted {}",
+            sat_results.len(), sat_untestable_faults.len(), sat_aborted_faults.len());
 
         println!("\nDiagnostic: testing each SAT solution as single full-vector pattern (1 -> all-ones, 0 -> zero)");
         for (f, input_vec) in &sat_results {
@@ -231,10 +238,18 @@ fn main_workflow() {
     let n_undetected = undetected_faults.len();
     let yay: bool = n_undetected == 0;
     println!("-> {}all faults covered", if yay { "" } else { "not " });
-    let mut undetected_str = format!(" -> undetectable faults ({}):\n", n_undetected);
+    let mut undetected_str = format!(" -> remaining faults ({}):\n", n_undetected);
     let mut i = 1;
     for fault in undetected_faults.clone() { undetected_str.push_str(&format!("     {i}: {}\n", fault.to_string())); i+=1; }
     print!("{}", if yay { "".to_string() } else { undetected_str });
+    if !sat_untestable_faults.is_empty() {
+        println!(" -> untestable faults (UNSAT): {}", sat_untestable_faults.len());
+        for fault in &sat_untestable_faults { println!("     {}", fault.to_string()); }
+    }
+    if !sat_aborted_faults.is_empty() {
+        println!(" -> aborted faults (SAT timeout): {}", sat_aborted_faults.len());
+        for fault in &sat_aborted_faults { println!("     {}", fault.to_string()); }
+    }
 
     println!(" -> faults covered (with pseudo-random pattern generation): {}/{} ({:.2}%)", 
         ppsfp_detected_faults, 
@@ -559,6 +574,8 @@ fn minimal_combination_full_workflow(n_patterns: Option<usize>) {
     let mut easy_detectable_faults: BTreeSet<Fault> = BTreeSet::new();
     let mut hard_detectable_faults: BTreeSet<Fault> = BTreeSet::new();
     let mut undetectable_faults: BTreeSet<Fault> = faults.iter().cloned().collect();
+    let mut sat_untestable_faults: BTreeSet<Fault> = BTreeSet::new();
+    let mut sat_aborted_faults: BTreeSet<Fault> = BTreeSet::new();
 
     println!("running random pattern generation phase before full minimal cover computation");
     let mut ppsfp_results: Vec<HashMap<Fault, u32>> = Vec::new();
@@ -587,7 +604,12 @@ fn minimal_combination_full_workflow(n_patterns: Option<usize>) {
         print!("\nalgorithmic pattern generation for remaining faults:\n");
         let opts = crate::options::get_options();
         println!("Using SAT backend: {}", opts.sat_backend);
-        sat_results = crate::sat::sat_solving(&circuit, &dag, undetectable_faults.iter().collect(), Some(PARALLEL));
+        let sat_status = crate::sat::sat_solving_with_status(&circuit, &dag, undetectable_faults.iter().collect(), Some(PARALLEL));
+        sat_results = sat_status.solutions;
+        sat_untestable_faults = sat_status.untestable;
+        sat_aborted_faults = sat_status.aborted;
+        println!("SAT classification: testable {}, untestable {}, aborted {}",
+            sat_results.len(), sat_untestable_faults.len(), sat_aborted_faults.len());
 
         println!("\nsimulation of SAT patterns for remaining faults:");
         println!("parallel pattern single fault propagation (PPSFP):");
@@ -614,6 +636,8 @@ fn minimal_combination_full_workflow(n_patterns: Option<usize>) {
     println!("  easy_detectable_faults: {}", easy_detectable_faults.len());
     println!("  hard_detectable_faults: {}", hard_detectable_faults.len());
     println!("  undetectable_faults: {}", undetectable_faults.len());
+    println!("  untestable_faults (UNSAT): {}", sat_untestable_faults.len());
+    println!("  aborted_faults (SAT timeout): {}", sat_aborted_faults.len());
 
     if !easy_detectable_faults.is_empty() {
         println!("\nEasy detectable faults:");

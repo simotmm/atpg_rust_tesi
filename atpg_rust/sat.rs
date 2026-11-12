@@ -9,6 +9,7 @@ use std::collections::BTreeMap;
 use std::collections::{HashMap, HashSet, VecDeque, BTreeSet};
 use rayon::prelude::*; // per simulazione in parallelo su thread
 use std::sync::{Arc, atomic::{AtomicUsize, Ordering}};
+use std::time::{Duration, Instant};
 use crate::two_sat::{self, generate_all_assignments};
 // runtime options (set by main)
 use crate::options;
@@ -19,6 +20,14 @@ const VERBOSE: bool = false;
 pub const DONT_CARE_VALUE: u32 = 2;
 const EXTEND_2SAT: bool = false; // se true, prova ad estendere le soluzioni 2-SAT con il risolutore 3-SAT
 const PRUNE_VARISAT_WITH_2SAT: bool = true; // se true, esegue un passo di pruning usando il modulo 2-SAT prima di chiamare varisat (mi sembra che rallenti soltanto...)
+pub const SAT_TIMEOUT: Duration = Duration::from_secs(2 * 60 * 60); // timeout globale per SAT solving (2 hours)
+
+#[derive(Debug, Default)]
+pub struct SatSolveResult {
+    pub solutions: HashMap<Fault, Vec<(String, u32)>>,
+    pub untestable: BTreeSet<Fault>,
+    pub aborted: BTreeSet<Fault>,
+}
 
 /// wrapper 2sat + 3sat
 pub fn sat_solver_bits(cnf: CNF, primary_inputs: Option<&[String]>, prioritized_vars: Option<&[String]>) -> (Vec<(String, u32)>, Option<HashMap<String, bool>>) {
@@ -281,7 +290,7 @@ fn three_sat_solver(two_sat_assignments: Vec<HashMap<String, bool>>, three_sat_p
                 }
             }
         }
-
+        
         false
     }
 
@@ -532,16 +541,21 @@ fn dpll_cnf_optimized(assignment: &mut HashMap<String, bool>, formula: &mut Vec<
 
 /// wrapper sat solving: se parallel=true usa sat_solving_parallel, altrimenti sat_solving_sequential
 pub fn sat_solving(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>, parallel_execution: Option<bool>) -> HashMap<Fault, Vec<(String, u32)>> {
+    sat_solving_with_status(circuit, dag, faults, parallel_execution).solutions
+}
+
+pub fn sat_solving_with_status(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>, parallel_execution: Option<bool>) -> SatSolveResult {
+    let deadline = Instant::now() + SAT_TIMEOUT;
     if parallel_execution.is_some() && parallel_execution.unwrap() == true {
-        return sat_solving_parallel(circuit, dag, faults);
+        return sat_solving_parallel(circuit, dag, faults, deadline);
     }
-    sat_solving_sequential(circuit, dag, faults)
+    sat_solving_sequential(circuit, dag, faults, deadline)
 }
 
 /// wrapper sat solving sequenziale
-fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> HashMap<Fault, Vec<(String, u32)>> {
+fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>, deadline: Instant) -> SatSolveResult {
     // mappa per memorizzare i risultati: per ogni fault, la lista di pattern (stringa) e numero di bit significativi
-    let mut solutions: HashMap<Fault, Vec<(String, u32)>> = HashMap::new();
+    let mut result = SatSolveResult::default();
     let inputs = &circuit.inputs;
     let total = faults.len();
     let mut found_count: usize = 0;
@@ -569,6 +583,10 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
     // Process each fault sequentially: build the faulty DAG, construct the CNF for the SAT query, and solve it
     for (i, fault_ref) in faults.iter().enumerate() {
         let fault = *fault_ref; // &Fault
+        if Instant::now() >= deadline {
+            result.aborted.extend(faults[i..].iter().map(|f| (*f).clone()));
+            break;
+        }
         let idx = i + 1;
         let pct = if total > 0 { (idx as f64) * 100.0 / (total as f64) } else { 0.0 };
 
@@ -598,6 +616,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                 .collect();
             if consumers.is_empty() {
                 // no consumers -> nothing to do for SAT
+                result.untestable.insert(fault.clone());
                 continue;
             }
             // start DFS from consumer nodes of the affected primary input
@@ -690,6 +709,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                     // fallback to builtin
                         if let Err(_) = minimize_search_tree(&mut cnf) {
                             if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
+                        result.untestable.insert(fault.clone());
                         continue;
                     }
                     if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
@@ -697,6 +717,7 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
             } else {
                 if let Err(_) = minimize_search_tree(&mut cnf) {
                     if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
+                    result.untestable.insert(fault.clone());
                     continue;
                 }
                 if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
@@ -824,8 +845,18 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
                 if !mismatch_found { if !crate::options::get_options().quiet && PRINT_DEBUG { println!("[DEBUG] No node-level mismatches found between SAT assignment and boolean evaluation."); } }
             }
             if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT: {}/{} ({:.1}%) - found pattern for {} (found {}/{})", idx, total, pct, fault.wire, found_count, total); }
-            solutions.insert(fault.clone(), pattern_bits);
+            if Instant::now() < deadline {
+                result.solutions.insert(fault.clone(), pattern_bits);
+            } else {
+                result.aborted.insert(fault.clone());
+            }
         } else {
+            if Instant::now() >= deadline {
+                result.aborted.insert(fault.clone());
+                result.aborted.extend(faults[(i + 1)..].iter().map(|f| (*f).clone()));
+                break;
+            }
+            result.untestable.insert(fault.clone());
             if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT: {}/{} ({:.1}%) - UNSAT for {}", idx, total, pct, fault.wire); }
             if !crate::options::get_options().quiet && PRINT {
                 println!("SAT UNSAT for fault {} stuck-at{}", fault.wire, fault.sa1);
@@ -840,11 +871,11 @@ fn sat_solving_sequential(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> 
         }
     }
     //sort_assignments_by_order(&mut solutions, &circuit.inputs);
-    solutions
+    result
 }
 
 /// wrapper sat solving con thread
-fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> HashMap<Fault, Vec<(String, u32)>> {
+fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>, deadline: Instant) -> SatSolveResult {
     // Parallel map dei fault -> ciascun thread ritorna un HashMap<String, u32>
     let inputs = &circuit.inputs;
     let total = faults.len();
@@ -870,10 +901,15 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
     let base_good_and_diff = Arc::new(base_good_and_diff);
     let processed = Arc::new(AtomicUsize::new(0));
     let found = Arc::new(AtomicUsize::new(0));
-    let partial_solutions: Vec<HashMap<Fault, Vec<(String, u32)>> > = faults
+    let partial_results: Vec<(HashMap<Fault, Vec<(String, u32)>>, BTreeSet<Fault>)> = faults
         .par_iter()                     // iteratore parallelo
         .map(|fault| {
             let mut sol = HashMap::new();
+            let mut untestable = BTreeSet::new();
+
+            if Instant::now() >= deadline {
+                return (sol, untestable);
+            }
 
             let idx = processed.fetch_add(1, Ordering::SeqCst) + 1;
             let pct = if total > 0 { (idx as f64) * 100.0 / (total as f64) } else { 0.0 };
@@ -884,7 +920,8 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
             // locate node index in original dag
             let start_idx_opt = dag.nodes.iter().position(|n| n.outputs[0] == (*fault).wire);
             if start_idx_opt.is_none() {
-                return sol;
+                untestable.insert((*fault).clone());
+                return (sol, untestable);
             }
             let start_idx = start_idx_opt.unwrap();
             // compute affected nodes (downstream) using original dag succ_adj
@@ -938,14 +975,16 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
                     } else {
                         if let Err(_) = minimize_search_tree(&mut cnf) {
                             if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
-                            return sol;
+                            untestable.insert((*fault).clone());
+                            return (sol, untestable);
                         }
                         if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
                     }
                 } else {
                     if let Err(_) = minimize_search_tree(&mut cnf) {
                         if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("CNF unsat during minimization for fault {} s-a-{}", fault.wire, if fault.sa1 {1} else {0}); }
-                        return sol;
+                        untestable.insert((*fault).clone());
+                        return (sol, untestable);
                     }
                     if cnf.get_n_literals() == 0 { cnf = test_formula.clone(); }
                 }
@@ -971,9 +1010,14 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
                 sat_solver_bits(cnf.clone(), Some(&inputs), Some(&pvars))
             };
             if pattern_bits.is_empty() {
+                if Instant::now() >= deadline {
+                    return (sol, untestable);
+                }
+                untestable.insert((*fault).clone());
                 if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT (parallel): {}/{} ({:.1}%) - UNSAT for {}", idx, total, pct, fault.wire); }
                 if !crate::options::get_options().quiet && PRINT { println!("SAT UNSAT for fault {} stuck-at{}", fault.wire, fault.sa1); }
-                return sol;
+                untestable.insert((*fault).clone());
+                return (sol, untestable);
             }
 
             // If the solver returned a full assignment, run the boolean evaluator for extra diagnostics
@@ -1050,18 +1094,27 @@ fn sat_solving_parallel(circuit: &Netlist, dag: &Dag, faults: Vec<&Fault>) -> Ha
             let found_idx = found.fetch_add(1, Ordering::SeqCst) + 1;
             if !crate::options::get_options().quiet && crate::PRINT_PROGRESS { println!("SAT (parallel): {}/{} ({:.1}%) - found pattern for {} (found {}/{})", idx, total, pct, fault.wire, found_idx, total); }
 
-            sol.insert((*fault).clone(), pattern_bits);
-            sol
+            if Instant::now() < deadline {
+                sol.insert((*fault).clone(), pattern_bits);
+            }
+            (sol, untestable)
         })
         .collect();
 
     // merge di tutti gli HashMap prodotti in parallelo
-    let mut solutions = HashMap::new();
-    for local in partial_solutions {
-        solutions.extend(local);
+    let mut result = SatSolveResult::default();
+    for (local, untestable) in partial_results {
+        result.solutions.extend(local);
+        result.untestable.extend(untestable);
     }
-    //sort_assignments_by_order(&mut solutions, &circuit.inputs);
-    solutions
+    if Instant::now() >= deadline {
+        result.aborted.extend(
+            faults.iter()
+                .map(|f| (*f).clone())
+                .filter(|f| !result.solutions.contains_key(f) && !result.untestable.contains(f))
+        );
+    }
+    result
 }
 
 /// generate all possibile assignments for the given CNF (xor(cnf_good, cnf_faulty)) given a dag (circuit->cnf) and a fault (circuit modification -> cnf_faulty)

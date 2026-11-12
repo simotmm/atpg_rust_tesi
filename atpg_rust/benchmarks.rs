@@ -269,9 +269,8 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         if !existing.contains("| File | Total (s) |") {
         let prefix_display = prefixes.iter().map(|s| s.to_string()).collect::<Vec<_>>().join(",");
         if let Err(e) = writeln!(readme, "\n## Automatic benchmark results (prefixes={})\n", prefix_display) { eprintln!("Failed writing README header: {}", e); }
-        // Markdown table header (added 'Undetected' column)
-        if let Err(e) = writeln!(readme, "| File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Undetected | Coverage (%) |") { eprintln!("Failed writing README header: {}", e); }
-        if let Err(e) = writeln!(readme, "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|") { eprintln!("Failed writing README header: {}", e); }
+        if let Err(e) = writeln!(readme, "| File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Undetectable faults | Aborted Faults | Coverage (%) |") { eprintln!("Failed writing README header: {}", e); }
+        if let Err(e) = writeln!(readme, "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|") { eprintln!("Failed writing README header: {}", e); }
     }
 
     for path_str in paths {
@@ -341,6 +340,8 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         println!("starting algorithmic phase (SAT-based pattern generation and simulation)");
         let mut sat_detected = 0usize;
         let mut dt_sat = std::time::Duration::new(0,0);
+        let mut sat_untestable = BTreeSet::<crate::ppsfp::Fault>::new();
+        let mut sat_aborted = BTreeSet::<crate::ppsfp::Fault>::new();
         // store SAT-produced patterns for later saving to avoid recomputing SAT
         let mut sat_patterns_saved: Vec<crate::pattern_generator::InputPattern> = Vec::new();
         // final_uncovered starts as the set left after random phase
@@ -348,17 +349,27 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         if run_algorithmic_phase && final_uncovered.len() > 0 {
             let t_sat = Instant::now();
             println!("generating SAT patterns for {} uncovered faults", final_uncovered.len());
-            let sat_results = crate::sat::sat_solving(&netlist, &dag, final_uncovered.iter().collect(), Some(true));
+            let sat_status = crate::sat::sat_solving_with_status(&netlist, &dag, final_uncovered.iter().collect(), Some(true));
+            let sat_results = sat_status.solutions;
+            sat_untestable = sat_status.untestable;
+            sat_aborted = sat_status.aborted;
+            println!("SAT classification: testable {}, untestable {}, aborted {}",
+                sat_results.len(), sat_untestable.len(), sat_aborted.len());
             println!("simulating SAT patterns ({}) and determining final uncovered faults", sat_results.len());
             let sat_patterns = sat_solutions_to_input_patterns(netlist.clone(), sat_results.clone());
             let (_sat_sim_res, sat_uncovered) = simulator.simulate_patterns_blocks(sat_patterns.clone(), final_uncovered.iter().cloned().collect(), Some(true));
             sat_detected = final_uncovered.len() - sat_uncovered.len();
             dt_sat = t_sat.elapsed();
             final_uncovered = sat_uncovered;
+            sat_aborted.extend(final_uncovered.difference(&sat_untestable).cloned());
             // save SAT patterns here for later use (avoid recomputing SAT again)
             sat_patterns_saved = sat_patterns;
         }
-        println!("algorithmic phase complete: detected {}, uncovered {}, time {:?}", sat_detected, final_uncovered.len(), dt_sat);
+        if !run_algorithmic_phase {
+            sat_untestable = final_uncovered.clone();
+        }
+        println!("algorithmic phase complete: detected {}, untestable {}, aborted {}, time {:?}",
+            sat_detected, sat_untestable.len(), sat_aborted.len(), dt_sat);
 
         println!("benchmark complete for {}: total detected {}/{}", path_str, rand_detected + sat_detected, n_faults);
         let total_detected = rand_detected + sat_detected;
@@ -368,7 +379,7 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
         // append summary to README
         let file_name = std::path::Path::new(&path_str).file_name().and_then(|s| s.to_str()).unwrap_or(&path_str);
         println!("Appending benchmark results to README.md for file: {}", file_name);
-        if let Err(e) = writeln!(readme, "| {} | {:.3} | {:.3} | {:.3} | {:.3} | {}/{} | {:.3} | {}/{} | {}/{} | {} | {} | {:.2} |",
+        if let Err(e) = writeln!(readme, "| {} | {:.3} | {:.3} | {:.3} | {:.3} | {}/{} | {:.3} | {}/{} | {}/{} | {} | {} | {} | {:.2} |",
             file_name,
             total_time.as_secs_f64(),
             dt_parse.as_secs_f64(),
@@ -379,7 +390,8 @@ pub fn run_full_benchmarks_for_prefixes(prefixes: &[&str], specific: Option<&str
             sat_detected, n_faults,
             total_detected, n_faults,
             n_faults,
-            final_uncovered.len(),
+            sat_untestable.len(),
+            sat_aborted.len(),
             coverage) { eprintln!("Failed writing README row for {}: {}", file_name, e); }
         println!("Benchmark summary appended to README.md for file: {}", file_name);
         

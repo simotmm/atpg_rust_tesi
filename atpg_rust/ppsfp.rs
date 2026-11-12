@@ -41,7 +41,9 @@ impl Fault {
         let s = if self.sa1 { 1 } else { 0 };
         let id = self.site.as_ref().unwrap_or(&self.wire);
         // Atalanta format: "ID[/->ID] /<0|1>"
-        format!("{} /{}", id, s)
+        let r = format!("{} /{}", id, s);
+        r
+        
     }
 
     /// print fault 
