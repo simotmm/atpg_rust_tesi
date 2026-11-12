@@ -257,7 +257,7 @@ For these reasons `unroll_iscas89_folder` is present as an available utility but
 | File | Total (s) | Parse (s) | DAG (s) | Rand (s) | Rand detected | SAT (s) | SAT detected | Total detected | Faults | Und. faults | Ab. Faults | Coverage (%) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | c17_to_iscas89_atlanta.bench | 0.002 | 0.000 | 0.000 | 0.002 | 16/16 | 0.000 | 0/16 | 16/16 | 16 | 0 | 0 | 100.00 |
-| c432_to_iscas89_atlanta.bench | 0.091 | 0.001 | 0.001 | 0.053 | 469/472 | 0.037 | 0/472 | 469/472 | 472 | 0 | 0 | 99.36 |
+| c432_to_iscas89_atlanta.bench | 0.091 | 0.001 | 0.001 | 0.053 | 469/472 | 0.037 | 0/472 | 469/472 | 472 | 3 | 0 | 99.36 |
 | c499_to_iscas89_atlanta.bench | 0.184 | 0.001 | 0.001 | 0.083 | 683/684 | 0.100 | 1/684 | 684/684 | 684 | 0 | 0 | 100.00 |
 | c880_to_iscas89_atlanta.bench | 0.322 | 0.001 | 0.001 | 0.162 | 938/949 | 0.158 | 11/949 | 949/949 | 949 | 0 | 0 | 100.00 |
 | c1355_to_iscas89_atlanta.bench | 0.764 | 0.001 | 0.001 | 0.411 | 1551/1564 | 0.350 | 13/1564 | 1564/1564 | 1564 | 0 | 0 | 100.00 |
